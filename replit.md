@@ -1,6 +1,6 @@
-# [Project name]
+# Sardaar JI Dhaba
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A premium, warm website for Sardaar JI Dhaba with menu discovery, location pages, brand storytelling, and franchise enquiries.
 
 ## Run & Operate
 
@@ -22,23 +22,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/sardaar-ji-dhaba/src/App.tsx` — routed website shell and page compositions
+- `artifacts/sardaar-ji-dhaba/src/data/content.ts` — editable brand, menu, location, story, and blog content
+- `artifacts/sardaar-ji-dhaba/src/index.css` — visual theme, typography, texture, motion, and responsive rules
+- `artifacts/sardaar-ji-dhaba/src/pages/not-found.tsx` — standalone 404 state
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Content is kept separate from presentation so real restaurant photos, addresses, hours, menu data, story milestones, and franchise details can be added later without restructuring the UI.
+- The first release is a client-side presentation build; enquiry forms provide clear success states while server-side delivery can be connected once the email provider and operational details are confirmed.
+- Unknown business facts are deliberately surfaced as editable placeholders rather than fabricated claims, addresses, prices, timings, awards, ratings, or reviews.
+- The visual direction uses an editorial roadside-luxe treatment: warm paper and terracotta surfaces, deep dhaba green, mustard accents, and display typography with readable utility text.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Responsive public website for Sardaar JI Dhaba, established 2018, serving Noida and Prayagraj.
+- Routes for home, about, success story, menu, locations and location detail, franchise and franchise application, blog and dish pages, contact, legal pages, and 404.
+- Working client-side navigation, menu search/filtering, phone and WhatsApp actions, location CTAs, social links, contact/enquiry success states, and accessible mobile navigation.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+The build brief prioritizes dhaba authenticity, premium usability, local SEO foundations, mobile-first UX, and truthful editable placeholders until the brand supplies final content.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Vite build checks require `PORT` and `BASE_PATH`; the managed web workflow injects these automatically.
+- Replace the clearly marked placeholder media, content, addresses, timings, and map/social URLs before launch.
+- Form submission is currently a client-side success-state experience; secure server-side email delivery still needs provider configuration.
 
 ## Pointers
 

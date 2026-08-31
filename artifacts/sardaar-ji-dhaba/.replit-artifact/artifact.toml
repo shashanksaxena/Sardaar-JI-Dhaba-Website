@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Sardaar JI Dhaba"
+description = "A warm, premium website for Sardaar JI Dhaba, an authentic North Indian dhaba brand serving Noida and Prayagraj since 2018, with menu discovery, locations, storytelling, and franchise enquiries."
+version = "1.0.0"
+id = "artifacts/sardaar-ji-dhaba"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22636
+
+[services.development]
+run = "pnpm --filter @workspace/sardaar-ji-dhaba run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/sardaar-ji-dhaba", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/sardaar-ji-dhaba/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22636"
+BASE_PATH = "/"

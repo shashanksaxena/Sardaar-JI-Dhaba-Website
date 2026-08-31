@@ -1,0 +1,1233 @@
+# Build Sardaar JI Dhaba — Premium Dhaba Website
+
+Build a complete, production-ready website for **Sardaar JI Dhaba**, an Indian dhaba/restaurant brand established in **2018**, with locations in **Noida and Prayagraj**.
+
+The website should feel like a **real, authentic Indian roadside dhaba**, while still being modern, premium, fast, mobile-friendly, and professionally designed.
+
+## 1. BRAND INFORMATION
+
+**Brand Name:** Sardaar JI Dhaba
+**Established:** 2018
+**Locations:** Noida & Prayagraj
+**Phone:** 8882897431
+**Email:** [sardaarjifoods@gmail.com](mailto:sardaarjifoods@gmail.com)
+**Franchise:** Available
+**Facebook:** @sardaarjidhaba
+**Instagram:** @sardaarjidhaba
+**YouTube:** @sardaarjidhaba
+
+The brand personality should communicate:
+
+* Authentic Indian dhaba culture
+* Punjabi warmth and hospitality
+* Generous food
+* Family dining
+* Traditional recipes
+* Great value
+* Strong food portions
+* Nostalgia
+* Desi atmosphere
+* Trust built since 2018
+* A brand that has grown from its roots
+
+Do NOT make the website look like a generic corporate restaurant website.
+
+---
+
+# 2. VISUAL DIRECTION
+
+The website should immediately communicate:
+
+**"This is a real Indian Dhaba."**
+
+Use a visual language inspired by traditional North Indian/Punjabi dhabas.
+
+Possible design elements:
+
+* Rustic textures
+* Brick/wall textures
+* Wooden elements
+* Hand-painted/signboard-inspired typography
+* Desi illustrations
+* Steel utensils
+* Charpai-inspired visual elements
+* Truck/dhaba-inspired decorative elements
+* Tandoor/fire motifs
+* Traditional Indian patterns
+* Warm earthy tones
+* Mustard/yellow accents
+* Deep red/maroon accents
+* Cream/off-white backgrounds
+* Dark charcoal text
+
+However, keep the UI modern and clean.
+
+Avoid excessive decoration that hurts usability.
+
+The final result should feel like:
+
+**Traditional Dhaba + Modern Digital Brand**
+
+Use high-quality animations and micro-interactions, but avoid excessive animation that slows the website.
+
+---
+
+# 3. IMAGES AND CONTENT
+
+I will provide:
+
+* Restaurant photographs
+* Food photographs
+* Menu
+* Logo
+* Location information
+* Additional brand information
+* Success-story information
+* Other content
+
+Create the website architecture so that I can easily replace placeholder images and content later.
+
+Do NOT use copyrighted stock photographs as final content.
+
+If images are missing, use clearly marked placeholders such as:
+
+`/images/placeholder-food.jpg`
+
+Organize assets properly:
+
+```text
+/public/images/
+    logo/
+    food/
+    restaurant/
+    team/
+    locations/
+    franchise/
+    blog/
+```
+
+Use optimized responsive images.
+
+Implement:
+
+* WebP/AVIF where appropriate
+* Lazy loading
+* Responsive image sizes
+* Proper alt text
+* Width/height attributes where possible
+* Image compression
+
+---
+
+# 4. WEBSITE STRUCTURE
+
+Create the following pages:
+
+### Home
+
+`/`
+
+### About Us
+
+`/about`
+
+### Our Story / Success Story
+
+`/success-story`
+
+### Menu
+
+`/menu`
+
+### Locations
+
+`/locations`
+
+### Location Pages
+
+Create separate SEO-friendly pages:
+
+`/locations/noida`
+
+`/locations/prayagraj`
+
+### Franchise
+
+`/franchise`
+
+### Franchise Application
+
+`/franchise/apply`
+
+### Blog
+
+`/blog`
+
+### Individual Dish Pages
+
+For example:
+
+`/blog/butter-chicken`
+
+`/blog/dal-makhani`
+
+`/blog/paneer-tikka`
+
+etc.
+
+The exact dishes will be provided later.
+
+### Contact
+
+`/contact`
+
+### Privacy Policy
+
+`/privacy-policy`
+
+### Terms & Conditions
+
+`/terms-and-conditions`
+
+### Sitemap
+
+Generate XML sitemap automatically.
+
+---
+
+# 5. HOMEPAGE
+
+The homepage must be visually impressive.
+
+Hero section should contain:
+
+**Sardaar JI Dhaba**
+
+**Authentic Dhaba Taste Since 2018**
+
+Supporting text explaining the brand.
+
+CTA buttons:
+
+**View Menu**
+
+**Find a Location**
+
+**Explore Our Story**
+
+Also include a prominent:
+
+**Franchise With Us**
+
+button.
+
+Use the restaurant's actual photographs once I provide them.
+
+---
+
+## Homepage sections
+
+### Hero
+
+Large food/restaurant imagery.
+
+Strong headline.
+
+CTA buttons.
+
+---
+
+### Our Story
+
+Introduce Sardaar JI Dhaba.
+
+Established in 2018.
+
+Explain the journey and philosophy behind the restaurant.
+
+CTA:
+
+**Read Our Full Story**
+
+---
+
+### Why Sardaar JI Dhaba?
+
+Create visual cards for things such as:
+
+* Authentic Taste
+* Fresh Ingredients
+* Traditional Recipes
+* Generous Portions
+* Family Hospitality
+* Since 2018
+
+---
+
+### Signature Dishes
+
+Display selected popular dishes.
+
+Each dish should have:
+
+* Image
+* Name
+* Short description
+* Category
+* CTA: "Explore Dish"
+
+Dish cards should link to individual dish/blog pages.
+
+---
+
+### Our Locations
+
+Show:
+
+**Noida**
+
+**Prayagraj**
+
+Each location should have:
+
+* Photograph
+* Address
+* Google Maps CTA
+* Call button
+* Directions button
+* Location-specific information
+
+Create dedicated location pages for SEO.
+
+---
+
+### Success Story
+
+Create an attractive section showing the journey of Sardaar JI Dhaba from 2018 to today.
+
+Use a timeline.
+
+Example:
+
+2018 → Beginning
+↓
+Growth
+↓
+New Locations
+↓
+Brand Expansion
+↓
+Franchise Vision
+
+I will provide the actual story and milestones.
+
+Do not invent factual milestones.
+
+---
+
+### Franchise CTA
+
+Large visually striking section:
+
+**Bring Sardaar JI Dhaba To Your City**
+
+Explain that prospective franchise partners can submit their details.
+
+CTA:
+
+**Apply For Franchise**
+
+---
+
+### Instagram / Social Media
+
+Create a social media section linking to:
+
+Facebook: @sardaarjidhaba
+Instagram: @sardaarjidhaba
+YouTube: @sardaarjidhaba
+
+Use official profile links once configured.
+
+---
+
+### Final CTA
+
+Example:
+
+**Hungry Yet?**
+
+**Come Experience The Real Dhaba Taste.**
+
+Buttons:
+
+**View Menu**
+
+**Call Now**
+
+**WhatsApp Us**
+
+---
+
+# 6. MENU PAGE
+
+Create a beautiful digital menu.
+
+The menu should support categories such as:
+
+* Starters
+* Tandoor
+* Vegetarian
+* Paneer
+* Chicken
+* Mutton
+* Dal
+* Rice
+* Breads
+* Chinese
+* Beverages
+* Desserts
+
+Do NOT assume these are the final categories.
+
+I will provide the actual menu.
+
+Build the menu component so categories and dishes can easily be modified.
+
+Each dish should support:
+
+* Name
+* Description
+* Price
+* Vegetarian/non-vegetarian indicator
+* Image
+* Tags
+* Category
+* Featured/popular flag
+
+Add category filtering.
+
+Add search functionality if appropriate.
+
+Each dish should be capable of linking to its own SEO page.
+
+---
+
+# 7. DISH BLOG / SEO SYSTEM
+
+This is extremely important.
+
+Create detailed SEO-friendly pages for individual dishes.
+
+For every dish I provide, create a page containing:
+
+* Dish name
+* High-quality photograph
+* Short introduction
+* Detailed description
+* Ingredients
+* Cooking style
+* Taste profile
+* Why people love it
+* Serving suggestions
+* Restaurant description
+* FAQ
+* Related dishes
+* CTA to visit the restaurant
+* CTA to view menu
+
+Example:
+
+`/blog/dal-makhani`
+
+Page title:
+
+**Dal Makhani in Noida | Authentic Punjabi Dal | Sardaar JI Dhaba**
+
+Content should naturally target relevant search terms.
+
+Do NOT keyword-stuff.
+
+Every dish page must be genuinely useful to a visitor.
+
+Include structured data where applicable.
+
+Possible schema:
+
+* Restaurant
+* LocalBusiness
+* FoodEstablishment
+* Article
+* BreadcrumbList
+* FAQPage
+* Menu
+* Product where appropriate
+
+Only use schema properties supported by the actual content.
+
+Do not fabricate ratings, reviews, prices, awards, addresses, or other facts.
+
+---
+
+# 8. BLOG SYSTEM
+
+Create a scalable blog system.
+
+URL:
+
+`/blog`
+
+Individual articles:
+
+`/blog/article-name`
+
+Each article should support:
+
+* SEO title
+* Meta description
+* Featured image
+* Author
+* Published date
+* Updated date
+* Categories
+* Tags
+* Reading time
+* Related articles
+* Social sharing
+* Breadcrumbs
+
+Create an attractive blog listing page.
+
+I should be able to add new articles easily.
+
+---
+
+# 9. SUCCESS STORY PAGE
+
+Create a dedicated storytelling page:
+
+`/success-story`
+
+This should feel emotional and cinematic.
+
+Tell the story of:
+
+**How Sardaar JI Dhaba started in 2018 and evolved into a growing restaurant brand.**
+
+Use:
+
+* Timeline
+* Photos
+* Milestones
+* Founder story
+* Challenges
+* Philosophy
+* Growth
+* Future vision
+
+I will provide the actual story.
+
+Do not invent any information.
+
+Create the page structure so the content can easily be replaced.
+
+---
+
+# 10. FRANCHISE PAGE
+
+Create a high-converting franchise landing page.
+
+URL:
+
+`/franchise`
+
+Headline:
+
+**Bring Sardaar JI Dhaba To Your City**
+
+Sections:
+
+### Why Franchise With Us?
+
+Create cards for benefits such as:
+
+* Established brand
+* Proven restaurant concept
+* Dhaba-focused identity
+* Operational support
+* Training
+* Marketing support
+* Location guidance
+
+Only present claims that I confirm.
+
+---
+
+### Franchise Opportunity
+
+Explain the opportunity.
+
+Do not invent investment amounts, ROI, franchise fees, area requirements, or revenue figures.
+
+If information is unavailable, create editable placeholders.
+
+---
+
+### Who Should Apply?
+
+Explain the ideal franchise partner.
+
+---
+
+### Franchise Process
+
+Create a visual process:
+
+1. Submit Application
+2. Initial Discussion
+3. Location Evaluation
+4. Business Discussion
+5. Agreement
+6. Setup & Training
+7. Launch
+
+Keep this editable.
+
+---
+
+# 11. FRANCHISE APPLICATION FORM
+
+Create a professional franchise application form.
+
+Fields:
+
+* Full Name
+* Phone Number
+* Email
+* City
+* State
+* Preferred Location
+* Current Occupation
+* Business Experience
+* Investment Range
+* Available Property? (Yes/No)
+* Property Location
+* Approximate Property Area
+* Message
+* Consent checkbox
+
+Add validation.
+
+Show a clear success message after submission.
+
+---
+
+# 12. EMAIL FUNCTIONALITY
+
+Franchise applications must be sent to:
+
+**[sardaarjifoods@gmail.com](mailto:sardaarjifoods@gmail.com)**
+
+Do NOT expose email credentials in frontend code.
+
+Use secure server-side handling.
+
+Use environment variables for:
+
+* SMTP/API credentials
+* Email provider credentials
+* Other secrets
+
+Example:
+
+```env
+FRANCHISE_EMAIL=sardaarjifoods@gmail.com
+```
+
+The application email should contain all submitted details in a clean format.
+
+Also send an acknowledgement to the applicant if email functionality is configured.
+
+Handle:
+
+* Validation errors
+* Spam protection
+* Rate limiting
+* Duplicate submissions where appropriate
+* Server errors
+
+---
+
+# 13. PHONE / CALL BUTTON
+
+Phone number:
+
+**8882897431**
+
+Every important CTA area should provide:
+
+**Call Now**
+
+Use:
+
+`tel:+918882897431`
+
+On mobile, clicking the button should open the phone dialer.
+
+---
+
+# 14. WHATSAPP
+
+Add a floating WhatsApp button.
+
+Clicking it should open WhatsApp with this pre-filled message:
+
+**"Hi, I need more information about the franchise"**
+
+Use the correct WhatsApp click-to-chat URL with:
+
+`918882897431`
+
+The button should work on mobile and desktop.
+
+Do not use a third-party widget unnecessarily.
+
+---
+
+# 15. HEADER
+
+Create a sticky responsive navigation.
+
+Logo:
+
+**Sardaar JI Dhaba**
+
+Navigation:
+
+* Home
+* About
+* Menu
+* Locations
+* Our Story
+* Blog
+* Franchise
+* Contact
+
+Primary CTA:
+
+**Franchise With Us**
+
+Mobile:
+
+Create a beautiful hamburger menu.
+
+---
+
+# 16. FOOTER
+
+Footer should contain:
+
+### Sardaar JI Dhaba
+
+Authentic Dhaba Taste Since 2018.
+
+### Quick Links
+
+Home
+About
+Menu
+Locations
+Success Story
+Blog
+Franchise
+Contact
+
+### Locations
+
+Noida
+Prayagraj
+
+### Contact
+
+8882897431
+
+[sardaarjifoods@gmail.com](mailto:sardaarjifoods@gmail.com)
+
+### Social
+
+Facebook
+Instagram
+YouTube
+
+Handles:
+
+@ sardaarjidhaba
+
+### Legal
+
+Privacy Policy
+Terms & Conditions
+
+---
+
+# 17. LOCAL SEO
+
+SEO is a TOP PRIORITY.
+
+Optimize for searches related to:
+
+* Dhaba in Noida
+* Best dhaba in Noida
+* Punjabi dhaba in Noida
+* North Indian restaurant in Noida
+* Family restaurant in Noida
+* Dhaba in Prayagraj
+* Best dhaba in Prayagraj
+* Punjabi food in Prayagraj
+* North Indian restaurant in Prayagraj
+* Authentic dhaba food
+* Punjabi food
+* Indian restaurant
+
+Do not keyword-stuff.
+
+Create genuinely useful location pages.
+
+Each location page should have unique content.
+
+Do not duplicate the same page and simply replace the city name.
+
+---
+
+# 18. TECHNICAL SEO
+
+Make the website as close to "100% SEO optimized" as realistically possible.
+
+Implement:
+
+* Semantic HTML
+* Correct heading hierarchy
+* One primary H1 per page
+* Unique title tags
+* Unique meta descriptions
+* Canonical URLs
+* Open Graph metadata
+* Twitter/X card metadata
+* Robots.txt
+* XML sitemap
+* Breadcrumbs
+* Structured data/schema
+* Internal linking
+* SEO-friendly URLs
+* Image alt attributes
+* Image optimization
+* Fast loading
+* Mobile-first design
+* Proper HTTP status handling
+* 404 page
+* Redirect handling
+* Clean URL architecture
+
+Generate sitemap automatically.
+
+---
+
+# 19. GEO / LOCAL BUSINESS SCHEMA
+
+Create appropriate structured data for the restaurant.
+
+Use:
+
+* Restaurant
+* LocalBusiness
+* FoodEstablishment
+* PostalAddress
+* GeoCoordinates when I provide coordinates
+* OpeningHoursSpecification when I provide timings
+* SameAs for official social media profiles
+
+Do NOT fabricate:
+
+* Ratings
+* Reviews
+* Number of reviews
+* Awards
+* Exact coordinates
+* Opening hours
+* Pricing
+* Addresses
+
+Use actual data that I provide.
+
+---
+
+# 20. PERFORMANCE
+
+The site must be extremely fast.
+
+Target:
+
+**90+ Google Lighthouse performance where realistically achievable.**
+
+Optimize:
+
+* Images
+* JavaScript
+* CSS
+* Fonts
+* Lazy loading
+* Code splitting
+* Caching
+* Server-side rendering/static generation where appropriate
+
+Avoid unnecessary libraries.
+
+---
+
+# 21. MOBILE EXPERIENCE
+
+Most restaurant visitors will likely come from mobile.
+
+Design mobile-first.
+
+Make sure:
+
+* Call button is easy to tap
+* WhatsApp button is easy to tap
+* Menu is easy to browse
+* Images look excellent
+* Text is readable
+* Navigation is simple
+* Forms are easy to complete
+* Location directions are easy to access
+
+Add a mobile sticky action bar if it improves UX:
+
+**Call | WhatsApp | Directions | Menu**
+
+---
+
+# 22. ACCESSIBILITY
+
+Follow modern accessibility standards.
+
+Implement:
+
+* Semantic HTML
+* Keyboard navigation
+* Proper labels
+* Accessible forms
+* ARIA only where needed
+* Good contrast
+* Focus states
+* Alt text
+* Reduced-motion support
+
+---
+
+# 23. SECURITY
+
+Implement secure form handling.
+
+Never expose:
+
+* API keys
+* SMTP passwords
+* Secrets
+* Environment variables
+
+in frontend code.
+
+Add:
+
+* Server-side validation
+* Input sanitization
+* Rate limiting
+* Spam protection
+* CSRF protection where appropriate
+* Secure headers
+
+---
+
+# 24. ANALYTICS
+
+Prepare the website for:
+
+* Google Analytics 4
+* Google Search Console
+* Meta Pixel
+
+Keep tracking IDs configurable through environment variables or configuration.
+
+Do not hard-code fake tracking IDs.
+
+---
+
+# 25. GOOGLE BUSINESS PROFILE
+
+Prepare the architecture for linking the appropriate Google Business Profiles for:
+
+* Sardaar JI Dhaba Noida
+* Sardaar JI Dhaba Prayagraj
+
+Include prominent:
+
+**Get Directions**
+
+buttons.
+
+I will provide the actual Google Maps/Business Profile URLs.
+
+---
+
+# 26. CONTENT MANAGEMENT
+
+Build the website so restaurant content can be updated easily.
+
+Ideally keep content/data separated from UI components.
+
+For example:
+
+```text
+/data
+    restaurant.ts
+    menu.ts
+    locations.ts
+    dishes.ts
+    blog.ts
+    successStory.ts
+```
+
+This should allow me to change:
+
+* Dish names
+* Prices
+* Descriptions
+* Images
+* Locations
+* Contact information
+* Blog posts
+* Success story
+
+without rebuilding the entire UI.
+
+---
+
+# 27. DESIGN DETAILS
+
+Use premium typography.
+
+Headings can have a slightly handcrafted/desi character, while body text should remain highly readable.
+
+Create subtle effects such as:
+
+* Hover animations
+* Image zoom
+* Scroll reveal
+* Card transitions
+* Button interactions
+* Timeline animation
+
+But prioritize performance.
+
+The website should NOT look like an AI-generated template.
+
+It should look like a professionally designed restaurant brand.
+
+---
+
+# 28. HOMEPAGE EMOTIONAL MESSAGE
+
+The website should communicate the feeling of:
+
+**"Food that feels like home."**
+
+But do not force this exact phrase everywhere.
+
+The copy should feel warm, human, authentic, and Indian.
+
+Avoid generic phrases such as:
+
+"Experience the ultimate culinary journey."
+
+Instead use natural, memorable language.
+
+---
+
+# 29. SEO CONTENT STRATEGY
+
+Create a scalable content architecture around:
+
+### Location content
+
+Noida
+Prayagraj
+
+### Food content
+
+Individual dishes
+Punjabi food
+North Indian food
+Dhaba food
+Tandoori food
+Vegetarian food
+Non-vegetarian food
+
+### Informational content
+
+Examples:
+
+* What makes authentic dhaba food different?
+* Traditional Punjabi cooking
+* Best dishes to try at a dhaba
+* Difference between dhaba food and restaurant food
+* History of Indian dhabas
+* Popular Punjabi dishes
+* Guide to North Indian food
+
+Only publish factual claims that can be supported.
+
+---
+
+# 30. INTERNAL LINKING
+
+Build a strong internal linking structure.
+
+For example:
+
+Home → Menu
+Menu → Dish page
+Dish page → Menu
+Dish page → Related dishes
+Location → Menu
+Location → Contact
+Blog → Dish pages
+Blog → Locations
+Franchise → Contact
+Success Story → Franchise
+
+Use descriptive anchor text.
+
+---
+
+# 31. SEO PAGE TEMPLATE
+
+Every important page should automatically generate:
+
+* Title
+* Meta description
+* Canonical
+* Open Graph title
+* Open Graph description
+* Open Graph image
+* Breadcrumbs
+* Schema
+* Internal links
+
+Create a reusable SEO component/system.
+
+---
+
+# 32. ERROR AND EMPTY STATES
+
+Create polished states for:
+
+* 404
+* Blog unavailable
+* Dish unavailable
+* Form submission failure
+* Network error
+* Empty menu category
+
+Do not show raw technical errors to visitors.
+
+---
+
+# 33. CODE QUALITY
+
+Use clean, maintainable architecture.
+
+Prefer:
+
+* Reusable components
+* Strong typing if using TypeScript
+* Clear naming
+* Separation of concerns
+* Reusable SEO utilities
+* Reusable form components
+* Reusable cards
+* Reusable location components
+* Reusable dish components
+
+Do not duplicate code unnecessarily.
+
+---
+
+# 34. IMPORTANT: DO NOT INVENT INFORMATION
+
+I will provide the actual:
+
+* Menu
+* Prices
+* Restaurant addresses
+* Restaurant photographs
+* Opening hours
+* Story
+* Founder information
+* Franchise details
+* Dish information
+
+Until I provide those details, use clearly marked placeholders.
+
+Never invent business claims.
+
+Never invent awards.
+
+Never invent reviews.
+
+Never invent customer numbers.
+
+Never invent revenue.
+
+Never invent franchise ROI.
+
+Never invent ratings.
+
+Never invent exact addresses.
+
+---
+
+# 35. FINAL DELIVERABLE
+
+Build the complete website in Replit.
+
+Before considering the project complete:
+
+1. Make every page responsive.
+2. Test all navigation.
+3. Test all forms.
+4. Test the phone button.
+5. Test WhatsApp.
+6. Test social links.
+7. Test sitemap.
+8. Test robots.txt.
+9. Test metadata.
+10. Test structured data.
+11. Test broken links.
+12. Test 404.
+13. Test mobile layout.
+14. Test desktop layout.
+15. Optimize images.
+16. Run Lighthouse.
+17. Fix obvious performance issues.
+18. Check accessibility.
+19. Check console errors.
+20. Ensure no secrets are exposed in frontend code.
+
+The final website should feel like a **real, established Indian food brand**, not a generic restaurant template.
+
+The primary goal is to combine:
+
+**Dhaba authenticity + premium branding + excellent UX + local SEO + franchise lead generation.**
+
+Build the foundation so that when I upload the actual Sardaar JI Dhaba photographs, menu, story and location information, the site can be populated without redesigning the architecture.
