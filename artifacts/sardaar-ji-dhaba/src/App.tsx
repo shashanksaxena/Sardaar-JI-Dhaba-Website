@@ -5,7 +5,7 @@ import { Link, Route, Switch, useLocation, useParams, Router as WouterRouter } f
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { brand, locations, menu, stories, values, type MenuItem } from '@/data/content';
+import { brand, locations, menu, menuBoards, stories, values, type MenuItem } from '@/data/content';
 
 const queryClient = new QueryClient();
 
@@ -31,7 +31,7 @@ function Header() {
     <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 lg:px-8">
         <Link href="/" className="group flex items-center gap-3" data-testid="link-home-logo">
-          <span className="grid h-11 w-11 place-items-center rounded-full border-2 border-primary bg-primary text-sm font-bold tracking-tight text-primary-foreground transition-transform group-hover:rotate-[-8deg]">SJ</span>
+          <img src={brand.logo} alt="Sardaar JI Dhaba logo" className="h-11 w-11 rounded-full object-cover mix-blend-multiply transition-transform group-hover:rotate-[-8deg]" />
           <span className="leading-none">
             <span className="block font-display text-xl font-semibold tracking-[-.04em]">Sardaar JI</span>
             <span className="font-mono-brand text-[9px] uppercase tracking-[.22em] text-muted-foreground">Dhaba · since 2018</span>
@@ -71,7 +71,7 @@ function Footer() {
     <footer className="bg-secondary text-secondary-foreground">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
-          <div className="mb-5 flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-full border-2 border-accent bg-accent font-bold text-secondary">SJ</span><span className="font-display text-2xl">Sardaar JI Dhaba</span></div>
+          <div className="mb-5 flex items-center gap-3"><img src={brand.logo} alt="Sardaar JI Dhaba logo" className="h-11 w-11 rounded-full object-cover" /><span className="font-display text-2xl">Sardaar JI Dhaba</span></div>
           <p className="max-w-xs text-sm leading-6 text-secondary-foreground/70">A generous roadside table, serving the flavours we grew up with in Noida and Prayagraj.</p>
           <div className="mt-6 flex gap-3"><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="WhatsApp" data-testid="link-whatsapp-footer"><MessageCircle size={15} /></a><a href="https://instagram.com/sardaarjidhaba" target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="Instagram" data-testid="link-instagram-footer"><Instagram size={15} /></a></div>
         </div>
@@ -90,6 +90,10 @@ function Shell({ children }: { children: ReactNode }) {
 
 function PlaceholderArt({ label, className = '' }: { label: string; className?: string }) {
   return <div className={`relative isolate flex min-h-[180px] items-end overflow-hidden bg-secondary p-5 text-secondary-foreground ${className}`} aria-label={`${label} image placeholder`} data-testid={`placeholder-${label.toLowerCase().replaceAll(' ', '-')}`}><div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 20% 20%, hsl(var(--accent)) 0 1px, transparent 1px)', backgroundSize: '18px 18px' }} /><div className="absolute -right-7 -top-10 h-36 w-36 rounded-full border-[16px] border-accent/30" /><span className="relative font-mono-brand text-[10px] uppercase tracking-[.18em] text-accent">Photo placeholder · {label}</span></div>;
+}
+
+function PhotoArt({ src, alt, label, className = '' }: { src: string; alt: string; label: string; className?: string }) {
+  return <div className={`relative isolate min-h-[180px] overflow-hidden bg-secondary ${className}`} aria-label={alt} data-testid={`image-${label.toLowerCase().replaceAll(' ', '-')}`}><img src={src} alt={alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-transparent to-transparent" /><span className="absolute bottom-4 left-4 font-mono-brand text-[10px] uppercase tracking-[.18em] text-background">{label}</span></div>;
 }
 
 function PageIntro({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
