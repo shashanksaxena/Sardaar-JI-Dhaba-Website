@@ -34,17 +34,17 @@ export default defineConfig({
     tailwindcss(),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== 'production' &&
-    process.env.REPL_ID !== undefined
+      process.env.REPL_ID !== undefined
       ? [
-          await import('@replit/vite-plugin-cartographer').then((m) =>
-            m.cartographer({
-              root: path.resolve(import.meta.dirname, '..'),
-            }),
-          ),
-          await import('@replit/vite-plugin-dev-banner').then((m) =>
-            m.devBanner(),
-          ),
-        ]
+        await import('@replit/vite-plugin-cartographer').then((m) =>
+          m.cartographer({
+            root: path.resolve(import.meta.dirname, '..'),
+          }),
+        ),
+        await import('@replit/vite-plugin-dev-banner').then((m) =>
+          m.devBanner(),
+        ),
+      ]
       : []),
   ],
   resolve: {
@@ -68,6 +68,9 @@ export default defineConfig({
     port,
     strictPort: true,
     host: '0.0.0.0',
+    proxy: {
+      '/api': 'http://localhost:5000',
+    },
     allowedHosts: true,
     fs: {
       strict: true,

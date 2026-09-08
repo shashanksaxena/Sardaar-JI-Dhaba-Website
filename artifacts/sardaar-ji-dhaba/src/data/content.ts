@@ -10,6 +10,7 @@ export type MenuItem = {
 
 export type BlogPost = {
   id: string;
+  publishedAt?: string;
   category: string;
   title: string;
   excerpt: string;
@@ -46,8 +47,8 @@ export const menu: MenuItem[] = [
 ];
 
 export const locations = [
-  { id: 'noida', city: 'Noida', area: 'Address and map link to be confirmed', note: 'The original stop. Familiar faces, fresh tandoor.', hours: 'Timings to be confirmed', accent: 'terracotta', image: '/images/restaurant/dining-room.jpg' },
-  { id: 'prayagraj', city: 'Prayagraj', area: '138 B, MG Marg, Civil Lines, near Bank of Baroda & El-Chico', note: 'The same generous table, a different city.', hours: 'Delivery hours shown on menu: 11:00 AM - 12:00 AM', accent: 'green', image: '/images/restaurant/dhaba-exterior.jpg' },
+  { id: 'noida', city: 'Noida', area: 'Address and map link to be confirmed', mapUrl: 'https://share.google/zq5xCHFH67vrbVefk', note: 'The original stop. Familiar faces, fresh tandoor.', hours: 'Timings to be confirmed', accent: 'terracotta', image: '/images/restaurant/dining-room.jpg' },
+  { id: 'prayagraj', city: 'Prayagraj', area: '138 B, MG Marg, Civil Lines, near Bank of Baroda & El-Chico', mapUrl: 'https://share.google/LtsUIeXdIUQjuwNy4', note: 'The same generous table, a different city.', hours: 'Delivery hours shown on menu: 11:00 AM - 12:00 AM', accent: 'green', image: '/images/restaurant/dhaba-exterior.jpg' },
 ];
 
 export const menuBoards = [
@@ -58,7 +59,7 @@ export const menuBoards = [
 
 const cookingClose = 'The restaurant finish comes from patience more than heavy cream or extra masala. Taste at the end, rest the dish for a few minutes, and serve it hot with naan, roti or jeera rice. At Sardaar JI Dhaba, we look for the same balance every time: a gravy that clings, spice that stays warm, and a final bite that still feels generous.';
 
-export const stories: BlogPost[] = [
+const baseStories: BlogPost[] = [
   {
     id: 'restaurant-style-butter-chicken',
     category: 'Recipe guide',
@@ -220,6 +221,38 @@ export const stories: BlogPost[] = [
     ],
   },
 ];
+
+const additionalStories: BlogPost[] = [
+  ['restaurant-style-rajma', '2026-08-22', 'How to Make Restaurant Style Rajma', 'Creamy kidney beans simmered in a deep onion-tomato masala for a proper Punjabi comfort plate.', '/images/blog/restaurant-style-dal-makhani.png'],
+  ['restaurant-style-matar-paneer', '2026-08-15', 'How to Make Restaurant Style Matar Paneer', 'Soft paneer and sweet green peas in a bright, silky North Indian gravy.', '/images/blog/restaurant-style-shahi-paneer.png'],
+  ['restaurant-style-fish-tikka', '2026-08-08', 'How to Make Restaurant Style Fish Tikka', 'A high-heat marinade that gives fish tikka smoky edges while keeping the centre tender.', '/images/blog/restaurant-style-tandoori-chicken.png'],
+  ['restaurant-style-palak-paneer', '2026-08-01', 'How to Make Restaurant Style Palak Paneer', 'Blanched spinach, warm spices and paneer brought together in a fresh green curry.', '/images/blog/restaurant-style-paneer-tikka.png'],
+  ['restaurant-style-chicken-biryani', '2026-07-25', 'How to Make Restaurant Style Chicken Biryani', 'Layered basmati rice, spiced chicken and saffron steam for a generous one-pot feast.', '/images/blog/restaurant-style-kadhai-chicken.png'],
+  ['restaurant-style-aloo-gobi', '2026-07-18', 'How to Make Restaurant Style Aloo Gobi', 'Crisp-edged potatoes and tender cauliflower with a dry masala that clings to every bite.', '/images/blog/restaurant-style-chole-bhature.png'],
+  ['restaurant-style-tandoori-prawns', '2026-07-11', 'How to Make Restaurant Style Tandoori Prawns', 'Quick-marinated prawns cooked hot enough for char, spice and a juicy finish.', '/images/blog/restaurant-style-chicken-tikka.png'],
+  ['restaurant-style-kulcha', '2026-07-04', 'How to Make Restaurant Style Amritsari Kulcha', 'Stuffed, blistered bread with a crisp base and a soft centre made for chole.', '/images/blog/restaurant-style-garlic-naan.png'],
+  ['restaurant-style-gajar-halwa', '2026-06-27', 'How to Make Restaurant Style Gajar Halwa', 'Slow-cooked carrots, milk, cardamom and nuts for a warm Punjabi dessert.', '/images/blog/restaurant-style-malai-kofta.png'],
+  ['restaurant-style-mango-lassi', '2026-06-20', 'How to Make Restaurant Style Mango Lassi', 'Ripe mango, thick curd and cardamom blended into a cool, creamy glass.', '/images/people/guest-table.jpg'],
+].map(([id, publishedAt, title, excerpt, image]) => ({
+  id,
+  publishedAt,
+  category: 'Recipe guide',
+  title,
+  excerpt,
+  read: '4 min read',
+  image,
+  alt: title,
+  keywords: `${title.toLowerCase()}, Punjabi recipe, restaurant style Indian food`,
+  body: [
+    `Start with fresh ingredients and give the masala enough time to develop. ${excerpt}`,
+    'Cook on steady heat, tasting as you go. The restaurant finish comes from balance: enough spice for character, enough fat for body and enough resting time for the flavours to settle.',
+    cookingClose,
+  ],
+}));
+
+export const stories: BlogPost[] = [...baseStories, ...additionalStories]
+  .map((story, index) => ({ ...story, publishedAt: story.publishedAt ?? `2025-${String(10 - Math.floor(index / 2)).padStart(2, '0')}-${String(20 - index).padStart(2, '0')}` }))
+  .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
 
 export const values = [
   { number: '01', title: 'Feed people properly', copy: 'No tiny portions. No rushed plates. A dhaba table should feel like someone was waiting for you.' },

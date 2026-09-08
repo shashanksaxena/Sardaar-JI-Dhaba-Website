@@ -24,6 +24,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+    /inquiries:
+      post:
+        operationId: submitInquiry
+        tags: [inquiries]
+        summary: Send a website enquiry
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inquiry"
+        responses:
+          "201":
+            description: Inquiry sent
+          "400":
+            description: Invalid inquiry
+          "502":
+            description: Email provider failure
+          "503":
+            description: Email delivery is not configured
 components:
   schemas:
     HealthStatus:
@@ -33,4 +53,22 @@ components:
           type: string
       required:
         - status
+    Inquiry:
+      type: object
+      required: [kind, name, email, message]
+      properties:
+        kind:
+          type: string
+          enum: [contact, franchise]
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        city:
+          type: string
+        message:
+          type: string
 

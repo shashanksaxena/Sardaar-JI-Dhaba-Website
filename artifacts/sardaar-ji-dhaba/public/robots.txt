@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://sardaarjidhaba.com/sitemap.xml

@@ -30,7 +30,7 @@ A premium, warm website for Sardaar JI Dhaba with menu discovery, location pages
 ## Architecture decisions
 
 - Content is kept separate from presentation so real restaurant photos, addresses, hours, menu data, story milestones, and franchise details can be added later without restructuring the UI.
-- The first release is a client-side presentation build; enquiry forms provide clear success states while server-side delivery can be connected once the email provider and operational details are confirmed.
+- Enquiry forms POST to `/api/inquiries`; configure `RESEND_API_KEY`, `EMAIL_FROM` and optional `INQUIRY_EMAIL` for delivery through Resend.
 - Unknown business facts are deliberately surfaced as editable placeholders rather than fabricated claims, addresses, prices, timings, awards, ratings, or reviews.
 - The visual direction uses an editorial roadside-luxe treatment: warm paper and terracotta surfaces, deep dhaba green, mustard accents, and display typography with readable utility text.
 
