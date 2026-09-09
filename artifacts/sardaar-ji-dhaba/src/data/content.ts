@@ -678,8 +678,201 @@ const additionalStories: BlogPost[] = [
   },
 ];
 
-export const stories: BlogPost[] = [...baseStories, ...additionalStories]
-  .map((story, index) => ({ ...story, publishedAt: story.publishedAt ?? `2025-${String(10 - Math.floor(index / 2)).padStart(2, '0')}-${String(20 - index).padStart(2, '0')}` }))
+const makeNewRecipe = (recipe: {
+  id: string;
+  date: string;
+  title: string;
+  dish: string;
+  excerpt: string;
+  image: string;
+  alt: string;
+  keywords: string;
+  seoTitle: string;
+  seoDescription: string;
+  ingredients: string[];
+  method: string[];
+  tips: string[];
+  flavour: string;
+  pairing: string;
+}): BlogPost => ({
+  id: recipe.id,
+  publishedAt: recipe.date,
+  category: 'Recipe guide',
+  title: recipe.title,
+  excerpt: recipe.excerpt,
+  read: '5 min read',
+  image: recipe.image,
+  alt: recipe.alt,
+  keywords: recipe.keywords,
+  seoTitle: recipe.seoTitle,
+  seoDescription: recipe.seoDescription,
+  ingredients: recipe.ingredients,
+  method: recipe.method,
+  tips: recipe.tips,
+  body: [
+    `${recipe.dish} is the kind of dish that makes a dhaba meal feel generous. The ingredients are familiar, but the restaurant-style result comes from building flavour in stages instead of rushing everything into one pan. Start with fresh ingredients, measure the spices before cooking and give the masala enough time to lose its raw edge. ${recipe.excerpt} The finished dish should taste balanced, with ${recipe.flavour} carrying the main character rather than overwhelming the palate.`,
+    `The first important step is preparation. Wash, trim and cut the ingredients into similar sizes so they cook evenly. If the recipe uses a marinade, let it rest long enough for the yoghurt, spices and aromatics to reach the centre. If it uses a gravy, cook the onion, tomato and ginger-garlic base slowly until it becomes glossy. This patience creates the rounded flavour associated with a restaurant kitchen. A rushed masala tastes sharp, while a properly reduced one clings to the food and gives every bite a deeper savoury finish.`,
+    `Heat control matters just as much as seasoning. Use high heat for browning, charring or sealing the outside, then lower the flame so the centre can cook without drying. Stir only when needed and scrape the bottom of the pan if the masala begins to catch. Taste after each major stage rather than waiting until the end. Salt, acidity and spice are easier to balance while the dish is still cooking, and a small adjustment can make the final plate taste much more polished.`,
+    `For the best texture, finish the dish with care. Add cream, butter, lemon, herbs or kasuri methi only at the stage specified in the method, because these ingredients are finishing notes rather than substitutes for a well-cooked base. Let the food rest for a few minutes after cooking so the juices settle and the spices become more integrated. This short pause is especially useful for grilled starters, rice dishes and thick curries, where the texture changes as the heat relaxes.`,
+    `Serve ${recipe.dish} hot with ${recipe.pairing}. Add fresh herbs, onion, lemon or chutney according to the recipe, but keep the plate uncluttered so the main flavour remains clear. This dish is suitable for a family dinner, a weekend lunch or a generous table of guests. Once the preparation is understood, it becomes easy to repeat: good ingredients, a properly cooked masala, controlled heat and a final taste check are what turn a home recipe into a restaurant-style favourite.`,
+    `There is also a useful serving lesson in this recipe. Restaurant food feels special because it arrives at the right temperature, with the garnish and accompaniment prepared before the main dish leaves the pan. Warm the plates when serving a curry or rice dish, keep chutney chilled, and cut lemon just before eating. For kebabs and fried starters, avoid covering them tightly because trapped steam softens the crust. These small choices protect the work you have already done and help the final meal taste fresher, brighter and more generous.`,
+  ],
+});
+
+const newStories: BlogPost[] = [
+  makeNewRecipe({
+    id: 'restaurant-style-hara-bhara-kebab', date: '2026-06-13', dish: 'Hara Bhara Kebab', title: 'How to Make Restaurant Style Hara Bhara Kebab',
+    excerpt: 'A crisp, green vegetarian kebab made with spinach, peas, potato and warming Punjabi spices.', image: '/images/menu/menu-vegetarian.jpg', alt: 'Restaurant style hara bhara kebab with mint chutney',
+    keywords: 'restaurant style hara bhara kebab recipe, spinach kebab recipe, vegetarian Indian starter, how to make hara bhara kebab', seoTitle: 'Restaurant Style Hara Bhara Kebab Recipe | Green Vegetarian Kebab', seoDescription: 'Make crisp restaurant-style hara bhara kebab with spinach, green peas, potato, herbs, and Indian spices at home.',
+    ingredients: ['2 cups spinach leaves', '1 cup green peas', '2 boiled potatoes', '1 green chilli', '1 tsp grated ginger', '1/2 tsp cumin powder', '1/2 tsp garam masala', '2 tbsp roasted gram flour', '1 tbsp lemon juice', 'Salt to taste', 'Oil for shallow frying', 'Cashews, optional'],
+    method: ['Blanch spinach briefly, drain it well and blend it with peas, chilli and ginger into a coarse paste.', 'Mix the paste with mashed potato, spices, lemon, salt and gram flour. Shape small patties and chill for 15 minutes.', 'Shallow-fry on medium heat until both sides are crisp and green. Serve hot with mint chutney, onion and lemon.'],
+    tips: ['Squeeze spinach thoroughly so the kebabs do not break.', 'Use medium heat so the centre warms before the outside darkens.', 'Chilling the patties makes shaping and frying easier.'], flavour: 'fresh spinach, sweet peas and roasted spice', pairing: 'mint chutney, onion rings and masala chaas',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-crispy-corn', date: '2026-06-06', dish: 'Crispy Corn', title: 'How to Make Restaurant Style Crispy Corn',
+    excerpt: 'Sweet corn coated in a light spiced crust and finished with herbs, chilli and lime.', image: '/images/menu/menu-vegetarian.jpg', alt: 'Restaurant style crispy corn with chilli and herbs',
+    keywords: 'restaurant style crispy corn recipe, crispy corn starter, Indian corn snack, fried corn recipe', seoTitle: 'Restaurant Style Crispy Corn Recipe | Spicy Fried Corn Starter', seoDescription: 'Learn how to make crispy corn like a restaurant with sweet corn, a crunchy coating, chilli, herbs, and lime.',
+    ingredients: ['2 cups sweet corn kernels', '3 tbsp cornflour', '2 tbsp rice flour', '1 tsp ginger-garlic paste', '1/2 tsp Kashmiri chilli', '1/2 tsp black pepper', '1/2 tsp chaat masala', '1 chopped onion', '1 green chilli', 'Fresh coriander', 'Salt', 'Oil for frying', 'Lime wedges'],
+    method: ['Boil corn until just tender, drain completely and pat dry. Toss with cornflour, rice flour, ginger-garlic, chilli, pepper and salt.', 'Fry in small batches until crisp and pale golden. Drain on a rack or paper towel.', 'Toss while hot with onion, chilli, coriander and chaat masala. Add lime just before serving.'],
+    tips: ['Dry the corn thoroughly before coating it.', 'Small batches keep the oil hot and the coating crisp.', 'Add lime at the table so the crust does not soften.'], flavour: 'sweet corn, peppery heat and a crackling coating', pairing: 'mint chutney, masala chaas or a cold drink',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-jeera-rice', date: '2026-05-30', dish: 'Jeera Rice', title: 'How to Make Restaurant Style Jeera Rice',
+    excerpt: 'Fragrant basmati rice toasted with cumin, ghee and whole spices for every Punjabi curry.', image: '/images/restaurant/signature-thali.jpg', alt: 'Restaurant style jeera rice with cumin and coriander',
+    keywords: 'restaurant style jeera rice recipe, cumin rice recipe, how to make jeera rice, Punjabi restaurant rice', seoTitle: 'Restaurant Style Jeera Rice Recipe | Fluffy Cumin Rice', seoDescription: 'Make fluffy restaurant-style jeera rice with basmati, toasted cumin, ghee, and simple whole spices.',
+    ingredients: ['1 cup basmati rice', '1 3/4 cups water', '1 tbsp ghee', '1 tsp cumin seeds', '1 bay leaf', '2 cardamom pods', '1 small cinnamon piece', 'Salt', 'Fresh coriander'],
+    method: ['Rinse and soak basmati for 20 minutes, then drain well.', 'Heat ghee and crackle cumin with bay leaf, cardamom and cinnamon. Toast the rice for one minute.', 'Add water and salt, boil, cover and cook on low until absorbed. Rest for 10 minutes, fluff and garnish.'],
+    tips: ['Use aged basmati for separate grains.', 'Do not stir repeatedly after adding water.', 'Rest before fluffing to avoid broken rice.'], flavour: 'nutty cumin, buttery ghee and fragrant basmati', pairing: 'dal makhani, rajma, butter chicken or any dhaba curry',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-masala-chaas', date: '2026-05-23', dish: 'Masala Chaas', title: 'How to Make Restaurant Style Masala Chaas',
+    excerpt: 'Cool whisked buttermilk with roasted cumin, coriander, mint and a gentle savoury spice.', image: '/images/people/guest-table.jpg', alt: 'Restaurant style masala chaas in a chilled glass',
+    keywords: 'restaurant style masala chaas recipe, spiced buttermilk, Punjabi chaas drink, how to make masala chaas', seoTitle: 'Restaurant Style Masala Chaas Recipe | Spiced Buttermilk', seoDescription: 'Make refreshing Punjabi masala chaas with yoghurt, cold water, roasted cumin, mint, coriander, and black salt.',
+    ingredients: ['1 cup plain yoghurt', '2 cups chilled water', '1/2 tsp roasted cumin powder', '1/4 tsp black salt', '1/4 tsp regular salt', '1 chopped green chilli', '1 tbsp mint', '1 tbsp coriander', 'Pinch of asafoetida', 'Ice, optional'],
+    method: ['Whisk yoghurt until smooth, then add water gradually.', 'Add cumin, salts, chilli, mint, coriander and asafoetida. Whisk until evenly mixed.', 'Chill for 10 minutes, taste and serve with cumin and coriander on top.'],
+    tips: ['Use fresh yoghurt with moderate tang.', 'Roast cumin freshly for the strongest aroma.', 'Keep chaas light rather than as thick as lassi.'], flavour: 'cool yoghurt, roasted cumin and fresh mint', pairing: 'tandoori food, crispy corn, jeera rice or a spicy curry',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-butter-naan', date: '2026-05-16', dish: 'Butter Naan', title: 'How to Make Restaurant Style Butter Naan',
+    excerpt: 'Soft, blistered naan brushed with butter and made for scooping rich Punjabi gravies.', image: '/images/blog/restaurant-style-garlic-naan.png', alt: 'Restaurant style butter naan fresh from the tandoor',
+    keywords: 'restaurant style butter naan recipe, naan at home, tandoori naan recipe, how to make naan without tandoor', seoTitle: 'Restaurant Style Butter Naan Recipe | Soft Tandoori Naan at Home', seoDescription: 'Make soft restaurant-style butter naan at home with a yoghurt dough, hot tawa, butter, and tandoor-style blisters.',
+    ingredients: ['2 cups maida', '1/2 cup yoghurt', '1 tsp sugar', '1/2 tsp baking powder', '1 tbsp oil', 'Salt', 'Warm water', 'Butter', 'Fresh coriander'],
+    method: ['Knead flour, yoghurt, sugar, baking powder, oil and salt with warm water into a soft dough. Rest for one hour.', 'Roll dough balls into thick ovals and wet one side. Place wet-side down on a hot iron tawa.', 'Cook until bubbles appear, invert toward the flame to blister, then brush generously with butter and coriander.'],
+    tips: ['Resting gives the dough a softer texture.', 'Use an iron tawa for better grip over flame.', 'Serve immediately while the naan is hot.'], flavour: 'soft yoghurt dough, smoky blisters and melted butter', pairing: 'butter chicken, dal makhani, shahi paneer or kadhai chicken',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-chicken-curry', date: '2026-05-09', dish: 'Punjabi Chicken Curry', title: 'How to Make Restaurant Style Punjabi Chicken Curry',
+    excerpt: 'Tender chicken cooked in a deeply browned onion-tomato masala with classic Punjabi spices.', image: '/images/blog/restaurant-style-kadhai-chicken.png', alt: 'Restaurant style Punjabi chicken curry with thick gravy',
+    keywords: 'restaurant style Punjabi chicken curry recipe, dhaba chicken curry, Indian chicken curry, how to make chicken curry', seoTitle: 'Restaurant Style Punjabi Chicken Curry Recipe | Dhaba Chicken', seoDescription: 'Cook a rich Punjabi chicken curry with browned onions, tomato masala, whole spices, and tender chicken at home.',
+    ingredients: ['750 g chicken pieces', '3 tbsp oil', '2 sliced onions', '2 tomato puree', '1 tbsp ginger-garlic paste', '1 tsp cumin seeds', '1 tsp coriander powder', '1 tsp Kashmiri chilli', '1/2 tsp turmeric', '1 tsp garam masala', 'Bay leaf and cardamom', 'Salt', 'Fresh coriander'],
+    method: ['Season chicken with salt, turmeric and chilli. Heat oil with whole spices and brown the onions slowly.', 'Add ginger-garlic and tomato with dry spices. Cook until glossy and the oil separates.', 'Sear chicken in the masala, add hot water, cover and simmer until tender. Finish with garam masala and coriander.'],
+    tips: ['Brown onions patiently for depth.', 'Use hot water so the pan keeps its heat.', 'Rest the curry before serving.'], flavour: 'deep browned onion, tomato and warm Punjabi spice', pairing: 'butter naan, jeera rice, roti and onion salad',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-paneer-butter-masala', date: '2026-05-02', dish: 'Paneer Butter Masala', title: 'How to Make Restaurant Style Paneer Butter Masala',
+    excerpt: 'Soft paneer in a silky tomato, butter and cashew gravy with a gentle restaurant-style sweetness.', image: '/images/blog/restaurant-style-shahi-paneer.png', alt: 'Restaurant style paneer butter masala with naan',
+    keywords: 'restaurant style paneer butter masala recipe, paneer makhani, paneer curry recipe, how to make paneer butter masala', seoTitle: 'Restaurant Style Paneer Butter Masala Recipe | Paneer Makhani', seoDescription: 'Make creamy paneer butter masala with tomato, cashew, butter, cream, and soft paneer for an easy restaurant-style curry.',
+    ingredients: ['250 g paneer cubes', '3 tomatoes', '10 cashews', '1 small onion', '1 tbsp ginger-garlic paste', '2 tbsp butter', '1 tsp Kashmiri chilli', '1/2 tsp garam masala', '1/2 tsp kasuri methi', '1 tsp honey', '2 tbsp cream', 'Salt'],
+    method: ['Cook tomato, onion, cashew, ginger and garlic until soft. Blend and strain for a smooth gravy.', 'Heat butter on low, bloom chilli powder and add puree. Cook until glossy; season with salt, honey and garam masala.', 'Add water as needed, fold in paneer and simmer for three minutes. Finish with cream, kasuri methi and butter.'],
+    tips: ['Soak paneer in warm water first.', 'Strain the gravy for a polished texture.', 'Keep the flame low after adding cream.'], flavour: 'silky tomato, cashew, butter and gentle sweetness', pairing: 'butter naan, garlic naan or jeera rice',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-vegetable-biryani', date: '2026-04-25', dish: 'Vegetable Biryani', title: 'How to Make Restaurant Style Vegetable Biryani',
+    excerpt: 'Fragrant basmati, seasonal vegetables, mint and saffron layered into a colourful dum biryani.', image: '/images/restaurant/signature-thali.jpg', alt: 'Restaurant style vegetable biryani with herbs and vegetables',
+    keywords: 'restaurant style vegetable biryani recipe, veg dum biryani, Indian vegetable rice, how to make veg biryani', seoTitle: 'Restaurant Style Vegetable Biryani Recipe | Easy Veg Dum Biryani', seoDescription: 'Make fragrant restaurant-style vegetable biryani with basmati rice, mixed vegetables, mint, saffron, and a dum finish.',
+    ingredients: ['2 cups basmati rice', '3 cups mixed vegetables', '1 sliced onion', '1 cup yoghurt', '1 tbsp ginger-garlic paste', '2 tbsp biryani masala', '1 tsp chilli', '1/2 tsp turmeric', 'Mint and coriander', 'Saffron milk', '2 tbsp ghee', 'Whole spices and salt'],
+    method: ['Soak rice and boil with salt and whole spices until 70 percent cooked, then drain.', 'Cook onion in ghee, add ginger-garlic, yoghurt and spices, then add vegetables and cook until just tender.', 'Layer masala and rice with mint, coriander, saffron milk and ghee. Seal and cook on low for 20 minutes, then rest before fluffing.'],
+    tips: ['Keep vegetables slightly firm for the dum stage.', 'Do not stir layers aggressively after cooking.', 'Fried onion adds sweetness and aroma.'], flavour: 'saffron, mint, whole spice and separate basmati grains', pairing: 'boondi raita, onion, pickle or masala chaas',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-seekh-kebab', date: '2026-04-18', dish: 'Seekh Kebab', title: 'How to Make Restaurant Style Seekh Kebab',
+    excerpt: 'Juicy minced-meat kebabs seasoned with ginger, herbs and warming spices for the tandoor or grill.', image: '/images/blog/restaurant-style-tandoori-chicken.png', alt: 'Restaurant style seekh kebab with onion and mint chutney',
+    keywords: 'restaurant style seekh kebab recipe, seekh kebab at home, Punjabi kebab recipe, grilled minced meat kebab', seoTitle: 'Restaurant Style Seekh Kebab Recipe | Juicy Punjabi Kebabs', seoDescription: 'Learn how to make juicy restaurant-style seekh kebab with minced meat, herbs, spices, and a hot grill.',
+    ingredients: ['500 g finely minced chicken or mutton', '1 finely chopped onion', '1 tbsp ginger-garlic paste', '2 green chillies', '2 tbsp coriander', '1 tsp cumin powder', '1 tsp coriander powder', '1/2 tsp garam masala', '1/2 tsp chilli', '1 tbsp roasted gram flour', 'Salt', 'Oil'],
+    method: ['Knead mince with onion, ginger-garlic, herbs, spices, gram flour and salt until sticky. Chill for 30 minutes.', 'Press around flat skewers into an even cylinder with small grooves.', 'Cook over a very hot grill, tawa or oven, turning and brushing with oil until browned and cooked through. Rest before serving.'],
+    tips: ['Kneading helps the kebab hold its shape.', 'Chill before shaping.', 'Do not make the kebab too thick.'], flavour: 'smoky minced meat, ginger, herbs and warm spice', pairing: 'mint chutney, onion, lemon and naan',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-chicken-malai-tikka', date: '2026-04-11', dish: 'Chicken Malai Tikka', title: 'How to Make Restaurant Style Chicken Malai Tikka',
+    excerpt: 'Creamy, mild chicken tikka marinated with yoghurt, cheese, cardamom and black pepper.', image: '/images/blog/restaurant-style-chicken-tikka.png', alt: 'Restaurant style chicken malai tikka with creamy marinade',
+    keywords: 'restaurant style chicken malai tikka recipe, malai chicken tikka, creamy chicken tikka, Indian chicken starter', seoTitle: 'Restaurant Style Chicken Malai Tikka Recipe | Creamy Tikka', seoDescription: 'Make tender chicken malai tikka with a creamy yoghurt marinade, cheese, cardamom, pepper, and smoky high-heat cooking.',
+    ingredients: ['500 g boneless chicken thigh', '1/2 cup thick yoghurt', '2 tbsp cream cheese', '2 tbsp cream', '1 tbsp ginger-garlic paste', '1 tsp white pepper', '1/2 tsp cardamom', '1 tbsp lemon', '1 tbsp roasted gram flour', '1 tbsp oil', 'Salt', 'Butter'],
+    method: ['Mix yoghurt, cheese, cream, aromatics, spices, lemon, gram flour and salt. Coat the chicken evenly.', 'Marinate for at least two hours, then thread with gaps on skewers.', 'Cook over high heat, turning and basting with butter until lightly charred and cooked through. Rest and serve with chutney.'],
+    tips: ['Chicken thigh stays juicier than breast.', 'White pepper gives gentle warmth.', 'High heat colours the marinade without drying it.'], flavour: 'creamy yoghurt, cardamom, white pepper and light char', pairing: 'mint chutney, onion, lemon or naan',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-dhaba-aloo', date: '2026-04-04', dish: 'Dhaba Aloo', title: 'How to Make Restaurant Style Dhaba Aloo',
+    excerpt: 'Crisp potatoes tossed in a rustic tomato, cumin and coriander masala with a proper dhaba finish.', image: '/images/menu/menu-vegetarian.jpg', alt: 'Restaurant style dhaba aloo with spices and coriander',
+    keywords: 'restaurant style dhaba aloo recipe, Punjabi potato curry, spicy aloo recipe, Indian potato side dish', seoTitle: 'Restaurant Style Dhaba Aloo Recipe | Punjabi Spiced Potatoes', seoDescription: 'Make rustic Punjabi dhaba aloo with crisp potatoes, tomato masala, cumin, coriander, and fresh herbs.',
+    ingredients: ['500 g baby potatoes', '2 tbsp mustard oil', '1 tsp cumin seeds', '1 sliced onion', '2 chopped tomatoes', '1 tbsp ginger-garlic paste', '1 tsp coriander powder', '1/2 tsp turmeric', '1 tsp Kashmiri chilli', '1/2 tsp amchur', '1/2 tsp garam masala', 'Salt and coriander'],
+    method: ['Boil potatoes until just tender, cool, halve and pat dry.', 'Fry potatoes until golden, remove, then cook cumin, onion, ginger-garlic, tomatoes and spices until glossy.', 'Return potatoes and toss gently. Finish with amchur, garam masala and coriander.'],
+    tips: ['Dry potatoes brown better.', 'Mustard oil adds classic dhaba aroma.', 'Toss gently to keep crisp edges.'], flavour: 'crisp potato, mustard oil, cumin and tangy tomato', pairing: 'roti, naan, dal or a simple bowl of rice',
+  }),
+  makeNewRecipe({
+    id: 'restaurant-style-kesar-lassi', date: '2026-03-28', dish: 'Kesar Lassi', title: 'How to Make Restaurant Style Kesar Lassi',
+    excerpt: 'Thick yoghurt blended with saffron, cardamom and a little sweetness for a festive Punjabi drink.', image: '/images/people/guest-table.jpg', alt: 'Restaurant style kesar lassi with saffron and pistachio',
+    keywords: 'restaurant style kesar lassi recipe, saffron lassi, Punjabi sweet lassi, how to make lassi', seoTitle: 'Restaurant Style Kesar Lassi Recipe | Saffron Sweet Lassi', seoDescription: 'Make thick kesar lassi with chilled yoghurt, saffron, cardamom, sugar, and pistachios for a Punjabi restaurant-style drink.',
+    ingredients: ['2 cups chilled thick yoghurt', '1/2 cup cold milk', '3 tbsp sugar', '8 saffron strands', '1/4 tsp cardamom', '2 tbsp warm water', 'Ice, optional', 'Pistachios'],
+    method: ['Soak saffron in warm water for 10 minutes. Whisk yoghurt until smooth.', 'Add milk, sugar, saffron water and cardamom. Blend or whisk until thick and lightly frothy.', 'Taste, chill briefly, pour into glasses and garnish with pistachios and saffron.'],
+    tips: ['Use thick, fresh yoghurt.', 'Soak saffron before blending.', 'Avoid too much ice so the lassi stays rich.'], flavour: 'thick yoghurt, floral saffron and warm cardamom', pairing: 'tandoori dishes, stuffed breads or a light dessert course',
+  }),
+];
+
+const legacyRecipeDetails: Record<string, Pick<BlogPost, 'ingredients' | 'method' | 'tips'>> = {
+  'restaurant-style-butter-chicken': {
+    ingredients: ['500 g chicken', '1/2 cup thick yoghurt', '1 tbsp ginger-garlic paste', '2 tbsp butter', '3 tomatoes', '10 cashews', '1 tsp Kashmiri chilli', '1/2 tsp garam masala', '2 tbsp cream', 'Salt and lemon'],
+    method: ['Marinate chicken with yoghurt, ginger-garlic, chilli, garam masala, lemon and salt for at least two hours. Grill or roast until lightly charred.', 'Cook tomatoes, cashews, onion, ginger and garlic until soft. Blend and strain into a smooth puree.', 'Heat butter, add chilli and the puree, then cook until glossy. Add chicken, salt and kasuri methi and simmer gently.', 'Finish with cream and butter. Rest briefly and serve with naan or jeera rice.'],
+    tips: ['Char the chicken before adding it to the gravy.', 'Strain the tomato puree for a smooth finish.', 'Balance tomato acidity with a small amount of honey or sugar.'],
+  },
+  'restaurant-style-kadhai-chicken': {
+    ingredients: ['500 g chicken', '1 onion, sliced', '2 tomatoes, chopped', '1 capsicum', '1 tbsp ginger-garlic paste', 'Coriander, cumin, fennel and dried chilli', '1 tsp Kashmiri chilli', '1/2 tsp turmeric', '2 tbsp oil', 'Salt and coriander'],
+    method: ['Dry-roast coriander, cumin, fennel, pepper and dried chilli. Crush coarsely for fresh kadhai masala.', 'Sear chicken in oil, remove, then cook onion, ginger-garlic and tomato with turmeric and chilli until the oil separates.', 'Return chicken with a splash of water and simmer until nearly tender.', 'Add capsicum, onion petals and crushed masala. Cook briefly so the vegetables retain their bite.'],
+    tips: ['Keep kadhai spices coarse rather than powder-fine.', 'Do not overcook the capsicum.', 'A final knob of butter rounds the masala.'],
+  },
+  'restaurant-style-dal-makhani': {
+    ingredients: ['1 cup whole urad dal', '2 tbsp rajma', '2 tbsp butter', '1 cup tomato puree', '1 tbsp ginger-garlic paste', '1/2 tsp Kashmiri chilli', '1/4 cup cream', 'Kasuri methi and garam masala', 'Salt to taste'],
+    method: ['Soak urad dal and rajma overnight. Pressure-cook with salt until completely soft.', 'Cook butter, ginger-garlic, tomato puree, chilli and turmeric until glossy.', 'Add dal and its liquid. Simmer on low heat for at least 45 minutes, stirring and mashing some lentils.', 'Finish with cream, butter, garam masala and kasuri methi. Add a brief coal smoke if desired.'],
+    tips: ['The creamy texture comes from slow simmering, not just cream.', 'Stir often so the dal does not catch.', 'Rest before serving for a deeper flavour.'],
+  },
+  'restaurant-style-paneer-tikka': {
+    ingredients: ['300 g paneer cubes', '1/2 cup hung curd', '1 tbsp roasted gram flour', '1 tsp Kashmiri chilli', '1/2 tsp turmeric', '1/2 tsp garam masala', 'Capsicum and onion petals', '1 tbsp mustard oil', 'Lemon, chaat masala and salt'],
+    method: ['Whisk curd with spices, gram flour, mustard oil, lemon and salt.', 'Coat paneer, capsicum and onion. Rest for at least 30 minutes.', 'Thread onto skewers and cook over high heat in an oven, grill pan or tandoor.', 'Brush with butter and finish with chaat masala, mint chutney and lemon.'],
+    tips: ['Use thick hung curd so the marinade sticks.', 'High heat gives colour while keeping paneer soft.', 'Do not marinate paneer overnight.'],
+  },
+  'restaurant-style-tandoori-chicken': {
+    ingredients: ['800 g chicken pieces', '1/2 cup hung curd', '1 tbsp lemon juice', '1 tbsp ginger-garlic paste', '1 tsp Kashmiri chilli', '1 tsp coriander powder', '1/2 tsp cumin', '1 tbsp mustard oil', 'Roasted gram flour, salt and butter'],
+    method: ['Score the chicken and rub with lemon, salt and ginger-garlic. Rest for 20 minutes.', 'Mix yoghurt, spices, mustard oil and gram flour for the second marinade. Coat the chicken and chill for four hours.', 'Cook on high heat in an oven, grill or air fryer, turning and basting once.', 'Rest for five minutes and finish with lemon, chaat masala and onion rings.'],
+    tips: ['Score bone-in pieces so the marinade reaches inside.', 'Avoid crowding the tray or the chicken will steam.', 'Resting keeps the juices inside.'],
+  },
+  'restaurant-style-chicken-tikka': {
+    ingredients: ['500 g boneless chicken thigh', '1/2 cup hung curd', '1 tbsp ginger-garlic paste', '1 tsp Kashmiri chilli', '1 tsp coriander powder', '1/2 tsp cumin', '1/2 tsp garam masala', '1 tbsp mustard oil', 'Lemon, butter and salt'],
+    method: ['Cut chicken into even pieces and make a first marinade with lemon, salt and ginger-garlic.', 'Add curd, spices, mustard oil and kasuri methi. Rest for two to four hours.', 'Thread with small gaps and cook hot and fast on a grill, tawa or in an oven.', 'Baste with butter, then finish with chaat masala, lemon and mint chutney.'],
+    tips: ['Thigh meat stays juicier than breast.', 'Keep gaps between pieces for better browning.', 'Turn only after the edges begin to char.'],
+  },
+  'restaurant-style-malai-kofta': {
+    ingredients: ['2 boiled potatoes', '200 g grated paneer', '2 tbsp cornflour', 'Cashews or raisins', '2 tomatoes', '1 onion', '10 cashews for gravy', '1/4 cup cream', 'Garam masala, kasuri methi and salt'],
+    method: ['Mix potato, paneer, cornflour, salt and garam masala. Shape balls with a nut or raisin centre and fry until golden.', 'Cook onion, tomato, cashews, ginger and garlic until soft. Blend and strain.', 'Cook the puree in butter until glossy. Adjust with water or milk and season with salt, sugar and spices.', 'Add cream and pour the hot gravy over kofta just before serving.'],
+    tips: ['Keep kofta mixture firm so it does not break.', 'Strain gravy for a refined texture.', 'Add kofta at the table so it stays crisp.'],
+  },
+  'restaurant-style-shahi-paneer': {
+    ingredients: ['250 g paneer', '2 tomatoes', '1 onion', '10 cashews', '1 tbsp ginger-garlic paste', '1/2 tsp Kashmiri chilli', '1/2 tsp garam masala', '1/4 cup cream', 'Butter, milk and salt'],
+    method: ['Simmer tomato, onion, cashew, ginger, garlic, cardamom and bay leaf until soft. Blend and strain.', 'Heat butter, bloom chilli powder and add the puree. Cook until the raw tomato smell disappears.', 'Season with salt, a pinch of sugar, garam masala and kasuri methi. Add milk if the gravy is too sharp.', 'Fold in softened paneer and simmer briefly. Finish with cream and ginger julienne.'],
+    tips: ['Soak paneer in warm salted water.', 'Do not boil paneer for long.', 'Keep the sweetness subtle rather than dessert-like.'],
+  },
+  'restaurant-style-chole-bhature': {
+    ingredients: ['2 cups chickpeas, soaked', 'Tea bag, bay leaf and black cardamom', '2 onions', '2 tomatoes', '1 tbsp ginger-garlic paste', '2 tbsp chole masala', 'Amchur and chilli powder', '2 cups maida', '1/2 cup yoghurt', 'Oil and salt'],
+    method: ['Pressure-cook chickpeas with tea, whole spices and salt until tender. Reserve the cooking liquid.', 'Cook onion, ginger-garlic, tomato, chole masala, chilli and amchur until the oil separates.', 'Add chickpeas and some liquid. Mash a few beans and simmer until dark and thick.', 'Knead maida, yoghurt, semolina, salt, sugar and oil into a soft dough. Rest, roll and fry bhature in hot oil.'],
+    tips: ['Do not overcook chickpeas before the masala stage.', 'Mash a few beans to thicken naturally.', 'Fry bhature quickly in properly hot oil.'],
+  },
+  'restaurant-style-garlic-naan': {
+    ingredients: ['2 cups maida', '1/2 cup yoghurt', '1 tsp sugar', '1/2 tsp baking powder', '1 tbsp oil', 'Warm water and salt', '4 garlic cloves', 'Butter and coriander'],
+    method: ['Knead flour, yoghurt, sugar, baking powder, oil, salt and warm water into a soft dough. Rest for one hour.', 'Mix melted butter with chopped garlic and coriander.', 'Roll dough into ovals, wet one side and place on a hot tawa. Invert over flame to blister, or cook both sides in a hot pan.', 'Brush generously with garlic butter and serve immediately.'],
+    tips: ['Keep dough covered so it does not dry.', 'Use fierce heat for tandoor-style blisters.', 'Brush with butter while the naan is hot.'],
+  },
+};
+
+export const stories: BlogPost[] = [...baseStories, ...additionalStories, ...newStories.slice(0, 10)]
+  .map((story, index) => ({ ...story, ...(legacyRecipeDetails[story.id] ?? {}), publishedAt: story.publishedAt ?? `2025-${String(10 - Math.floor(index / 2)).padStart(2, '0')}-${String(20 - index).padStart(2, '0')}` }))
   .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
 
 export const values = [
