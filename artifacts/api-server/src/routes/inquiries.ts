@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { getMongoDatabase } from "../lib/mongo";
 
 const router: IRouter = Router();
 
@@ -26,41 +27,15 @@ router.post("/inquiries", async (req, res) => {
         return;
     }
 
-    const apiKey = process.env.RESEND_API_KEY;
-    const from = process.env.EMAIL_FROM;
-    const to = process.env.INQUIRY_EMAIL || "sardaarjifoods@gmail.com";
-    if (!apiKey || !from) {
-        res.status(503).json({ message: "Email delivery is not configured. Please call the dhaba directly." });
+    try {
+        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...req.body, createdAt: new Date() });
+    } catch (error) {
+        req.log.error({ error }, "Could not persist inquiry");
+        res.status(503).json({ message: "The enquiry could not be saved. Please call the dhaba directly." });
         return;
     }
 
-    const text = [
-        `Name: ${req.body.name}`,
-        `Email: ${req.body.email}`,
-        req.body.phone ? `Phone: ${req.body.phone}` : null,
-        req.body.city ? `City: ${req.body.city}` : null,
-        "",
-        req.body.message,
-    ].filter(Boolean).join("\n");
-
-    const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-            from,
-            to: [to],
-            reply_to: req.body.email,
-            subject: req.body.kind === "franchise" ? `Franchise enquiry from ${req.body.name}` : `Website enquiry from ${req.body.name}`,
-            text,
-        }),
-    });
-
-    if (!response.ok) {
-        req.log.error({ status: response.status }, "Email provider rejected inquiry");
-        res.status(502).json({ message: "The message could not be delivered. Please try again or call the dhaba." });
-        return;
-    }
-    res.status(201).json({ status: "sent" });
+    res.status(201).json({ status: "saved" });
 });
 
 export default router;

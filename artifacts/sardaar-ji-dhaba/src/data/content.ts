@@ -33,6 +33,9 @@ export const brand = {
   phone: '8882897431',
   email: 'sardaarjifoods@gmail.com',
   instagram: '@sardaarjidhaba',
+  instagramUrl: 'https://instagram.com/sardaarjidhaba',
+  googleBusinessUrl: 'https://maps.app.goo.gl/au6ouvfipTnczGyV9',
+  orderUrl: 'https://www.zomato.com/allahabad/sardaar-ji-1-civil-lines',
   whatsapp: 'https://wa.me/918882897431?text=Hi%2C%20I%20would%20like%20to%20know%20more%20about%20Sardaar%20JI%20Dhaba.',
   logo: '/images/logo/sardaar-ji-prayagraj.jpg',
 };
@@ -52,8 +55,8 @@ export const menu: MenuItem[] = [
 ];
 
 export const locations = [
-  { id: 'noida', city: 'Noida', area: 'Address and map link to be confirmed', mapUrl: 'https://share.google/zq5xCHFH67vrbVefk', note: 'The original stop. Familiar faces, fresh tandoor.', hours: 'Timings to be confirmed', accent: 'terracotta', image: '/images/restaurant/dining-room.jpg' },
-  { id: 'prayagraj', city: 'Prayagraj', area: '138 B, MG Marg, Civil Lines, near Bank of Baroda & El-Chico', mapUrl: 'https://share.google/LtsUIeXdIUQjuwNy4', note: 'The same generous table, a different city.', hours: 'Delivery hours shown on menu: 11:00 AM - 12:00 AM', accent: 'green', image: '/images/restaurant/dhaba-exterior.jpg' },
+  { id: 'noida', city: 'Noida', area: 'The Aranya, UGF-37C, Hotmart, Aranya, Sector 119, Noida, Uttar Pradesh 201316', mapUrl: 'https://www.google.com/maps/place/Sardaar+Ji+Dhaba/@28.5897917,77.4045819,17z/data=!3m1!4b1!4m6!3m5!1s0x390cef9968db7e91:0xef20c2f12f647fa8!8m2!3d28.5897917!4d77.4045819!16s%2Fg%2F11qntlnhyr?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D', note: 'The original stop. Familiar faces, fresh tandoor.', hours: '11:00 AM - 11:00 PM', availability: 'Dine-in and delivery', accent: 'terracotta', image: '/images/restaurant/dining-room.jpg' },
+  { id: 'prayagraj', city: 'Prayagraj', area: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines, Prayagraj, Uttar Pradesh 211001', mapUrl: 'https://maps.app.goo.gl/au6ouvfipTnczGyV9', note: 'The same generous table, a different city.', hours: '11:00 AM - 11:00 PM', availability: 'Dine-in and delivery', accent: 'green', image: '/images/restaurant/dhaba-exterior.jpg' },
 ];
 
 export const menuBoards = [

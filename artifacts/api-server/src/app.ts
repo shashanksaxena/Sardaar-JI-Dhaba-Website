@@ -1,7 +1,10 @@
 import express, { type Express } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 import router from "./routes";
+import adminRouter from "./routes/admin";
+import analyticsRouter from "./routes/analytics";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -28,7 +31,10 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/api", router);
+app.use("/api", adminRouter);
+app.use("/api", analyticsRouter);
 
 export default app;

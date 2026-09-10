@@ -30,7 +30,9 @@ A premium, warm website for Sardaar JI Dhaba with menu discovery, location pages
 ## Architecture decisions
 
 - Content is kept separate from presentation so real restaurant photos, addresses, hours, menu data, story milestones, and franchise details can be added later without restructuring the UI.
-- Enquiry forms POST to `/api/inquiries`; configure `RESEND_API_KEY`, `EMAIL_FROM` and optional `INQUIRY_EMAIL` for delivery through Resend.
+- Enquiry forms POST to `/api/inquiries` and are stored directly in MongoDB for the admin dashboard.
+- Admin and lead storage uses MongoDB via `MONGODB_URI` and `MONGODB_DATABASE`; configure `ADMIN_USERNAME` and a scrypt-derived `ADMIN_PASSWORD_HASH` from `artifacts/api-server/.env.example`.
+- `/admin` is a protected dashboard for persisted leads and conversion events. The API must be deployed separately from the static Cloudflare frontend, and `VITE_API_URL` must point to its public origin.
 - Unknown business facts are deliberately surfaced as editable placeholders rather than fabricated claims, addresses, prices, timings, awards, ratings, or reviews.
 - The visual direction uses an editorial roadside-luxe treatment: warm paper and terracotta surfaces, deep dhaba green, mustard accents, and display typography with readable utility text.
 
@@ -48,7 +50,7 @@ The build brief prioritizes dhaba authenticity, premium usability, local SEO fou
 
 - Vite build checks require `PORT` and `BASE_PATH`; the managed web workflow injects these automatically.
 - Replace the clearly marked placeholder media, content, addresses, timings, and map/social URLs before launch.
-- Form submission is currently a client-side success-state experience; secure server-side email delivery still needs provider configuration.
+- Form submissions are persisted as leads in MongoDB. Rotate any credentials previously shared in chat before launch.
 
 ## Pointers
 

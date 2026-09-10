@@ -24,26 +24,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
-    /inquiries:
-      post:
-        operationId: submitInquiry
-        tags: [inquiries]
-        summary: Send a website enquiry
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Inquiry"
-        responses:
-          "201":
-            description: Inquiry sent
-          "400":
-            description: Invalid inquiry
-          "502":
-            description: Email provider failure
-          "503":
-            description: Email delivery is not configured
+  /inquiries:
+    post:
+      operationId: submitInquiry
+      tags: [inquiries]
+      summary: Save a website enquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Inquiry"
+      responses:
+        "201":
+          description: Inquiry saved in MongoDB
+        "400":
+          description: Invalid inquiry
 components:
   schemas:
     HealthStatus:

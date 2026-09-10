@@ -9,6 +9,11 @@ import { brand, locations, menu, menuBoards, stories, values, type MenuItem } fr
 
 const queryClient = new QueryClient();
 
+function trackEvent(name: string) {
+  const api = import.meta.env.VITE_API_URL ?? '';
+  void fetch(`${api}/api/analytics/events`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, path: window.location.pathname }) }).catch(() => undefined);
+}
+
 function setMeta(name: string, content: string, attr: 'name' | 'property' = 'name') {
   let element = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
   if (!element) {
@@ -66,7 +71,7 @@ function RestaurantStructuredData() {
       servesCuisine: ['Punjabi', 'North Indian', 'Indian'],
       priceRange: '$$',
       menu: `${brand.siteUrl}/menu`,
-      sameAs: ['https://instagram.com/sardaarjidhaba'],
+      sameAs: [brand.instagramUrl, brand.googleBusinessUrl, brand.orderUrl],
       address: prayagraj ? {
         '@type': 'PostalAddress',
         streetAddress: prayagraj.area,
@@ -117,8 +122,8 @@ function Header() {
           ))}
         </nav>
         <div className="hidden items-center gap-3 md:flex">
-          <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-10 w-10 place-items-center rounded-full border border-secondary/30 text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground" aria-label="Chat on WhatsApp" data-testid="link-whatsapp-header"><MessageCircle size={17} /></a>
-          <a href={`tel:${brand.phone}`} className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="link-call-header">Call the dhaba</a>
+          <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="grid h-10 w-10 place-items-center rounded-full border border-secondary/30 text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground" aria-label="Chat on WhatsApp" data-testid="link-whatsapp-header"><MessageCircle size={17} /></a>
+          <a href={`tel:${brand.phone}`} onClick={() => trackEvent('phone_click')} className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="link-call-header">Call the dhaba</a>
         </div>
         <button type="button" onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-full border border-foreground/15 lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-toggle-menu">
           {open ? <X size={20} /> : <MenuIcon size={20} />}
@@ -145,11 +150,11 @@ function Footer() {
         <div>
           <div className="mb-5 flex items-center gap-3"><img src={brand.logo} alt="Sardaar JI Dhaba logo" className="h-11 w-11 rounded-full object-cover" /><span className="font-display text-2xl">Sardaar JI Dhaba</span></div>
           <p className="max-w-xs text-sm leading-6 text-secondary-foreground/70">A generous roadside table, serving the flavours we grew up with in Noida and Prayagraj.</p>
-          <div className="mt-6 flex gap-3"><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="WhatsApp" data-testid="link-whatsapp-footer"><MessageCircle size={15} /></a><a href="https://instagram.com/sardaarjidhaba" target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="Instagram" data-testid="link-instagram-footer"><Instagram size={15} /></a></div>
+          <div className="mt-6 flex gap-3"><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="WhatsApp" data-testid="link-whatsapp-footer"><MessageCircle size={15} /></a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="Instagram" data-testid="link-instagram-footer"><Instagram size={15} /></a></div>
         </div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
-        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phone}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><span>{brand.instagram}</span></div></div>
+        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phone}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-accent">{brand.instagram}</a><a href={brand.googleBusinessUrl} target="_blank" rel="noreferrer" className="hover:text-accent">Google reviews</a></div></div>
       </div>
       <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2024 Sardaar JI Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link></div></div></div>
     </footer>
@@ -162,10 +167,10 @@ function Shell({ children }: { children: ReactNode }) {
 
 function MobileActionBar() {
   return <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-foreground/15 bg-background/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_hsl(var(--foreground)/.12)] backdrop-blur-md md:hidden" aria-label="Quick actions">
-    <Link href="/menu" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-menu"><Utensils size={17} />Menu</Link>
-    <a href={`tel:${brand.phone}`} className="flex min-h-14 flex-col items-center justify-center gap-1 bg-primary text-[10px] font-bold uppercase tracking-wide text-primary-foreground" data-testid="link-mobile-call"><Phone size={17} />Call</a>
-    <Link href="/locations/prayagraj" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
-    <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-whatsapp"><MessageCircle size={17} />WhatsApp</a>
+    <Link href="/menu" onClick={() => trackEvent('menu_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-menu"><Utensils size={17} />Menu</Link>
+    <a href={`tel:${brand.phone}`} onClick={() => trackEvent('phone_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 bg-primary text-[10px] font-bold uppercase tracking-wide text-primary-foreground" data-testid="link-mobile-call"><Phone size={17} />Call</a>
+    <Link href="/locations/prayagraj" onClick={() => trackEvent('directions_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
+    <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-whatsapp"><MessageCircle size={17} />WhatsApp</a>
   </nav>;
 }
 
@@ -220,7 +225,7 @@ function LocationsLegacy() {
 }
 
 function Locations() {
-  return <Shell><Meta title="Find us" /><PageIntro eyebrow="Two stops, one big welcome" title="Where the road meets good food." copy="Choose your nearest table and get directions before you set out." /><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="grid gap-6 md:grid-cols-2">{locations.map(location => <div key={location.id} className="border border-foreground/15 bg-card p-3"><PhotoArt src={location.image} alt={`${location.city} Sardaar JI Dhaba location`} label={`${location.city} stop`} className="min-h-[260px]" /><div className="p-5"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">{location.city}</p><h2 className="mt-4 font-display text-3xl">{location.note}</h2><p className="mt-6 text-sm text-muted-foreground">{location.area}</p><div className="mt-6 flex flex-wrap gap-3"><Link href={`/locations/${location.id}`} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">View stop <ArrowUpRight size={15} /></Link><a href={location.mapUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-secondary px-5 py-3 text-sm font-bold text-secondary" data-testid={`link-map-${location.id}`}>Google Maps <MapPin size={15} /></a></div></div></div>)}</div></section></Shell>;
+  return <Shell><Meta title="Find us" /><PageIntro eyebrow="Two stops, one big welcome" title="Where the road meets good food." copy="Choose your nearest table and get directions before you set out." /><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="grid gap-6 md:grid-cols-2">{locations.map(location => <div key={location.id} className="border border-foreground/15 bg-card p-3"><PhotoArt src={location.image} alt={`${location.city} Sardaar JI Dhaba location`} label={`${location.city} stop`} className="min-h-[260px]" /><div className="p-5"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">{location.city}</p><h2 className="mt-4 font-display text-3xl">{location.note}</h2><p className="mt-6 text-sm text-muted-foreground">{location.area}</p><p className="mt-3 flex items-center gap-2 text-sm font-semibold"><Clock3 size={15} className="text-primary" />{location.hours}</p><p className="mt-2 text-sm text-muted-foreground">{location.availability}</p><div className="mt-6 flex flex-wrap gap-3"><Link href={`/locations/${location.id}`} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">View stop <ArrowUpRight size={15} /></Link><a href={location.mapUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-secondary px-5 py-3 text-sm font-bold text-secondary" data-testid={`link-map-${location.id}`}>Google Maps <MapPin size={15} /></a></div></div></div>)}</div></section></Shell>;
 }
 
 function LocationDetail() {
@@ -358,9 +363,35 @@ function NotFound() {
   return <Shell><Meta title="Page not found" /><section className="mx-auto flex min-h-[65vh] max-w-7xl flex-col justify-center px-5 py-20 lg:px-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Wrong turn</p><h1 className="mt-6 max-w-3xl font-display text-[clamp(5rem,14vw,12rem)] leading-[.75] tracking-[-.1em]">404<span className="text-primary">.</span></h1><p className="mt-10 max-w-sm text-lg leading-7 text-muted-foreground">This road does not go to the dhaba. Let us get you back to something tasty.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-404-home">Take me home <ArrowRight size={16} /></Link><Link href="/menu" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-bold" data-testid="link-404-menu">See the menu <Utensils size={16} /></Link></div></section></Shell>;
 }
 
+type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }[] };
+
+function Admin() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [summary, setSummary] = useState<AdminSummary | null>(null);
+  const [error, setError] = useState('');
+  const api = import.meta.env.VITE_API_URL ?? '';
+  const loadSummary = async () => {
+    const response = await fetch(`${api}/api/admin/summary`, { credentials: 'include' });
+    if (!response.ok) throw new Error('Admin session required.');
+    setSummary(await response.json());
+    setAuthenticated(true);
+  };
+  useEffect(() => { loadSummary().catch(() => undefined); }, []);
+  const login = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError('');
+    const response = await fetch(`${api}/api/admin/login`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) });
+    if (!response.ok) { setError((await response.json().catch(() => ({}))).message ?? 'Could not sign in.'); return; }
+    await loadSummary();
+  };
+  if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar JI Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { await fetch(`${api}/api/admin/logout`, { method: 'POST', credentials: 'include' }); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+}
+
 function Router() {
   const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
+  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
 function App() {
