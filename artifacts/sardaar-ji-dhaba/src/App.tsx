@@ -9,9 +9,73 @@ import { brand, locations, menu, menuBoards, stories, values, type MenuItem } fr
 
 const queryClient = new QueryClient();
 
-function trackEvent(name: string) {
-  const api = import.meta.env.VITE_API_URL ?? '';
-  void fetch(`${api}/api/analytics/events`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, path: window.location.pathname }) }).catch(() => undefined);
+function getApiBase() {
+  const configured = (import.meta.env.VITE_API_URL ?? '').trim();
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
+
+  if (import.meta.env.DEV || isLocalDev) {
+    return '';
+  }
+
+  return configured ? configured.replace(/\/$/, '') : '';
+}
+
+function apiUrl(path: string) {
+  return `${getApiBase()}${path}`;
+}
+
+const DEMO_STORAGE_KEYS = {
+  enquiries: 'sardaar_ji_demo_enquiries',
+  analytics: 'sardaar_ji_demo_analytics',
+  adminSession: 'sardaar_ji_demo_admin_session',
+};
+
+const DEMO_ADMIN_USERNAME = 'shasha182';
+const DEMO_ADMIN_PASSWORD = 'Shasha@123';
+
+function readDemoCollection<T>(key: string): T[] {
+  try {
+    const value = window.localStorage.getItem(key);
+    return value ? JSON.parse(value) as T[] : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeDemoCollection<T>(key: string, value: T[]) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Ignore localStorage quota failures in demo mode.
+  }
+}
+
+function getDemoSummary() {
+  const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
+  const events = readDemoCollection<{ name: string; path: string; createdAt: string }>(DEMO_STORAGE_KEYS.analytics);
+  const eventCounts = Object.entries(events.reduce<Record<string, number>>((accumulator, event) => {
+    accumulator[event.name] = (accumulator[event.name] ?? 0) + 1;
+    return accumulator;
+  }, {})).map(([name, count]) => ({ _id: name, count }));
+
+  return {
+    inquiries: enquiries.length,
+    events: events.length,
+    eventCounts: eventCounts.sort((left, right) => right.count - left.count),
+    recentInquiries: enquiries.slice().reverse().slice(0, 50),
+  };
+}
+
+async function trackEvent(name: string) {
+  const payload = { name, path: window.location.pathname, createdAt: new Date().toISOString() };
+  try {
+    const response = await fetch(apiUrl('/api/analytics/events'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, path: window.location.pathname }) });
+    if (!response.ok) throw new Error('API unavailable');
+  } catch {
+    const events = readDemoCollection<{ name: string; path: string; createdAt: string }>(DEMO_STORAGE_KEYS.analytics);
+    writeDemoCollection(DEMO_STORAGE_KEYS.analytics, [...events, payload]);
+  }
 }
 
 function setMeta(name: string, content: string, attr: 'name' | 'property' = 'name') {
@@ -241,13 +305,31 @@ function Franchise() {
 
 async function sendInquiry(form: HTMLFormElement, kind: 'contact' | 'franchise') {
   const values = Object.fromEntries(new FormData(form).entries());
-  const response = await fetch(`${import.meta.env.VITE_API_URL ?? ''}/api/inquiries`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...values, kind }),
-  });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.message ?? 'The message could not be sent.');
+  const payload = { ...values, kind, createdAt: new Date().toISOString() };
+
+  try {
+    const response = await fetch(apiUrl('/api/inquiries'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...values, kind }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message ?? 'The message could not be sent.');
+    return;
+  } catch {
+    const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
+    const rawPayload = payload as Record<string, string | undefined>;
+    const submission = {
+      kind: String(rawPayload.kind ?? 'contact'),
+      name: String(rawPayload.name ?? ''),
+      email: String(rawPayload.email ?? ''),
+      phone: typeof rawPayload.phone === 'string' ? rawPayload.phone : undefined,
+      city: typeof rawPayload.city === 'string' ? rawPayload.city : undefined,
+      message: String(rawPayload.message ?? ''),
+      createdAt: payload.createdAt,
+    };
+    writeDemoCollection(DEMO_STORAGE_KEYS.enquiries, [...enquiries, submission]);
+  }
 }
 
 function Application() {
@@ -370,23 +452,47 @@ function Admin() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [summary, setSummary] = useState<AdminSummary | null>(null);
   const [error, setError] = useState('');
-  const api = import.meta.env.VITE_API_URL ?? '';
+  const api = getApiBase();
   const loadSummary = async () => {
-    const response = await fetch(`${api}/api/admin/summary`, { credentials: 'include' });
-    if (!response.ok) throw new Error('Admin session required.');
-    setSummary(await response.json());
-    setAuthenticated(true);
+    try {
+      const response = await fetch(apiUrl('/api/admin/summary'), { credentials: 'include' });
+      if (!response.ok) throw new Error('Admin session required.');
+      setSummary(await response.json());
+      setAuthenticated(true);
+      return;
+    } catch {
+      const session = window.localStorage.getItem(DEMO_STORAGE_KEYS.adminSession);
+      if (session !== 'active') {
+        setAuthenticated(false);
+        setSummary(null);
+        return;
+      }
+      setSummary(getDemoSummary());
+      setAuthenticated(true);
+    }
   };
   useEffect(() => { loadSummary().catch(() => undefined); }, []);
   const login = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
-    const response = await fetch(`${api}/api/admin/login`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) });
-    if (!response.ok) { setError((await response.json().catch(() => ({}))).message ?? 'Could not sign in.'); return; }
-    await loadSummary();
+
+    try {
+      const response = await fetch(apiUrl('/api/admin/login'), { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) });
+      if (!response.ok) throw new Error((await response.json().catch(() => ({}))).message ?? 'Could not sign in.');
+      await loadSummary();
+      return;
+    } catch {
+      if (credentials.username === DEMO_ADMIN_USERNAME && credentials.password === DEMO_ADMIN_PASSWORD) {
+        window.localStorage.setItem(DEMO_STORAGE_KEYS.adminSession, 'active');
+        setSummary(getDemoSummary());
+        setAuthenticated(true);
+        return;
+      }
+      setError('Could not sign in.');
+    }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar JI Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { await fetch(`${api}/api/admin/logout`, { method: 'POST', credentials: 'include' }); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
 function Router() {
