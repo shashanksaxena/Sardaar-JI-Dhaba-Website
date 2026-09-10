@@ -49,12 +49,50 @@ function Meta({ title, description = 'Sardaar JI Dhaba serves authentic Punjabi 
   return null;
 }
 
+function RestaurantStructuredData() {
+  useEffect(() => {
+    const scriptId = 'restaurant-structured-data';
+    document.getElementById(scriptId)?.remove();
+    const prayagraj = locations.find(location => location.id === 'prayagraj');
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'Restaurant',
+      name: brand.name,
+      description: 'Authentic Punjabi and North Indian food with dhaba-style recipes, tandoori favourites and generous family dining.',
+      url: brand.siteUrl,
+      telephone: `+91-${brand.phone}`,
+      logo: `${brand.siteUrl}${brand.logo}`,
+      image: [`${brand.siteUrl}/images/blog/restaurant-style-butter-chicken.png`, `${brand.siteUrl}/images/restaurant/dining-room.jpg`],
+      servesCuisine: ['Punjabi', 'North Indian', 'Indian'],
+      priceRange: '$$',
+      menu: `${brand.siteUrl}/menu`,
+      sameAs: ['https://instagram.com/sardaarjidhaba'],
+      address: prayagraj ? {
+        '@type': 'PostalAddress',
+        streetAddress: prayagraj.area,
+        addressLocality: 'Prayagraj',
+        addressRegion: 'Uttar Pradesh',
+        addressCountry: 'IN',
+      } : undefined,
+      areaServed: locations.map(location => ({ '@type': 'City', name: location.city })),
+    };
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+    return () => document.getElementById(scriptId)?.remove();
+  }, []);
+  return null;
+}
+
 function Header() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
   const nav = [
     ['/about', 'Our story'],
     ['/menu', 'Menu'],
+    ['/gallery', 'Gallery'],
     ['/franchise', 'Franchise'],
     ['/locations', 'Find us'],
     ['/success-story', 'Success story'],
@@ -109,7 +147,7 @@ function Footer() {
           <p className="max-w-xs text-sm leading-6 text-secondary-foreground/70">A generous roadside table, serving the flavours we grew up with in Noida and Prayagraj.</p>
           <div className="mt-6 flex gap-3"><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="WhatsApp" data-testid="link-whatsapp-footer"><MessageCircle size={15} /></a><a href="https://instagram.com/sardaarjidhaba" target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="Instagram" data-testid="link-instagram-footer"><Instagram size={15} /></a></div>
         </div>
-        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link></div></div>
+        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phone}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><span>{brand.instagram}</span></div></div>
       </div>
@@ -119,7 +157,16 @@ function Footer() {
 }
 
 function Shell({ children }: { children: ReactNode }) {
-  return <><Header /><main>{children}</main><Footer /></>;
+  return <><Header /><RestaurantStructuredData /><main>{children}</main><Footer /><MobileActionBar /></>;
+}
+
+function MobileActionBar() {
+  return <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-foreground/15 bg-background/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_hsl(var(--foreground)/.12)] backdrop-blur-md md:hidden" aria-label="Quick actions">
+    <Link href="/menu" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-menu"><Utensils size={17} />Menu</Link>
+    <a href={`tel:${brand.phone}`} className="flex min-h-14 flex-col items-center justify-center gap-1 bg-primary text-[10px] font-bold uppercase tracking-wide text-primary-foreground" data-testid="link-mobile-call"><Phone size={17} />Call</a>
+    <Link href="/locations/prayagraj" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
+    <a href={brand.whatsapp} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-whatsapp"><MessageCircle size={17} />WhatsApp</a>
+  </nav>;
 }
 
 function PlaceholderArt({ label, className = '' }: { label: string; className?: string }) {
@@ -127,7 +174,7 @@ function PlaceholderArt({ label, className = '' }: { label: string; className?: 
 }
 
 function PhotoArt({ src, alt, label, className = '' }: { src: string; alt: string; label: string; className?: string }) {
-  return <div className={`relative isolate min-h-[180px] overflow-hidden bg-secondary ${className}`} aria-label={alt} data-testid={`image-${label.toLowerCase().replaceAll(' ', '-')}`}><img src={src} alt={alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-transparent to-transparent" /><span className="absolute bottom-4 left-4 font-mono-brand text-[10px] uppercase tracking-[.18em] text-background">{label}</span></div>;
+  return <div className={`relative isolate min-h-[180px] overflow-hidden bg-secondary ${className}`} aria-label={alt} data-testid={`image-${label.toLowerCase().replaceAll(' ', '-')}`}><img src={src} alt={alt} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-transparent to-transparent" /><span className="absolute bottom-4 left-4 font-mono-brand text-[10px] uppercase tracking-[.18em] text-background">{label}</span></div>;
 }
 
 function PageIntro({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
@@ -155,7 +202,17 @@ function MenuPage() {
 }
 
 function MenuCard({ item }: { item: MenuItem }) {
-  return <article className="group flex gap-4 border-b border-foreground/10 pb-7" data-testid={`card-menu-item-${item.id}`}><div className="h-24 w-24 shrink-0 overflow-hidden sm:h-28 sm:w-32"><PhotoArt src={item.image ?? "/images/restaurant/signature-thali.jpg"} alt={` at Sardaar JI Dhaba`} label={item.name} className="h-full min-h-0 p-0 transition-transform duration-300 group-hover:scale-105" /></div><div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-3"><h2 className="font-display text-2xl leading-none tracking-[-.03em]">{item.name}</h2><span className="font-mono-brand text-sm text-primary">{item.price}</span></div><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>{item.mark && <span className="mt-3 inline-block font-mono-brand text-[9px] uppercase tracking-[.17em] text-secondary">{item.mark}</span>}</div></article>;
+  return <article className="group flex gap-4 border-b border-foreground/10 pb-7" data-testid={`card-menu-item-${item.id}`}><div className="h-24 w-24 shrink-0 overflow-hidden sm:h-28 sm:w-32"><PhotoArt src={item.image ?? "/images/restaurant/signature-thali.jpg"} alt={`${item.name} at Sardaar JI Dhaba`} label={item.name} className="h-full min-h-0 p-0 transition-transform duration-300 group-hover:scale-105" /></div><div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-3"><h2 className="font-display text-2xl leading-none tracking-[-.03em]">{item.name}</h2><span className="font-mono-brand text-sm text-primary">{item.price}</span></div><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>{item.mark && <span className="mt-3 inline-block font-mono-brand text-[9px] uppercase tracking-[.17em] text-secondary">{item.mark}</span>}</div></article>;
+}
+
+function Gallery() {
+  const photos = [
+    ...menuBoards,
+    { id: 'dining-room', title: 'Dining room', image: '/images/restaurant/dining-room.jpg', alt: 'Sardaar JI Dhaba dining room' },
+    { id: 'dhaba-exterior', title: 'Dhaba exterior', image: '/images/restaurant/dhaba-exterior.jpg', alt: 'Sardaar JI Dhaba exterior' },
+    { id: 'guest-table', title: 'Family table', image: '/images/people/guest-table.jpg', alt: 'Guests enjoying a meal at Sardaar JI Dhaba' },
+  ];
+  return <Shell><Meta title="Gallery | Sardaar JI Dhaba" description="See the real food, dining spaces and menu boards from Sardaar JI Dhaba in Noida and Prayagraj." /><PageIntro eyebrow="A look around the table" title="Food, fire and familiar faces." copy="A gallery of the restaurant, menu boards and dining moments already shared by Sardaar JI Dhaba." /><section className="mx-auto grid max-w-7xl gap-5 px-5 pb-24 sm:grid-cols-2 lg:grid-cols-3 lg:px-8">{photos.map(photo => <figure key={photo.id} className="group overflow-hidden border border-foreground/10 bg-card"><PhotoArt src={photo.image} alt={photo.alt} label={photo.title} className="min-h-[260px] transition-transform duration-500 group-hover:scale-[1.02]" /><figcaption className="p-4 font-display text-2xl">{photo.title}</figcaption></figure>)}</section></Shell>;
 }
 
 function LocationsLegacy() {
@@ -168,7 +225,8 @@ function Locations() {
 
 function LocationDetail() {
   const { city } = useParams<{ city: string }>();
-  const place = locations.find(item => item.id === city) ?? locations[0];
+  const place = locations.find(item => item.id === city);
+  if (!place) return <NotFound />;
   return <Shell><Meta title={`${place.city} stop`} /><section className="bg-secondary text-secondary-foreground"><div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24"><Link href="/locations" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent" data-testid="link-back-locations"><ChevronLeft size={14} /> All locations</Link><div className="mt-12 grid items-end gap-12 lg:grid-cols-[.8fr_1.2fr]"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">{place.city} · Sardaar JI Dhaba</p><h1 className="mt-5 font-display text-7xl leading-[.86] tracking-[-.08em]">{place.note}</h1></div><PhotoArt src={place.image} alt={`${place.city} Sardaar JI Dhaba exterior`} label={`${place.city} exterior`} className="min-h-[300px] bg-secondary/70" /></div></div></section><section className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-24"><div className="border-t-2 border-primary pt-5"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Plan your stop</p><div className="mt-8 space-y-5 text-sm"><div><p className="font-bold">Address</p><p className="mt-1 text-muted-foreground">{place.area}</p></div><div><p className="font-bold">Open hours</p><p className="mt-1 text-muted-foreground">{place.hours}</p></div><div><p className="font-bold">Parking & accessibility</p><p className="mt-1 text-muted-foreground">Details placeholder — to be provided</p></div></div><div className="mt-9 flex flex-wrap gap-3"><a href={`tel:${brand.phone}`} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground" data-testid={`link-call-${place.city.toLowerCase()}`}><Phone size={15} /> Call ahead</a><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-secondary px-5 py-3 text-sm font-bold text-secondary" data-testid={`link-whatsapp-${place.city.toLowerCase()}`}><MessageCircle size={15} /> WhatsApp us</a></div></div><div><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Today's reason to turn in</p><h2 className="mt-4 font-display text-5xl leading-none tracking-[-.06em]">Bring the appetite.<br />We'll handle the rest.</h2><p className="mt-7 max-w-lg leading-7 text-muted-foreground">Looking for the exact route, live timings or a group table? Our team will share the latest details directly. Real location information will replace these placeholders.</p><div className="mt-9 aspect-[16/7]"><PlaceholderArt label="map area" className="h-full min-h-0" /></div></div></section></Shell>;
 }
 
@@ -245,7 +303,8 @@ function RecipeStructuredData({ story }: { story: typeof stories[number] }) {
 
 function BlogArticle() {
   const { slug } = useParams<{ slug: string }>();
-  const story = stories.find(item => item.id === slug) ?? stories[0];
+  const story = stories.find(item => item.id === slug);
+  if (!story) return <NotFound />;
   return <Shell><Meta title={story.seoTitle ?? story.title} description={story.seoDescription ?? story.excerpt} keywords={story.keywords} image={story.image} type="article" /><RecipeStructuredData story={story} /><article><header className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center lg:px-8 lg:pt-24"><Link href="/blog" className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-blog">← Back to blog</Link><p className="mt-10 font-mono-brand text-[10px] uppercase tracking-[.2em] text-secondary">{story.category} · {story.read}</p><h1 className="mt-5 font-display text-5xl leading-[.92] tracking-[-.07em] md:text-7xl">{story.title}</h1><p className="mx-auto mt-7 max-w-xl text-lg leading-7 text-muted-foreground">{story.excerpt}</p></header><div className="mx-auto max-w-5xl px-5 lg:px-8"><PhotoArt src={story.image} alt={story.alt} label={story.category} className="min-h-[300px] md:min-h-[480px]" /></div><div className="mx-auto max-w-3xl px-5 py-16 lg:px-8"><div className="space-y-10"><section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Ingredients</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.ingredients?.map((ingredient) => <li key={ingredient} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-primary" aria-hidden="true" /><span>{ingredient}</span></li>) ?? <li>Ingredients list coming soon.</li>}</ul></section><section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">How to make it</h2><ol className="mt-5 space-y-5 text-sm leading-7 text-muted-foreground">{story.method?.map((step, index) => <li key={step} className="flex gap-4"><span className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{index + 1}</span><span>{step}</span></li>) ?? <li>Method details coming soon.</li>}</ol></section>{story.tips && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Chef tips</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.tips.map((tip) => <li key={tip} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-accent" aria-hidden="true" /><span>{tip}</span></li>)}</ul></section>}<section className="prose prose-stone max-w-none prose-headings:font-display prose-headings:font-semibold prose-p:leading-8"><h2>Why this recipe works</h2>{story.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<blockquote>The first bite should make you look up from the table.</blockquote><p className="font-mono-brand text-xs uppercase tracking-[.16em] text-muted-foreground">Kitchen note · Sardaar JI Dhaba</p></section></div></div></article></Shell>;
 }
 
@@ -301,7 +360,7 @@ function NotFound() {
 
 function Router() {
   const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
+  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
 function App() {

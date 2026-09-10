@@ -33,7 +33,7 @@ export const brand = {
   phone: '8882897431',
   email: 'sardaarjifoods@gmail.com',
   instagram: '@sardaarjidhaba',
-  whatsapp: 'https://wa.me/918882897431?text=Hi%2C%20I%20need%20more%20information%20about%20the%20franchise',
+  whatsapp: 'https://wa.me/918882897431?text=Hi%2C%20I%20would%20like%20to%20know%20more%20about%20Sardaar%20JI%20Dhaba.',
   logo: '/images/logo/sardaar-ji-prayagraj.jpg',
 };
 
