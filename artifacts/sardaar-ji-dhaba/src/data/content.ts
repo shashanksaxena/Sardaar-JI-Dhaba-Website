@@ -2,7 +2,7 @@ export type MenuItem = {
   id: string;
   name: string;
   description: string;
-  category: 'Signatures' | 'Vegetarian' | 'Tandoor' | 'Breads' | 'Beverages';
+  category: string;
   price: string;
   mark?: string;
   image?: string;
@@ -41,17 +41,57 @@ export const brand = {
 };
 
 export const menu: MenuItem[] = [
-  { id: 'butter-chicken', name: 'Butter Chicken', description: 'Creamy restaurant-style murgh makhani with tandoori char and a tomato-cashew gravy.', category: 'Signatures', price: '₹260 / 440 / 680', mark: 'Sardaar JI special', image: '/images/blog/restaurant-style-butter-chicken.png' },
-  { id: 'dal-makhani', name: 'Dal Makhani', description: 'Slow-cooked black lentils, finished with butter, cream and dhaba patience.', category: 'Signatures', price: '₹170 / 280', mark: 'Dhaba comfort', image: '/images/blog/restaurant-style-dal-makhani.png' },
-  { id: 'paneer-tikka', name: 'Paneer Tikka', description: 'Smoky marinated paneer with capsicum, onions and mint chutney.', category: 'Tandoor', price: '₹240 / 380', image: '/images/blog/restaurant-style-paneer-tikka.png' },
-  { id: 'hara-bhara-kebab', name: 'Hara Bhara Kebab', description: 'A green, generous vegetarian starter for the table.', category: 'Vegetarian', price: '₹240', image: '/images/menu/menu-vegetarian.jpg' },
-  { id: 'crispy-corn', name: 'Crispy Corn', description: 'Crunchy, spiced and made for sharing before the mains.', category: 'Vegetarian', price: '₹240', image: '/images/menu/menu-vegetarian.jpg' },
-  { id: 'tandoori-chicken', name: 'Tandoori Chicken', description: 'Yoghurt-marinated, spice-rubbed and kissed by clay-oven fire.', category: 'Tandoor', price: '₹260 / 360 / 480', image: '/images/blog/restaurant-style-tandoori-chicken.png' },
-  { id: 'chicken-tikka', name: 'Chicken Tikka', description: 'Juicy boneless chicken pieces with a bright Punjabi marinade.', category: 'Tandoor', price: '₹240 / 300 / 380', image: '/images/blog/restaurant-style-chicken-tikka.png' },
-  { id: 'garlic-naan', name: 'Garlic Naan', description: 'Tandoor blistered, brushed with garlic butter and coriander.', category: 'Breads', price: '₹55 / 60', image: '/images/blog/restaurant-style-garlic-naan.png' },
-  { id: 'jeera-rice', name: 'Jeera Rice', description: 'Fragrant basmati rice with toasted cumin.', category: 'Vegetarian', price: '₹140', image: '/images/restaurant/signature-thali.jpg' },
-  { id: 'matka-lassi', name: 'Matka Lassi', description: 'Thick, chilled and served in an earthen cup.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
-  { id: 'masala-chaas', name: 'Masala Chaas', description: 'Cool, lightly spiced and made for a long meal.', category: 'Beverages', price: '₹60', image: '/images/people/guest-table.jpg' },
+  { id: 'butter-chicken', name: 'Butter Chicken', description: 'Creamy murgh makhani with tandoori char and a rich tomato-cashew gravy.', category: 'Starters', price: '₹260 / 440 / 680', mark: 'Sardaar JI special', image: '/images/blog/restaurant-style-butter-chicken.png' },
+  { id: 'dal-makhani', name: 'Dal Makhani', description: 'Slow-cooked black lentils finished with butter, cream and dhaba-style patience.', category: 'Main Course', price: '₹170 / 280', mark: 'Dhaba comfort', image: '/images/blog/restaurant-style-dal-makhani.png' },
+  { id: 'tandoori-chicken', name: 'Tandoori Chicken', description: 'Yoghurt-marinated chicken with a spice rub and clay-oven char.', category: 'Starters', price: '₹260 / 360 / 480', image: '/images/blog/restaurant-style-tandoori-chicken.png' },
+  { id: 'afghani-chicken', name: 'Afghani Chicken', description: 'Creamy, mild and smoky chicken starter with a signature marinade.', category: 'Starters', price: '₹280 / 360 / 480', image: '/images/menu/menu-vegetarian.jpg' },
+  { id: 'chicken-masala-tikka', name: 'Chicken Masala Tikka', description: 'Boneless chicken tikka finished with masala and a bright Punjabi marinade.', category: 'Starters', price: '₹240 / 300 / 400', image: '/images/blog/restaurant-style-chicken-tikka.png' },
+  { id: 'chicken-afghani-tikka', name: 'Chicken Afghani Tikka', description: 'Tender chicken tikka with a creamy Afghani-style finish.', category: 'Starters', price: '₹240 / 300 / 380', image: '/images/blog/restaurant-style-chicken-tikka.png' },
+  { id: 'chicken-seekh-kebab', name: 'Chicken Seekh Kebab', description: 'Juicy minced chicken kebabs with herbs, spices and a smoky finish.', category: 'Starters', price: '₹240 / 340 / 380', image: '/images/blog/restaurant-style-tandoori-chicken.png' },
+  { id: 'fried-chicken', name: 'Fried Chicken', description: 'Crispy fried chicken pieces with a savoury Punjabi-style coating.', category: 'Starters', price: '₹220 / 300 / 380', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'peri-peri-fried-chicken', name: 'Peri Peri Fried Chicken', description: 'Crisp fried chicken with a peppery peri peri kick.', category: 'Starters', price: '₹220 / 300 / 400', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'makhni-tandoori-chicken', name: 'Makhni Tandoori Chicken', description: 'Tandoori chicken finished in a buttery makhani-style gravy.', category: 'Starters', price: '₹300 / 400 / 500', image: '/images/blog/restaurant-style-butter-chicken.png' },
+  { id: 'chicken-korma', name: 'Chicken Korma', description: 'A rich, comforting chicken curry with onion gravy and smooth finishing.', category: 'Main Course', price: '₹240 / 400 / 620', image: '/images/blog/restaurant-style-kadhai-chicken.png' },
+  { id: 'tawa-chicken', name: 'Tawa Chicken', description: 'Chicken pieces cooked on a flat griddle with Punjabi masala and charred edges.', category: 'Main Course', price: '₹260 / 420 / 660', image: '/images/blog/restaurant-style-kadhai-chicken.png' },
+  { id: 'kadhai-chicken', name: 'Kadhai Chicken', description: 'Chicken simmered in a kadhai with onions, tomatoes and whole spice masala.', category: 'Main Course', price: '₹240 / 400 / 620', image: '/images/blog/restaurant-style-kadhai-chicken.png' },
+  { id: 'chicken-kali-mirch', name: 'Chicken Kali Mirch', description: 'A peppery chicken curry layered with black pepper, onion and tomato masala.', category: 'Main Course', price: '₹260 / 420 / 660', image: '/images/blog/restaurant-style-kadhai-chicken.png' },
+  { id: 'keema-matar', name: 'Keema Matar', description: 'Minced chicken cooked with peas in a mildly spiced Punjabi masala.', category: 'Main Course', price: '₹280 / 460 / 740', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'chicken-masala', name: 'Chicken Masala', description: 'A classic chicken curry with onion, garlic and balanced Punjabi spices.', category: 'Main Course', price: '₹270 / 440 / 640', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'chicken-tikka-masala', name: 'Chicken Tikka Masala', description: 'Charred tikka pieces folded into a smooth tomato gravy.', category: 'Main Course', price: '₹250 / 410 / 640', image: '/images/blog/restaurant-style-chicken-tikka.png' },
+  { id: 'mutton-curry', name: 'Mutton Curry', description: 'Tender mutton in a rich, slow-cooked onion-tomato curry.', category: 'Main Course', price: '₹280 / 480', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'mutton-handi', name: 'Mutton Handi', description: 'Mutton slow-cooked in a handi with traditional Punjabi spices.', category: 'Main Course', price: '₹290 / 490', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'pindi-mutton', name: 'Pindi Mutton', description: 'A classic, robust mutton preparation with a rustic Punjabi flavour profile.', category: 'Main Course', price: '₹300 / 500', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'mutton-lahori', name: 'Mutton Lahori', description: 'A bold Lahori-inspired mutton dish with deep spice and rich gravy.', category: 'Main Course', price: '₹350 / 550', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'egg-curry', name: 'Egg Curry', description: 'Boiled eggs simmered in a warm onion-tomato gravy.', category: 'Main Course', price: '₹160 / 260', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'egg-changezi', name: 'Egg Changezi', description: 'Eggs cooked in a rich, mildly tangy changezi-style masala.', category: 'Main Course', price: '₹290', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'egg-bhurji', name: 'Egg Bhurji', description: 'Scrambled eggs with onion, chilli and Punjabi-style masala.', category: 'Main Course', price: '₹240', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'butter-omelette', name: 'Butter Omelette', description: 'Soft omelette finished with butter and a touch of spice.', category: 'Main Course', price: '₹120', image: '/images/menu/menu-non-vegetarian.jpg' },
+  { id: 'paneer-tikka', name: 'Paneer Tikka', description: 'Smoky marinated paneer with capsicum, onions and mint chutney.', category: 'Paneer', price: '₹240 / 380', image: '/images/blog/restaurant-style-paneer-tikka.png' },
+  { id: 'paneer-lababdar', name: 'Paneer Lababdar', description: 'Soft paneer cubes in a rich tomato gravy with a creamy finish.', category: 'Paneer', price: '₹190 / 290', image: '/images/blog/restaurant-style-shahi-paneer.png' },
+  { id: 'paneer-korma', name: 'Paneer Korma', description: 'Paneer simmered in a gentle, aromatic gravy with nuts and cream.', category: 'Paneer', price: '₹190 / 290', image: '/images/blog/restaurant-style-shahi-paneer.png' },
+  { id: 'paneer-pasanda', name: 'Paneer Pasanda', description: 'Paneer with a mild, creamy style curry and a polished restaurant finish.', category: 'Paneer', price: '₹340', image: '/images/blog/restaurant-style-shahi-paneer.png' },
+  { id: 'paneer-tikka-masala', name: 'Paneer Tikka Masala', description: 'Paneer tikka folded into a smooth, spicy tomato gravy.', category: 'Paneer', price: '₹190 / 290', image: '/images/blog/restaurant-style-paneer-tikka.png' },
+  { id: 'garlic-naan', name: 'Garlic Naan', description: 'Tandoor-blistered naan brushed with garlic butter and coriander.', category: 'Breads', price: '₹55 / 60', image: '/images/blog/restaurant-style-garlic-naan.png' },
+  { id: 'butter-naan', name: 'Butter Naan', description: 'Classic soft naan brushed generously with butter.', category: 'Breads', price: '₹55 / 60', image: '/images/blog/restaurant-style-garlic-naan.png' },
+  { id: 'plain-rice', name: 'Plain Rice', description: 'Fragrant basmati rice cooked simply for a full meal.', category: 'Rice & Biryani', price: '₹120', image: '/images/restaurant/signature-thali.jpg' },
+  { id: 'jeera-rice', name: 'Jeera Rice', description: 'Basmati rice with toasted cumin and a buttery finish.', category: 'Rice & Biryani', price: '₹140', image: '/images/restaurant/signature-thali.jpg' },
+  { id: 'veggie-biryani', name: 'Veg Biryani', description: 'Aromatic basmati rice layered with vegetables and warm spices.', category: 'Rice & Biryani', price: '₹180', image: '/images/restaurant/signature-thali.jpg' },
+  { id: 'kashmiri-pulao', name: 'Kashmiri Pulao', description: 'Fragrant rice with dry fruits, saffron notes and gentle seasoning.', category: 'Rice & Biryani', price: '₹240', image: '/images/restaurant/signature-thali.jpg' },
+  { id: 'plain-curd', name: 'Plain Curd', description: 'Fresh chilled curd served as a cooling side.', category: 'Raita & Salad', price: '₹80', image: '/images/people/guest-table.jpg' },
+  { id: 'raita', name: 'Raita', description: 'Cool yoghurt with cucumber and fine herbs.', category: 'Raita & Salad', price: '₹80', image: '/images/people/guest-table.jpg' },
+  { id: 'mix-salad-raita', name: 'Mix Salad Raita', description: 'A refreshing mix of salad and yoghurt accompaniment.', category: 'Raita & Salad', price: '₹120', image: '/images/people/guest-table.jpg' },
+  { id: 'onion-salad', name: 'Onion Salad', description: 'Fresh onion slices served with lemon and a little chaat masala.', category: 'Raita & Salad', price: '₹80', image: '/images/people/guest-table.jpg' },
+  { id: 'sweet-corn-soup', name: 'Sweet Corn Soup', description: 'A comforting sweet corn soup with a mild creamy finish.', category: 'Soups', price: '₹150', image: '/images/menu/menu-vegetarian.jpg' },
+  { id: 'creamy-tomato-soup', name: 'Cream of Tomato Soup', description: 'Simple tomato soup with a smooth, comforting body.', category: 'Soups', price: '₹140', image: '/images/menu/menu-vegetarian.jpg' },
+  { id: 'hot-sour-soup', name: 'Hot & Sour Soup', description: 'Tangy and spicy soup with vegetables and warming depth.', category: 'Soups', price: '₹150', image: '/images/menu/menu-vegetarian.jpg' },
+  { id: 'lemon-coriander-soup', name: 'Lemon Coriander Soup', description: 'Refreshing soup with fresh coriander and a bright citrus lift.', category: 'Soups', price: '₹145', image: '/images/menu/menu-vegetarian.jpg' },
+  { id: 'manchow-soup', name: 'Manchow Soup', description: 'A savory, crunchy soup with noodles, vegetables and spice.', category: 'Soups', price: '₹160', image: '/images/menu/menu-vegetarian.jpg' },
+  { id: 'gulab-jamun', name: 'Gulab Jamun', description: 'Soft milk-solid sweets soaked in a warm rose-sugar syrup.', category: 'Desserts', price: '₹25', image: '/images/blog/restaurant-style-malai-kofta.png' },
+  { id: 'rabdi-imarti', name: 'Rabdi Imarti', description: 'A traditional Punjabi dessert pairing of fried imarti and rich rabdi.', category: 'Desserts', price: '₹140', image: '/images/blog/restaurant-style-malai-kofta.png' },
+  { id: 'matka-lassi', name: 'Matka Lassi', description: 'Thick and chilled lassi served in an earthen cup.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
+  { id: 'masala-chaas', name: 'Masala Chaas', description: 'Cool buttermilk with roasted cumin, mint and a savoury finish.', category: 'Beverages', price: '₹60', image: '/images/people/guest-table.jpg' },
+  { id: 'mango-lassi', name: 'Mango Lassi', description: 'Sweet lassi with ripe mango, yoghurt and a smooth creamy texture.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
+  { id: 'kesar-lassi', name: 'Kesar Lassi', description: 'Sweet saffron lassi with cardamom and a rich dairy finish.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
 ];
 
 export const locations = [
