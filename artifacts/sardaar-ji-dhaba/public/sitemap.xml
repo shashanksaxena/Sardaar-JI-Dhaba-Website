@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://sardaarjidhaba.com/</loc></url>
-  <url><loc>https://sardaarjidhaba.com/about</loc></url>
-  <url><loc>https://sardaarjidhaba.com/menu</loc></url>
+  <url><loc>https://sardaarjidhaba.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://sardaarjidhaba.com/about</loc><priority>0.5</priority></url>
+  <url><loc>https://sardaarjidhaba.com/menu</loc><priority>0.9</priority></url>
   <url><loc>https://sardaarjidhaba.com/gallery</loc></url>
   <url><loc>https://sardaarjidhaba.com/locations</loc></url>
   <url><loc>https://sardaarjidhaba.com/locations/noida</loc></url>
   <url><loc>https://sardaarjidhaba.com/locations/prayagraj</loc></url>
+  <url><loc>https://sardaarjidhaba.com/noida</loc><priority>0.8</priority></url>
+  <url><loc>https://sardaarjidhaba.com/prayagraj</loc><priority>0.8</priority></url>
   <url><loc>https://sardaarjidhaba.com/success-story</loc></url>
   <url><loc>https://sardaarjidhaba.com/franchise</loc></url>
   <url><loc>https://sardaarjidhaba.com/franchise/apply</loc></url>
@@ -41,5 +43,5 @@
   <url><loc>https://sardaarjidhaba.com/blog/restaurant-style-vegetable-biryani</loc></url>
   <url><loc>https://sardaarjidhaba.com/blog/restaurant-style-seekh-kebab</loc></url>
   <url><loc>https://sardaarjidhaba.com/blog/restaurant-style-chicken-malai-tikka</loc></url>
-  <url><loc>https://sardaarjidhaba.com/contact</loc></url>
+  <url><loc>https://sardaarjidhaba.com/contact</loc><priority>0.5</priority></url>
 </urlset>

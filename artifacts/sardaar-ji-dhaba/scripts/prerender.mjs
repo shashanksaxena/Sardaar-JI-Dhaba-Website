@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import React from 'react';
@@ -21,12 +20,9 @@ function escapeHtml(value) {
     return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }
 
-function lastModified(sourceFile) {
+async function lastModified(sourceFile) {
     try {
-        return execFileSync('git', ['log', '-1', '--format=%cs', '--', sourceFile], {
-            cwd: repositoryRoot,
-            encoding: 'utf8',
-        }).trim() || undefined;
+        return (await stat(path.join(repositoryRoot, sourceFile))).mtime.toISOString().slice(0, 10);
     } catch {
         return undefined;
     }
@@ -86,6 +82,13 @@ function applyHead(template, route, meta, indexable = true) {
     return withoutOldMetadata.replace('</head>', `  ${routeHead(route, meta, indexable)}\n</head>`);
 }
 
+function injectJsonLd(html) {
+    const schemas = [...html.matchAll(/<template data-seo-jsonld="">([\s\S]*?)<\/template>/g)]
+        .map(match => `<script type="application/ld+json">${match[1]}</script>`)
+        .join('\n');
+    return html.replace('</head>', `${schemas}\n</head>`);
+}
+
 function outputPath(route) {
     return path.join(outputRoot, route === '/' ? 'index.html' : `${route.slice(1)}/index.html`);
 }
@@ -98,10 +101,11 @@ const server = await createServer({
 });
 
 try {
-    const [{ default: App }, content, seo] = await Promise.all([
+    const [{ default: App }, content, seo, redirects] = await Promise.all([
         server.ssrLoadModule('/src/App.tsx'),
         server.ssrLoadModule('/src/data/content.ts'),
         server.ssrLoadModule('/src/data/seo.ts'),
+        server.ssrLoadModule('/src/data/redirects.ts'),
     ]);
     siteUrl = content.brand.siteUrl;
     brandName = content.brand.name;
@@ -125,23 +129,24 @@ try {
 
     for (const { route, meta } of [...publicRoutes, ...registeredRoutes.filter(({ meta }) => meta.indexable === false)]) {
         const rendered = renderToString(React.createElement(App, { staticPath: route }));
-        const html = applyHead(replaceRoot(template, rendered), route, meta, meta.indexable !== false);
+        const html = injectJsonLd(applyHead(replaceRoot(template, rendered), route, meta, meta.indexable !== false));
         const destination = outputPath(route);
         await mkdir(path.dirname(destination), { recursive: true });
         await writeFile(destination, html);
     }
 
     const notFound = renderToString(React.createElement(App, { staticPath: '/__not_found__' }));
-    await writeFile(path.join(outputRoot, '404.html'), applyHead(replaceRoot(template, notFound), '/404', {
+    await writeFile(path.join(outputRoot, '404.html'), injectJsonLd(applyHead(replaceRoot(template, notFound), '/404', {
         title: 'Page Not Found | Sardaar Ji Dhaba',
         description: 'This Sardaar Ji Dhaba page could not be found. Visit the menu or choose an outlet in Noida or Prayagraj.',
         image: seo.seoRoutes['/'].image,
-    }, false));
+    }, false)));
 
-    const sitemapEntries = publicRoutes.map(({ route, source }) => {
-        const lastmod = lastModified(source);
-        return `  <url><loc>${siteUrl}${route === '/' ? '/' : route}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`;
-    });
+    const sitemapEntries = await Promise.all(publicRoutes.map(async ({ route, source, meta }) => {
+        const lastmod = await lastModified(source);
+        const priority = meta.priority ?? 0.5;
+        return `  <url><loc>${siteUrl}${route === '/' ? '/' : route}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}<priority>${priority.toFixed(1)}</priority></url>`;
+    }));
     await writeFile(path.join(outputRoot, 'sitemap.xml'), [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -158,19 +163,39 @@ try {
         '',
         'User-agent: GPTBot',
         'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /api',
         '',
         'User-agent: PerplexityBot',
         'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /api',
         '',
         'User-agent: Google-Extended',
         'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /api',
         '',
         'User-agent: ClaudeBot',
         'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /api',
+        '',
+        'User-agent: Applebot',
+        'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /api',
         '',
         `Sitemap: ${siteUrl}/sitemap.xml`,
         '',
     ].join('\n'));
+
+    const redirectLines = Object.entries(redirects.legacyBlogRedirects)
+        .filter(([source, destination]) => source.startsWith('/') && destination.startsWith('/') && destination !== source)
+        .map(([source, destination]) => `${source} ${destination} 301`);
+    if (redirectLines.length > 0) {
+        await writeFile(path.join(outputRoot, '_redirects'), `${redirectLines.join('\n')}\n`);
+    }
 
     console.log(`Prerendered ${publicRoutes.length} routes and generated sitemap.xml`);
 } finally {

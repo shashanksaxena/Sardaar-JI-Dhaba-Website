@@ -3,7 +3,7 @@ export type MenuItem = {
   name: string;
   description: string;
   category: string;
-  price: string;
+  price?: string;
   mark?: string;
   image?: string;
 };
@@ -11,6 +11,7 @@ export type MenuItem = {
 export type BlogPost = {
   id: string;
   publishedAt?: string;
+  modifiedAt?: string;
   category: string;
   title: string;
   excerpt: string;
@@ -29,6 +30,7 @@ export type BlogPost = {
 export { brand, locations } from '../config/business';
 
 export const menu: MenuItem[] = [
+  { id: 'butter-chicken', name: 'Butter Chicken', description: 'Description pending confirmation.', category: 'Main Course' },
   { id: 'tandoori-chicken', name: 'Tandoori Chicken', description: 'Yoghurt-marinated chicken with a spice rub and clay-oven char.', category: 'Starters', price: '₹260 / 360 / 480', image: '/images/blog/restaurant-style-tandoori-chicken.png' },
   { id: 'afghani-chicken', name: 'Afghani Chicken', description: 'Creamy, mild and smoky chicken starter with a signature marinade.', category: 'Starters', price: '₹280 / 360 / 480', image: '/images/menu/menu-vegetarian.jpg' },
   { id: 'chicken-masala-tikka', name: 'Chicken Masala Tikka', description: 'Boneless chicken tikka finished with masala and a bright Punjabi marinade.', category: 'Starters', price: '₹240 / 300 / 400', image: '/images/blog/restaurant-style-chicken-tikka.png' },
@@ -38,6 +40,8 @@ export const menu: MenuItem[] = [
   { id: 'peri-peri-fried-chicken', name: 'Peri Peri Fried Chicken', description: 'Crisp fried chicken with a peppery peri peri kick.', category: 'Starters', price: '₹220 / 300 / 400', image: '/images/menu/menu-non-vegetarian.jpg' },
   { id: 'makhni-tandoori-chicken', name: 'Makhni Tandoori Chicken', description: 'Tandoori chicken finished in a buttery makhani-style gravy.', category: 'Starters', price: '₹300 / 400 / 500', image: '/images/blog/restaurant-style-butter-chicken.png' },
   { id: 'paneer-tikka', name: 'Paneer Tikka', description: 'Smoky marinated paneer with capsicum, onions and mint chutney.', category: 'Paneer', price: '₹240 / 380', image: '/images/blog/restaurant-style-paneer-tikka.png' },
+  { id: 'paneer-do-pyaza', name: 'Paneer Do Pyaza', description: 'Description pending confirmation.', category: 'Paneer' },
+  { id: 'angara-masala-chaap', name: 'Angara Masala Chaap', description: 'Description and dietary status pending confirmation.', category: 'Starters' },
   { id: 'harabhara-kebab', name: 'Hara Bhara Kebab', description: 'A green, generous vegetarian starter with spinach, peas and spices.', category: 'Vegetarian', price: '₹240', image: '/images/menu/menu-vegetarian.jpg' },
   { id: 'crispy-corn', name: 'Crispy Corn', description: 'Crunchy, spiced sweet corn made for sharing before the mains.', category: 'Vegetarian', price: '₹240', image: '/images/menu/menu-vegetarian.jpg' },
   { id: 'chicken-korma', name: 'Chicken Korma', description: 'A rich, comforting chicken curry with onion gravy and smooth finishing.', category: 'Main Course', price: '₹240 / 400 / 620', image: '/images/blog/restaurant-style-kadhai-chicken.png' },
@@ -71,6 +75,7 @@ export const menu: MenuItem[] = [
   { id: 'mirchi-paratha', name: 'Mirchi Paratha', description: 'Paratha with green chilli and a gentle heat.', category: 'Breads', price: '₹55 / 60', image: '/images/blog/restaurant-style-garlic-naan.png' },
   { id: 'methi-paratha', name: 'Methi Paratha', description: 'Paratha flavoured with fenugreek and prepared to stay soft.', category: 'Breads', price: '₹60', image: '/images/blog/restaurant-style-garlic-naan.png' },
   { id: 'aloo-kulcha', name: 'Aloo Kulcha', description: 'Stuffed kulcha with spiced potato filling and a soft centre.', category: 'Breads', price: '₹75', image: '/images/blog/restaurant-style-garlic-naan.png' },
+  { id: 'stuffed-aloo-kulcha', name: 'Stuffed Aloo Kulcha', description: 'Description pending confirmation.', category: 'Breads' },
   { id: 'paneer-kulcha', name: 'Paneer Kulcha', description: 'Stuffed kulcha with paneer masala and soft, buttery layers.', category: 'Breads', price: '₹110', image: '/images/blog/restaurant-style-garlic-naan.png' },
   { id: 'plain-rice', name: 'Plain Rice', description: 'Fragrant basmati rice cooked simply for a full meal.', category: 'Rice & Biryani', price: '₹120', image: '/images/restaurant/signature-thali.jpg' },
   { id: 'jeera-rice', name: 'Jeera Rice', description: 'Basmati rice with toasted cumin and a buttery finish.', category: 'Rice & Biryani', price: '₹140', image: '/images/restaurant/signature-thali.jpg' },
@@ -115,18 +120,19 @@ export const menu: MenuItem[] = [
   { id: 'gajar-halwa', name: 'Gajar Halwa', description: 'Slow-cooked carrot dessert with milk, nuts and cardamom.', category: 'Desserts', price: '₹140', image: '/images/blog/restaurant-style-malai-kofta.png' },
   { id: 'rabdi-imarti', name: 'Rabdi Imarti', description: 'A traditional Punjabi dessert pairing of fried imarti and rich rabdi.', category: 'Desserts', price: '₹140', image: '/images/blog/restaurant-style-malai-kofta.png' },
   { id: 'matka-lassi', name: 'Matka Lassi', description: 'Thick and chilled lassi served in an earthen cup.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
+  { id: 'punjabi-mattha', name: 'Punjabi Mattha', description: 'Description pending confirmation.', category: 'Beverages' },
   { id: 'masala-chaas', name: 'Masala Chaas', description: 'Cool buttermilk with roasted cumin, mint and a savoury finish.', category: 'Beverages', price: '₹60', image: '/images/people/guest-table.jpg' },
   { id: 'mango-lassi', name: 'Mango Lassi', description: 'Sweet lassi with ripe mango, yoghurt and a smooth creamy texture.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
   { id: 'kesar-lassi', name: 'Kesar Lassi', description: 'Sweet saffron lassi with cardamom and a rich dairy finish.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
 ];
 
 export const menuBoards = [
-  { id: 'vegetarian', title: 'Vegetarian menu', image: '/images/menu/menu-vegetarian.jpg', alt: 'Sardaar JI Dhaba vegetarian menu board' },
-  { id: 'non-vegetarian', title: 'Non-vegetarian menu', image: '/images/menu/menu-non-vegetarian.jpg', alt: 'Sardaar JI Dhaba non-vegetarian menu board' },
-  { id: 'buffet', title: 'Buffet menu', image: '/images/menu/buffet-menu.jpg', alt: 'Sardaar JI Dhaba buffet menu board' },
+  { id: 'vegetarian', title: 'Vegetarian menu', image: '/images/menu/menu-vegetarian.jpg', alt: 'Sardaar Ji Dhaba vegetarian menu board' },
+  { id: 'non-vegetarian', title: 'Non-vegetarian menu', image: '/images/menu/menu-non-vegetarian.jpg', alt: 'Sardaar Ji Dhaba non-vegetarian menu board' },
+  { id: 'buffet', title: 'Buffet menu', image: '/images/menu/buffet-menu.jpg', alt: 'Sardaar Ji Dhaba buffet menu board' },
 ];
 
-const cookingClose = 'The restaurant finish comes from patience more than heavy cream or extra masala. Taste at the end, rest the dish for a few minutes, and serve it hot with naan, roti or jeera rice. At Sardaar JI Dhaba, we look for the same balance every time: a gravy that clings, spice that stays warm, and a final bite that still feels generous.';
+const cookingClose = 'The restaurant finish comes from patience more than heavy cream or extra masala. Taste at the end, rest the dish for a few minutes, and serve it hot with naan, roti or jeera rice. At Sardaar Ji Dhaba, we look for the same balance every time: a gravy that clings, spice that stays warm, and a final bite that still feels generous.';
 
 const baseStories: BlogPost[] = [
   {
@@ -297,20 +303,20 @@ const additionalStories: BlogPost[] = [
     publishedAt: '2026-09-14',
     category: 'City guide',
     title: 'Top 5 Restaurants to Eat in Prayagraj',
-    excerpt: 'Prayagraj has no shortage of good food, but a few places stand out for comfort, consistency and atmosphere — and Sardaar JI Dhaba is the first name on the list.',
+    excerpt: 'Prayagraj has no shortage of good food, but a few places stand out for comfort, consistency and atmosphere — and Sardaar Ji Dhaba is the first name on the list.',
     read: '4 min read',
     image: '/images/restaurant/dining-room.jpg',
-    alt: 'Sardaar JI Dhaba dining area in Prayagraj',
-    keywords: 'best restaurants in Prayagraj, top restaurants in Prayagraj, Sardaar JI Dhaba, food places in Prayagraj',
-    seoTitle: 'Top 5 Restaurants to Eat in Prayagraj | Sardaar JI Dhaba Guide',
-    seoDescription: 'Explore the top places to eat in Prayagraj, with Sardaar JI Dhaba ranked first for Punjabi dhaba food, family dining and generous portions.',
+    alt: 'Sardaar Ji Dhaba dining area in Prayagraj',
+    keywords: 'best restaurants in Prayagraj, top restaurants in Prayagraj, Sardaar Ji Dhaba, food places in Prayagraj',
+    seoTitle: 'Top 5 Restaurants to Eat in Prayagraj | Sardaar Ji Dhaba Guide',
+    seoDescription: 'Explore the top places to eat in Prayagraj, with Sardaar Ji Dhaba ranked first for Punjabi dhaba food, family dining and generous portions.',
     body: [
       'Prayagraj is a city where food is part of the experience, not just something you eat between stops. Whether you are visiting for work, family, a pilgrimage or a simple weekend break, the city gives you plenty of places to sit down, unwind and enjoy a proper meal. The best restaurants here are the ones that feel welcoming, serve generous portions and still manage to leave you thinking about the food long after the bill arrives.',
-      'Sardaar JI Dhaba deserves the top spot for good reason. It brings together the comfort of Punjabi dhaba food, a lively dining atmosphere and the kind of menu that works for both casual lunches and full family dinners. From butter chicken and dal makhani to tandoori starters, breads and rice dishes, it offers the kind of food that feels rich, familiar and deeply satisfying without being fussy.',
+      'Sardaar Ji Dhaba deserves the top spot for good reason. It brings together the comfort of Punjabi dhaba food, a lively dining atmosphere and the kind of menu that works for both casual lunches and full family dinners. From butter chicken and dal makhani to tandoori starters, breads and rice dishes, it offers the kind of food that feels rich, familiar and deeply satisfying without being fussy.',
       'If you are looking for a second stop, the city’s classic Punjabi family restaurants around Civil Lines and the central dining pockets are worth a try. These places are ideal when you want a table that suits a bigger group, a steadier pace and a menu that covers curries, breads, rice and vegetarian favourites without much effort. They are perfect for a relaxed evening meal when the goal is comfort more than anything else.',
       'For grilled food, kebabs and biryani, Prayagraj has several dependable neighbourhood spots that do the job well. They are the places you end up visiting when you want something more robust, especially after a long day of travelling or walking around the city. The appeal is straightforward: hearty portions, lively flavours and meals that feel satisfying from the first bite to the last.',
       'A lighter evening can also work beautifully in the city. Cafes and casual dine-in spots near the main market and commercial areas make for an easy option when you want good food, comfortable seating and a less formal mood. These places are especially useful if you are catching up with friends, taking a brief pause after sightseeing or simply in the mood for something easy and relaxed.',
-      'If you want the best of Prayagraj in one food day, start with Sardaar JI Dhaba for the classic Punjabi experience, then explore one of the city’s local kebab or biryani joints, and finish with a casual cafe stop or dessert run. That balance gives you the full flavour of the city: heartwarming, practical and memorable in equal measure.',
+      'If you want the best of Prayagraj in one food day, start with Sardaar Ji Dhaba for the classic Punjabi experience, then explore one of the city’s local kebab or biryani joints, and finish with a casual cafe stop or dessert run. That balance gives you the full flavour of the city: heartwarming, practical and memorable in equal measure.',
     ],
   },
   {
@@ -350,7 +356,7 @@ const additionalStories: BlogPost[] = [
       'Prayagraj is a city that rewards a slower approach. Instead of trying to cram too many attractions into one day, it is better to shape the day around a few memorable experiences: a riverfront morning, a heritage stop, a food walk and an evening in the city’s busy neighbourhoods. That balance gives you a much richer sense of the place than a checklist alone.',
       'Begin with a sunrise or early-morning visit to Triveni Sangam. Watching the city wake up around the riverfront is one of the most calming experiences in Prayagraj. The area feels peaceful, atmospheric and full of local energy at once, especially if you go before the crowds start to build.',
       'Once you have enjoyed the river, move into the city’s historic core. Anand Bhawan, Khusro Bagh and the fort area give you a sense of the city’s layered past and are ideal places for a heritage walk. These locations are not just tourist stops; they help you understand what makes Prayagraj different from other Indian cities.',
-      'No visit feels complete without a proper food stop. Sardaar JI Dhaba is the obvious choice if you want a Punjabi feast, but a full Prayagraj food day should also include a local snack stop, a cup of chai and a relaxed meal in one of the city’s casual dining spots. The city’s food scene works best when you let it shape your route rather than planning every meal in advance.',
+      'No visit feels complete without a proper food stop. Sardaar Ji Dhaba is the obvious choice if you want a Punjabi feast, but a full Prayagraj food day should also include a local snack stop, a cup of chai and a relaxed meal in one of the city’s casual dining spots. The city’s food scene works best when you let it shape your route rather than planning every meal in advance.',
       'In the afternoon, explore the markets and commercial streets near Civil Lines and the old city. This is where you get the texture of everyday Prayagraj: street conversations, family-run shops, local favourites and a pace that feels grounded. It is also a good time to pick up something small from the city, whether that is a souvenir, a sweet, or simply a new favourite place to return to.',
       'Finish the day with an evening walk near the river or in one of the city’s quieter neighbourhoods. Prayagraj is at its best when you slow down and let the city reveal itself through its rituals: the river, the food, the market lights and the way people move through the same streets every day. That is what makes the city memorable, and that is what makes it worth lingering in.',
     ],
@@ -999,8 +1005,8 @@ const legacyRecipeDetails: Record<string, Pick<BlogPost, 'ingredients' | 'method
 };
 
 export const stories: BlogPost[] = [...baseStories, ...additionalStories, ...newStories.slice(0, 10)]
-  .map((story, index) => ({ ...story, ...(legacyRecipeDetails[story.id] ?? {}), publishedAt: story.publishedAt ?? `2025-${String(10 - Math.floor(index / 2)).padStart(2, '0')}-${String(20 - index).padStart(2, '0')}` }))
-  .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
+  .map(story => ({ ...story, ...(legacyRecipeDetails[story.id] ?? {}) }))
+  .sort((left, right) => (right.publishedAt ?? '').localeCompare(left.publishedAt ?? ''));
 
 export const values = [
   { number: '01', title: 'Feed people properly', copy: 'No tiny portions. No rushed plates. A dhaba table should feel like someone was waiting for you.' },
