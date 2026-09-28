@@ -26,19 +26,7 @@ export type BlogPost = {
   body: string[];
 };
 
-export const brand = {
-  name: 'Sardaar JI Dhaba',
-  tagline: 'Authentic Dhaba Taste Since 2018',
-  siteUrl: 'https://sardaarjidhaba.com',
-  phone: '8882897431',
-  email: 'sardaarjifoods@gmail.com',
-  instagram: '@sardaarjidhaba',
-  instagramUrl: 'https://instagram.com/sardaarjidhaba',
-  googleBusinessUrl: 'https://maps.app.goo.gl/au6ouvfipTnczGyV9',
-  orderUrl: 'https://www.zomato.com/allahabad/sardaar-ji-1-civil-lines',
-  whatsapp: 'https://wa.me/918882897431?text=Hi%2C%20I%20would%20like%20to%20know%20more%20about%20Sardaar%20JI%20Dhaba.',
-  logo: '/images/logo/sardaar-ji-prayagraj.jpg',
-};
+export { brand, locations } from '../config/business';
 
 export const menu: MenuItem[] = [
   { id: 'tandoori-chicken', name: 'Tandoori Chicken', description: 'Yoghurt-marinated chicken with a spice rub and clay-oven char.', category: 'Starters', price: '₹260 / 360 / 480', image: '/images/blog/restaurant-style-tandoori-chicken.png' },
@@ -130,11 +118,6 @@ export const menu: MenuItem[] = [
   { id: 'masala-chaas', name: 'Masala Chaas', description: 'Cool buttermilk with roasted cumin, mint and a savoury finish.', category: 'Beverages', price: '₹60', image: '/images/people/guest-table.jpg' },
   { id: 'mango-lassi', name: 'Mango Lassi', description: 'Sweet lassi with ripe mango, yoghurt and a smooth creamy texture.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
   { id: 'kesar-lassi', name: 'Kesar Lassi', description: 'Sweet saffron lassi with cardamom and a rich dairy finish.', category: 'Beverages', price: '₹120', image: '/images/people/guest-table.jpg' },
-];
-
-export const locations = [
-  { id: 'noida', city: 'Noida', area: 'The Aranya, UGF-37C, Hotmart, Aranya, Sector 119, Noida, Uttar Pradesh 201316', mapUrl: 'https://www.google.com/maps/place/Sardaar+Ji+Dhaba/@28.5897917,77.4045819,17z/data=!3m1!4b1!4m6!3m5!1s0x390cef9968db7e91:0xef20c2f12f647fa8!8m2!3d28.5897917!4d77.4045819!16s%2Fg%2F11qntlnhyr?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D', note: 'The original stop. Familiar faces, fresh tandoor.', hours: '11:00 AM - 11:00 PM', availability: 'Dine-in and delivery', accent: 'terracotta', image: '/images/restaurant/dining-room.jpg' },
-  { id: 'prayagraj', city: 'Prayagraj', area: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines, Prayagraj, Uttar Pradesh 211001', mapUrl: 'https://maps.app.goo.gl/au6ouvfipTnczGyV9', note: 'The same generous table, a different city.', hours: '11:00 AM - 11:00 PM', availability: 'Dine-in and delivery', accent: 'green', image: '/images/restaurant/dhaba-exterior.jpg' },
 ];
 
 export const menuBoards = [
