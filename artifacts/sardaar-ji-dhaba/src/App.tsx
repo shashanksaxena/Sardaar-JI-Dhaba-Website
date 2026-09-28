@@ -6,6 +6,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { brand, locations, menu, menuBoards, stories, values, type MenuItem } from '@/data/content';
+import { getSeoMetadata } from '@/data/seo';
 
 const queryClient = new QueryClient();
 
@@ -90,20 +91,25 @@ function setMeta(name: string, content: string, attr: 'name' | 'property' = 'nam
 
 function Meta({ title, description = 'Sardaar JI Dhaba serves authentic Punjabi and North Indian food in Noida and Prayagraj, with dhaba-style recipes, tandoori favourites and generous family dining.', keywords = 'Sardaar JI Dhaba, Punjabi restaurant, North Indian food, dhaba food, restaurant style Indian recipes, Noida restaurant, Prayagraj restaurant', image = '/images/blog/restaurant-style-butter-chicken.png', type = 'website' }: { title: string; description?: string; keywords?: string; image?: string; type?: string }) {
   const [location] = useLocation();
+  const seo = getSeoMetadata(location);
   useEffect(() => {
     const canonical = `${brand.siteUrl}${location === '/' ? '/' : location}`;
-    const absoluteImage = image.startsWith('http') ? image : `${brand.siteUrl}${image}`;
+    const pageTitle = seo?.title ?? title;
+    const pageDescription = seo?.description ?? description;
+    const pageImage = seo?.image ?? image;
+    const pageType = seo?.type ?? type;
+    const absoluteImage = pageImage.startsWith('http') ? pageImage : `${brand.siteUrl}${pageImage}`;
 
-    document.title = title;
-    setMeta('description', description);
+    document.title = pageTitle;
+    setMeta('description', pageDescription);
     setMeta('keywords', keywords);
-    setMeta('og:type', type, 'property');
-    setMeta('og:title', title, 'property');
-    setMeta('og:description', description, 'property');
+    setMeta('og:type', pageType, 'property');
+    setMeta('og:title', pageTitle, 'property');
+    setMeta('og:description', pageDescription, 'property');
     setMeta('og:url', canonical, 'property');
     setMeta('og:image', absoluteImage, 'property');
-    setMeta('twitter:title', title);
-    setMeta('twitter:description', description);
+    setMeta('twitter:title', pageTitle);
+    setMeta('twitter:description', pageDescription);
     setMeta('twitter:image', absoluteImage);
 
     let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -113,7 +119,7 @@ function Meta({ title, description = 'Sardaar JI Dhaba serves authentic Punjabi 
       document.head.appendChild(canonicalLink);
     }
     canonicalLink.href = canonical;
-  }, [description, image, keywords, location, title, type]);
+  }, [description, image, keywords, location, seo, title, type]);
   return null;
 }
 
@@ -645,8 +651,14 @@ function Router() {
   return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
-function App() {
-  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;
+function App({ staticPath }: { staticPath?: string } = {}) {
+  const locationHook = staticPath
+    ? Object.assign(
+      (): [string, (path: string, ...args: any[]) => any] => [staticPath, () => undefined],
+      { searchHook: () => '' },
+    )
+    : undefined;
+  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter hook={locationHook} base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;
 }
 
 export default App;
