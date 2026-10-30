@@ -56,7 +56,7 @@ function setMeta(name: string, content: string, attr: 'name' | 'property' = 'nam
   element.content = content;
 }
 
-function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North Indian food in Noida and Prayagraj.', image = '/images/og/home-1200x630.jpg', type = 'website' }: { title: string; description?: string; image?: string; type?: string }) {
+function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North Indian food in Noida and Prayagraj.', image = '/images/restaurant/dining-room.jpg', type = 'website' }: { title: string; description?: string; image?: string; type?: string }) {
   const [location] = useLocation();
   const seo = getSeoMetadata(location);
   useEffect(() => {
@@ -283,7 +283,7 @@ function Home() {
       <Meta
         title="Sardaar Ji Dhaba Franchise | Explore Franchise Opportunities in India"
         description="Explore a Sardaar Ji Dhaba franchise partnership. Bring a Punjabi and North Indian dhaba concept to your city. Share your details to start a franchise enquiry."
-        image="/images/og/franchise-1200x630.jpg"
+        image="/images/restaurant/sardaar-ji-dhaba-franchise.png"
       />
       <section className="relative overflow-hidden bg-primary text-primary-foreground">
         <div className="absolute -right-24 -top-28 h-[430px] w-[430px] rounded-full border border-accent/25" />
@@ -576,7 +576,7 @@ function LocationDetail() {
     <Meta
       title={`Punjabi Restaurant in ${place.city} | Sardaar Ji Dhaba`}
       description={`Visit Sardaar Ji Dhaba in ${place.city} for Punjabi and North Indian food, outlet details and directions.`}
-      image={`/images/og/${place.id}-1200x630.jpg`}
+      image={place.image}
     />
     {page}
   </Shell>;
@@ -623,7 +623,7 @@ function Application() {
   };
   return (
     <Shell>
-      <Meta title="Sardaar Ji Dhaba Franchise Enquiry | Start an Application" description="Tell Sardaar Ji Dhaba about your city, investment readiness and restaurant plans. Submit a franchise enquiry to start a conversation." image="/images/og/franchise-1200x630.jpg" />
+      <Meta title="Sardaar Ji Dhaba Franchise Enquiry | Start an Application" description="Tell Sardaar Ji Dhaba about your city, investment readiness and restaurant plans. Submit a franchise enquiry to start a conversation." image="/images/restaurant/sardaar-ji-dhaba-franchise.png" />
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-16 lg:grid-cols-[.7fr_1.3fr] lg:px-8 lg:py-24">
         <div>
           <Link href="/" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-franchise"><ChevronLeft size={14} /> Sardaar Ji Dhaba</Link>
