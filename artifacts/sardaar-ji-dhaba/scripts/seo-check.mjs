@@ -46,6 +46,17 @@ for (const url of urls) {
     };
 
     assert(!html.includes('Description pending confirmation') && !html.includes('Guest quote placeholder'), `${route}: unfinished placeholder content is published`);
+    const ogImage = html.match(/<meta property="og:image" content="([^"]*)">/)?.[1] ?? '';
+    assert(ogImage.length > 0, `${route}: Open Graph image is missing`);
+    const ogImageUrl = new URL(ogImage, url);
+    if (ogImageUrl.origin === new URL(url).origin) {
+        try {
+            await access(path.join(outputRoot, ogImageUrl.pathname.replace(/^\//, '')));
+        } catch {
+            assert(false, `${route}: Open Graph image file is missing: ${ogImageUrl.pathname}`);
+        }
+    }
+
     const images = [...html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*alt="([^"]*)"/gi)];
     for (const [, imageSrc, imageAlt] of images) {
         assert(imageAlt.trim().length > 0, `${route}: image has no descriptive alt text`);
