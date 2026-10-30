@@ -901,6 +901,12 @@ function Admin() {
 function loadOptionalAnalytics() {
   const analyticsWindow = window as Window & { dataLayer?: unknown[] };
   analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
+  analyticsWindow.dataLayer.push(['consent', 'update', {
+    analytics_storage: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  }]);
   if (!document.getElementById('sardaar-google-analytics')) {
     analyticsWindow.dataLayer.push(['js', new Date()]);
     analyticsWindow.dataLayer.push(['config', 'G-XFGBQ9E94J']);
@@ -934,7 +940,17 @@ function CookieConsent() {
 
   const choose = (accepted: boolean) => {
     window.localStorage.setItem('sardaar_cookie_consent', accepted ? 'accepted' : 'rejected');
-    if (accepted) loadOptionalAnalytics();
+    const analyticsWindow = window as Window & { dataLayer?: unknown[] };
+    if (accepted) {
+      loadOptionalAnalytics();
+    } else if (analyticsWindow.dataLayer) {
+      analyticsWindow.dataLayer.push(['consent', 'update', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      }]);
+    }
     setVisible(false);
   };
 
