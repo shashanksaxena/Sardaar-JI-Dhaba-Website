@@ -54,7 +54,7 @@ function MenuItemRow({ item }: { item: MenuItem }) {
                     </span>}
                     {item.name}
                 </span>
-                <span className="mt-1 block text-sm leading-6 text-muted-foreground" itemProp="description">{item.description && !/pending confirmation/i.test(item.description) ? item.description : null}</span>
+                {item.description && !/pending confirmation/i.test(item.description) && <span className="mt-1 block text-sm leading-6 text-muted-foreground" itemProp="description">{item.description}</span>}
                 <span className={`mt-2 inline-flex text-xs font-semibold ${dietBadgeClass}`}>{dietLabel}</span>
                 {schemaDiet && <meta itemProp="suitableForDiet" content={schemaDiet} />}
             </div>
