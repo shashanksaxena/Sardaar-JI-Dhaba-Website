@@ -41,8 +41,8 @@ export const business = {
             foodSafetyConnectQrUrl: null as string | null,
             postalCode: null, // TODO: supply and verify the outlet pincode.
             addressRegion: 'Uttar Pradesh',
-            latitude: null, // TODO: supply and verify the outlet coordinates.
-            longitude: null, // TODO: supply and verify the outlet coordinates.
+            latitude: 28.5897917,
+            longitude: 77.4045819,
             googleBusinessProfileUrl: null, // TODO: supply the verified Noida Google Business Profile URL.
             mapUrl: 'https://www.google.com/maps/place/Sardaar+Ji+Dhaba/@28.5897917,77.4045819,17z/data=!3m1!4b1!4m6!3m5!1s0x390cef9968db7e91:0xef20c2f12f647fa8!8m2!3d28.5897917!4d77.4045819!16s%2Fg%2F11qntlnhyr?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D',
             note: 'The original stop. Familiar faces, fresh tandoor.',
