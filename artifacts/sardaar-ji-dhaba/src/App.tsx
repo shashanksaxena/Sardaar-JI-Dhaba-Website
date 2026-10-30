@@ -805,7 +805,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Information sharing</h2>
-          <p className="mt-3">Sardaar Ji Dhaba does not sell personal information. We may share information with trusted service providers that help us operate the website or deliver communications, but only when necessary and under appropriate confidentiality obligations.</p>
+          <p className="mt-3">Sardaar Ji Dhaba does not sell personal information. We may share information with service providers that help us operate the website or deliver communications, only when necessary. If you choose to contact us through WhatsApp, that conversation is handled by WhatsApp/Meta under its own privacy terms; Sardaar Ji Dhaba does not control the platform’s independent processing.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Cookies and analytics</h2>
