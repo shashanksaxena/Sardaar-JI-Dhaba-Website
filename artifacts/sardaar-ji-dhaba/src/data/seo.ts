@@ -71,6 +71,12 @@ export const seoRoutes: Record<string, SeoMetadata> = {
         description: `Discover how Sardaar Ji Dhaba grew from its ${business.established} beginnings into Punjabi restaurant outlets in Noida and Prayagraj.`,
         image: '/images/og/success-story-1200x630.jpg',
     },
+    '/restaurant-consulting': {
+        title: 'Restaurant Consulting in India | RestroGrowth by Sardaar Ji Dhaba',
+        description: 'Practical restaurant consulting for small and medium restaurants in India. Improve operations, food costs, marketing and technology with RestroGrowth.',
+        image: '/images/og/home-1200x630.jpg',
+        priority: 0.8,
+    },
     '/franchise': {
         title: 'Restaurant Franchise Enquiries | Sardaar Ji Dhaba',
         description: 'Explore a potential Sardaar Ji Dhaba partnership and share your restaurant franchise enquiry with the team.',
