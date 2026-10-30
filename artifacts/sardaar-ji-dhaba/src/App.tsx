@@ -868,17 +868,23 @@ function Admin() {
 }
 
 function loadOptionalAnalytics() {
-  const analyticsWindow = window as Window & { dataLayer?: unknown[] };
+  const analyticsWindow = window as Window & {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+  };
   analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
-  analyticsWindow.dataLayer.push(['consent', 'update', {
+  analyticsWindow.gtag = analyticsWindow.gtag || function () {
+    analyticsWindow.dataLayer?.push(arguments);
+  };
+  analyticsWindow.gtag('consent', 'update', {
     analytics_storage: 'granted',
     ad_storage: 'denied',
     ad_user_data: 'denied',
     ad_personalization: 'denied',
-  }]);
+  });
   if (!document.getElementById('sardaar-google-analytics')) {
-    analyticsWindow.dataLayer.push(['js', new Date()]);
-    analyticsWindow.dataLayer.push(['config', 'G-XFGBQ9E94J']);
+    analyticsWindow.gtag('js', new Date());
+    analyticsWindow.gtag('config', 'G-XFGBQ9E94J');
     const analyticsScript = document.createElement('script');
     analyticsScript.id = 'sardaar-google-analytics';
     analyticsScript.async = true;
@@ -909,16 +915,19 @@ function CookieConsent() {
 
   const choose = (accepted: boolean) => {
     window.localStorage.setItem('sardaar_cookie_consent', accepted ? 'accepted' : 'rejected');
-    const analyticsWindow = window as Window & { dataLayer?: unknown[] };
+    const analyticsWindow = window as Window & {
+      dataLayer?: unknown[];
+      gtag?: (...args: unknown[]) => void;
+    };
     if (accepted) {
       loadOptionalAnalytics();
-    } else if (analyticsWindow.dataLayer) {
-      analyticsWindow.dataLayer.push(['consent', 'update', {
+    } else {
+      analyticsWindow.gtag?.('consent', 'update', {
         analytics_storage: 'denied',
         ad_storage: 'denied',
         ad_user_data: 'denied',
         ad_personalization: 'denied',
-      }]);
+      });
     }
     setVisible(false);
   };
