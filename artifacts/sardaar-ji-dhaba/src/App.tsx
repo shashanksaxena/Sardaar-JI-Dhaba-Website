@@ -188,7 +188,7 @@ function MobileActionBar() {
   return <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-foreground/15 bg-background/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_hsl(var(--foreground)/.12)] backdrop-blur-md md:hidden" aria-label="Quick actions">
     <Link href="/menu" onClick={() => trackEvent('menu_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-menu"><Utensils size={17} />Menu</Link>
     <a href={`tel:${brand.phoneLink}`} onClick={() => trackEvent('phone_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 bg-primary text-[10px] font-bold uppercase tracking-wide text-primary-foreground" data-testid="link-mobile-call"><Phone size={17} />Call</a>
-    <Link href="/prayagraj" onClick={() => trackEvent('directions_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
+    <Link href="/locations/prayagraj" onClick={() => trackEvent('directions_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
     <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-whatsapp"><MessageCircle size={17} />WhatsApp</a>
   </nav>;
 }
@@ -571,55 +571,15 @@ function LocationDetail() {
   const { city } = useParams<{ city: string }>();
   const place = locations.find(item => item.id === city);
   if (!place) return <NotFound />;
-
-  const mapEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(place.area)}&output=embed`;
-  const menuIds = place.id === 'noida'
-    ? ['tandoori-chicken', 'paneer-tikka', 'dal-makhani']
-    : ['kadhai-chicken', 'dal-makhani', 'paneer-tikka'];
-  const intro = `Find Sardaar Ji Dhaba in ${place.city} at ${place.area}. This local outlet page gives visitors one place to review the address, opening hours, map, phone contact and selected menu items before travelling. The published menu includes Punjabi and North Indian favourites, with tandoori starters, paneer dishes, dal, breads and rice; availability can change, so call to confirm a specific item before visiting. Daily hours are listed as ${business.hours.display}. Use the embedded Google Map to check the location and open directions in Google Maps. The contact number below connects to the restaurant team for questions about the current menu and visit details. Reservation, delivery, takeaway and group-seating availability have not been confirmed for this outlet; please ask directly rather than relying on assumptions. The full menu page provides more published dishes and categories for guests planning a meal. Map and address details are included to help residents and visitors navigate to this ${place.city} stop. Confirm current details by phone when timing or a particular dish matters.`;
-
-  return (
-    <Shell>
-      <Meta title={`Punjabi Restaurant in ${place.city} | Sardaar Ji Dhaba`} description={`Visit Sardaar Ji Dhaba in ${place.city} for Punjabi and North Indian food, outlet details and directions.`} image={`/images/og/${place.id}-1200x630.jpg`} />
-      <section className="bg-secondary text-secondary-foreground">
-        <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-          <Link href="/locations" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent"><ChevronLeft size={14} /> All locations</Link>
-          <p className="mt-12 font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">Punjabi food · {place.city}</p>
-          <h1 className="mt-5 max-w-5xl font-display text-5xl leading-[.92] md:text-7xl">Punjabi Restaurant in {place.city}, Sardaar Ji Dhaba</h1>
-          <p className="mt-7 max-w-4xl text-base leading-7 text-secondary-foreground/80">{intro}</p>
-        </div>
-      </section>
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
-        <div>
-          <h2 className="font-display text-4xl">Plan your visit</h2>
-          <dl className="mt-7 space-y-5 border-t border-foreground/15 pt-6 text-sm">
-            <div><dt className="font-bold">Address</dt><dd className="mt-1 text-muted-foreground">{place.area}</dd></div>
-            <div><dt className="font-bold">Phone</dt><dd className="mt-1"><a href={`tel:${business.phone.e164}`} className="text-primary underline">{business.phone.display}</a></dd></div>
-            <div><dt className="font-bold">Hours</dt><dd className="mt-1 text-muted-foreground">Daily, {business.hours.display}</dd></div>
-          </dl>
-          <a href={place.mapUrl} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground"><MapPin size={16} /> Directions to {place.city}</a>
-          <h2 className="mt-12 font-display text-3xl">Popular Punjabi dishes</h2>
-          <ul className="mt-4 space-y-3">{menuIds.map(id => {
-            const item = menu.find(dish => dish.id === id);
-            return item ? <li key={id}><Link href="/menu" className="text-primary underline">{item.name}</Link></li> : null;
-          })}</ul>
-        </div>
-        <div className="min-h-[360px] overflow-hidden border border-foreground/15"><iframe title={`${place.city} map`} src={mapEmbedSrc} width="100%" height="100%" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="min-h-[360px] w-full border-0" /></div>
-      </section>
-    </Shell>
-  );
-}
-
-function NoidaLanding() {
-  return <Shell><Meta title="Punjabi Restaurant in Noida | Sardaar Ji Dhaba" description="Visit Sardaar Ji Dhaba in Noida for Punjabi and North Indian food. Check outlet details, opening hours and directions before your visit." image="/images/og/noida-1200x630.jpg" /><NoidaPage /></Shell>;
-}
-
-function PrayagrajLanding() {
-  return <Shell><Meta title="Sardaar Ji Dhaba Prayagraj | Civil Lines" description="Visit Sardaar Ji Dhaba at 138C Mahatma Gandhi Marg, near El Chico in Civil Lines, Prayagraj. Get directions, opening hours and ordering links." image="/images/og/prayagraj-1200x630.jpg" /><PrayagrajPage /></Shell>;
-}
-
-function BreadcrumbJsonLd({ route }: { route: string }) {
-  return null;
+  const page = place.id === 'noida' ? <NoidaPage /> : <PrayagrajPage />;
+  return <Shell>
+    <Meta
+      title={`Punjabi Restaurant in ${place.city} | Sardaar Ji Dhaba`}
+      description={`Visit Sardaar Ji Dhaba in ${place.city} for Punjabi and North Indian food, outlet details and directions.`}
+      image={`/images/og/${place.id}-1200x630.jpg`}
+    />
+    {page}
+  </Shell>;
 }
 
 function Franchise() {
@@ -982,7 +942,7 @@ function CookieConsent() {
 
 function Router() {
   const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/noida" component={NoidaLanding} /><Route path="/prayagraj" component={PrayagrajLanding} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/restaurant-consulting" component={RestaurantConsulting} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
+  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/restaurant-consulting" component={RestaurantConsulting} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
 function App({ staticPath }: { staticPath?: string } = {}) {
