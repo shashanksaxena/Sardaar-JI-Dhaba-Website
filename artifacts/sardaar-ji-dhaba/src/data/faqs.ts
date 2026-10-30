@@ -44,7 +44,7 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     {
         question: `Where is ${business.name} in ${location.city} located?`,
         answer: location.city === 'Noida'
-            ? `The Noida branches are in ${noidaOutlets.map(outlet => outlet.streetAddress).join(' and ')}, Noida, Uttar Pradesh.`
+            ? `The Noida outlet is listed at ${noidaOutlets.map(outlet => outlet.streetAddress).join(' and ')}, Noida, Uttar Pradesh.`
             : `The Prayagraj branch is at ${prayagrajOutlet.streetAddress}, Prayagraj, ${prayagrajOutlet.addressRegion} ${prayagrajOutlet.postalCode}.`,
     },
     {
@@ -53,7 +53,7 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     },
     {
         question: `Does the ${location.city} outlet serve vegetarian and non-vegetarian food?`,
-        answer: 'The published menu includes vegetarian items such as paneer and dal dishes, as well as chicken, mutton, egg and fish dishes. Ask the outlet about current availability and ingredients.',
+        answer: 'The menu includes paneer and dal dishes as well as chicken, mutton, egg and fish dishes. Ask the outlet to confirm the dietary classification and preparation of individual dishes.',
     },
     {
         question: `Can I reserve a table or order delivery from the ${location.city} outlet?`,
