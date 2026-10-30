@@ -42,7 +42,7 @@ function isInquiry(value: unknown): value is Inquiry {
             (inquiry.experience === undefined || (typeof inquiry.experience === "string" && inquiry.experience.length <= 120)) &&
             inquiry.consent === true;
     }
-    return true;
+    return inquiry.consent === true;
 }
 
 router.post("/inquiries", async (req, res) => {
