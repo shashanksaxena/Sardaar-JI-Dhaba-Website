@@ -33,6 +33,7 @@ function apiUrl(path: string) {
 }
 
 async function trackEvent(name: string) {
+  if (window.localStorage.getItem('sardaar_cookie_consent') !== 'accepted') return;
   try {
     await fetch(apiUrl('/api/analytics/events'), {
       method: 'POST',
