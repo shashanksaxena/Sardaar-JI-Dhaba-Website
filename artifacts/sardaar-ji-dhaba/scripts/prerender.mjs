@@ -1,4 +1,4 @@
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import React from 'react';
@@ -20,13 +20,6 @@ function escapeHtml(value) {
     return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }
 
-async function lastModified(sourceFile) {
-    try {
-        return (await stat(path.join(repositoryRoot, sourceFile))).mtime.toISOString().slice(0, 10);
-    } catch {
-        return undefined;
-    }
-}
 
 function replaceRoot(html, renderedMarkup) {
     const rootStart = html.indexOf('<div id="root">');
@@ -142,11 +135,10 @@ try {
         image: seo.seoRoutes['/'].image,
     }, false)));
 
-    const sitemapEntries = await Promise.all(publicRoutes.map(async ({ route, source, meta }) => {
-        const lastmod = await lastModified(source);
+    const sitemapEntries = publicRoutes.map(({ route, meta }) => {
         const priority = meta.priority ?? 0.5;
-        return `  <url><loc>${siteUrl}${route === '/' ? '/' : route}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}<priority>${priority.toFixed(1)}</priority></url>`;
-    }));
+        return `  <url><loc>${siteUrl}${route === '/' ? '/' : route}</loc><priority>${priority.toFixed(1)}</priority></url>`;
+    });
     await writeFile(path.join(outputRoot, 'sitemap.xml'), [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
