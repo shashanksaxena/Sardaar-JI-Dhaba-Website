@@ -79,7 +79,8 @@ for (const url of urls) {
                 assert(html.includes(item.name) && html.includes(item.acceptedAnswer.text), `${route}: visible FAQ content does not match FAQPage JSON-LD`);
             }
         }
-        if (schema['@type'] === 'BlogPosting') assert(schema.headline && schema.image && schema.author && schema.mainEntityOfPage, `${route}: BlogPosting required field missing`);
+        if (schema['@type'] === 'BlogPosting') assert(schema.headline && schema.author && schema.mainEntityOfPage, `${route}: BlogPosting required field missing`);
+        if (schema['@type'] === 'Recipe') assert(schema.name && schema.image && Array.isArray(schema.recipeIngredient) && schema.recipeIngredient.length > 0 && Array.isArray(schema.recipeInstructions) && schema.recipeInstructions.length > 0, `${route}: Recipe required field missing`);
         if (schema['@type'] === 'BreadcrumbList') assert(Array.isArray(schema.itemListElement) && schema.itemListElement.length >= 2, `${route}: BreadcrumbList required field missing`);
         if (schema['@type'] === 'Menu') assert(Array.isArray(schema.hasMenuSection) && schema.hasMenuSection.length > 0, `${route}: Menu sections missing`);
     }
