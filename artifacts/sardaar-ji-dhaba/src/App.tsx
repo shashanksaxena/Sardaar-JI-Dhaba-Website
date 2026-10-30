@@ -790,7 +790,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
           <p className="mt-3">These terms are governed by the laws of India, and any dispute arising from the use of this website shall be subject to the jurisdiction of the competent courts under applicable Indian law.</p>
         </div>
         <div>
-          <h2 className="font-display text-2xl text-foreground">Contact</h2>
+          <h2 className="font-display text-2xl text-foreground">Privacy and grievance contact</h2>
           <p className="mt-3">If you have questions about these terms, please contact us at <a href={`mailto:${brand.email}`} className="font-bold text-primary underline">{brand.email}</a> or call <a href={`tel:${brand.phoneLink}`} className="font-bold text-primary underline">{brand.phone}</a>.</p>
         </div>
       </>
@@ -805,7 +805,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
           <p className="mt-3">When you submit a contact, franchise or restaurant-consulting enquiry, we collect the details shown in that form, such as your name, email address, phone number, city, restaurant details, indicative budget and message. We use those details to respond to the specific enquiry, assess the request and keep a record of the conversation. Please do not submit payment details, identity documents or other sensitive information through these forms.</p>
         </div>
         <div>
-          <h2 className="font-display text-2xl text-foreground">Information we collect</h2>
+          <h2 className="font-display text-2xl text-foreground">Other ways you may contact us</h2>
           <p className="mt-3">If you contact us by phone, email or WhatsApp, we may process the information you choose to share so that we can respond. WhatsApp conversations are also subject to WhatsApp/Meta’s own privacy terms.</p>
         </div>
         <div>
@@ -819,6 +819,10 @@ function Legal({ terms = false }: { terms?: boolean }) {
         <div>
           <h2 className="font-display text-2xl text-foreground">Cookies and analytics</h2>
           <p className="mt-3">Strictly necessary local storage is used to remember your cookie preference. Google Analytics 4, Google Tag Manager and this website’s first-party interaction-event tracking are not activated before you accept optional analytics. If you accept, Google services may process online identifiers, device and browser information, and website interaction data to measure site use. If you reject or later withdraw consent, analytics storage and first-party interaction-event tracking are disabled; tags already downloaded during a previously accepted session may remain loaded until you leave or reload the page. You can change your choice at any time using the Cookie preferences link in the footer. Your browser may also provide controls to clear stored preferences.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Optional analytics</h2>
+          <p className="mt-3">Google Analytics 4, Google Tag Manager and first-party interaction events are activated only after you accept optional analytics. The website's first-party event requests send event names and page paths; they do not include the values entered into contact, franchise or consulting forms. Google services may separately collect technical and usage information under their own terms. If you reject or withdraw optional analytics, the website stops sending first-party interaction events and updates Google consent settings to denied.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Data retention and security</h2>
@@ -885,6 +889,12 @@ function loadOptionalAnalytics() {
   analyticsWindow.gtag = analyticsWindow.gtag || function () {
     analyticsWindow.dataLayer?.push(arguments);
   };
+  analyticsWindow.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
   analyticsWindow.gtag('consent', 'update', {
     analytics_storage: 'granted',
     ad_storage: 'denied',
