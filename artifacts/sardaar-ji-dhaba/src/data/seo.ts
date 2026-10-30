@@ -53,8 +53,8 @@ export const seoRoutes: Record<string, SeoMetadata> = {
         type: 'restaurant',
     },
     '/noida': {
-        title: 'Sardaar Ji Dhaba Noida | Sector 76',
-        description: 'Visit Sardaar Ji Dhaba at Gardenia Gateway near Kiosk A3 in Sector 76, Noida. Get directions, opening hours and ordering links.',
+        title: 'Punjabi Restaurant in Noida | Sardaar Ji Dhaba',
+        description: 'Visit Sardaar Ji Dhaba in Noida for Punjabi and North Indian food. Check outlet details, opening hours and directions before your visit.',
         image: '/images/og/noida-1200x630.jpg',
         type: 'restaurant',
         priority: 0.8,
