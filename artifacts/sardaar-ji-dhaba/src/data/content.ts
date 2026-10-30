@@ -317,7 +317,7 @@ const additionalStories: BlogPost[] = [
       'The Prayagraj outlet is listed at 138C, Mahatma Gandhi Marg, near El Chico, Civil Lines, Prayagraj, Uttar Pradesh 211001. The published opening hours are daily from 11:00 AM to 11:00 PM. Call +91 88828 97431 to confirm current hours, menu availability or directions before travelling.',
       'Use the outlet page for directions and current contact details. Menu prices and availability can change, so confirm the latest details with the restaurant before placing an order.',
     ],
-  }
+  },
   {
     id: 'restaurant-franchise-costs-india',
     publishedAt: '2026-10-24',
