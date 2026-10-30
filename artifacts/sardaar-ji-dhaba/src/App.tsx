@@ -95,8 +95,8 @@ function Header() {
   const allNav = [
     ['/about', 'Our story'],
     ['/menu', 'Menu'],
-    ['/noida', 'Noida'],
-    ['/prayagraj', 'Prayagraj'],
+    ['/locations/noida', 'Noida'],
+    ['/locations/prayagraj', 'Prayagraj'],
     ['/locations', 'Find us'],
     ['/success-story', 'Success story'],
     ['/blog', 'Blog'],
