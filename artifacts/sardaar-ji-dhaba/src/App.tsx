@@ -131,7 +131,7 @@ function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North 
 function Header() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
-  const nav = [
+  const allNav = [
     ['/about', 'Our story'],
     ['/menu', 'Menu'],
     ['/noida', 'Noida'],
@@ -142,6 +142,9 @@ function Header() {
     ['/restaurant-consulting', 'Restaurant consulting'],
     ['/franchise', 'Franchise opportunity'],
   ];
+  const nav = location === '/'
+    ? allNav.filter(([href]) => ['/about', '/success-story', '/locations'].includes(href))
+    : allNav;
   const isActive = (href: string) => location === href || (href === '/locations' && location.startsWith('/locations/'));
   return (
     <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/90 backdrop-blur-md">
@@ -174,7 +177,7 @@ function Header() {
             {nav.map(([href, label]) => (
               <Link key={href} href={href} onClick={() => setOpen(false)} className="flex items-center justify-between border-b border-foreground/10 py-3 text-lg font-semibold" data-testid={`link-mobile-${label.toLowerCase().replace(' ', '-')}`}>{label}<ArrowUpRight size={17} /></Link>
             ))}
-            <a href={`tel:${brand.phoneLink}`} className="mt-4 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-center font-bold text-primary-foreground" data-testid="link-call-mobile"><Phone size={16} /> Call the dhaba</a>
+            {location === '/' ? <Link href="/franchise/apply" onClick={() => { setOpen(false); trackEvent('franchise_cta_click'); }} className="mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-center font-bold text-primary-foreground" data-testid="link-franchise-mobile-header">Apply for franchise <ArrowRight size={16} /></Link> : <a href={`tel:${brand.phoneLink}`} className="mt-4 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-center font-bold text-primary-foreground" data-testid="link-call-mobile"><Phone size={16} /> Call the dhaba</a>}
           </nav>
         </div>
       )}
@@ -185,7 +188,7 @@ function Header() {
 function Footer() {
   return (
     <footer className="bg-secondary text-secondary-foreground">
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
           <div className="mb-5 flex items-center gap-3"><img src={brand.logo} alt="Sardaar Ji Dhaba logo" width="44" height="44" loading="lazy" decoding="async" className="h-11 w-11 rounded-full object-cover" /><span className="font-display text-2xl">Sardaar Ji Dhaba</span></div>
           <p className="max-w-xs text-sm leading-6 text-secondary-foreground/70">A generous roadside table, serving the flavours we grew up with in Noida and Prayagraj.</p>
@@ -204,7 +207,7 @@ function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const faqItems = getFaqItems(location);
   return <><Header /><main>{children}{faqItems.length > 0 && <FaqSection items={faqItems} />}</main><SeoSchema route={location} /><Footer /><MobileActionBar /></>;
-  return <><Header /><main>{children}{location === '/' && <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><h2 className="font-display text-3xl">Visit an outlet</h2><div className="mt-5 flex flex-wrap gap-6"><Link href="/noida" className="font-semibold text-primary underline decoration-accent underline-offset-4">Sardaar Ji Dhaba in Noida</Link><Link href="/prayagraj" className="font-semibold text-primary underline decoration-accent underline-offset-4">Sardaar Ji Dhaba in Prayagraj</Link></div></section>}{faqItems.length > 0 && <FaqSection items={faqItems} />}</main><SeoSchema route={location} /><Footer /><MobileActionBar /></>;
+
 }
 
 function FaqSection({ items }: { items: FaqItem[] }) {
@@ -668,7 +671,7 @@ async function sendInquiry(form: HTMLFormElement, kind: 'contact' | 'franchise')
     const response = await fetch(apiUrl('/api/inquiries'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...values, kind }),
+      body: JSON.stringify({ ...values, kind, ...(kind === 'franchise' ? { source: 'franchise-application', consent: values.consent === 'on' } : {}) }),
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.message ?? 'The message could not be sent.');
@@ -903,7 +906,7 @@ function NotFound() {
   return <Shell><Meta title="Page not found" /><section className="mx-auto flex min-h-[65vh] max-w-7xl flex-col justify-center px-5 py-20 lg:px-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Wrong turn</p><h1 className="mt-6 max-w-3xl font-display text-[clamp(5rem,14vw,12rem)] leading-[.75] tracking-[-.1em]">404<span className="text-primary">.</span></h1><p className="mt-10 max-w-sm text-lg leading-7 text-muted-foreground">This road does not go to the dhaba. Let us get you back to something tasty.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-404-home">Take me home <ArrowRight size={16} /></Link><Link href="/menu" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-bold" data-testid="link-404-menu">See the menu <Utensils size={16} /></Link></div></section></Shell>;
 }
 
-type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; investmentRange?: string; experience?: string; message: string; createdAt: string }[] };
+type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; investmentRange?: string; experience?: string; source?: string; message: string; createdAt: string }[] };
 
 function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -950,7 +953,7 @@ function Admin() {
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
 function Router() {
