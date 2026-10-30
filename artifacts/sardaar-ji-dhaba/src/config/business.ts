@@ -19,6 +19,7 @@ export const business = {
     priceRange: '₹₹',
     logo: '/images/logo/sardaar-ji-prayagraj.jpg',
     email: 'sardaarjifoods@gmail.com',
+    foodSafetyConnectUrl: 'https://fssai.gov.in/cms/food-safety-connect.php',
     social: {
         instagramHandle: '@sardaarjidhaba',
         instagramUrl: 'https://www.instagram.com/sardaarjidhaba/',
