@@ -4,21 +4,36 @@ import { getMongoDatabase } from "../lib/mongo";
 const router: IRouter = Router();
 
 type Inquiry = {
-    kind: "contact" | "franchise";
+    kind: "contact" | "franchise" | "consulting";
     name: string;
     email: string;
     phone?: string;
     city?: string;
     message: string;
+    restaurantName?: string;
+    service?: string;
+    source?: string;
+    consent?: boolean;
 };
 
 function isInquiry(value: unknown): value is Inquiry {
     if (!value || typeof value !== "object") return false;
     const inquiry = value as Record<string, unknown>;
-    return (inquiry.kind === "contact" || inquiry.kind === "franchise") &&
-        typeof inquiry.name === "string" && inquiry.name.trim().length > 1 &&
-        typeof inquiry.email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiry.email) &&
-        typeof inquiry.message === "string" && inquiry.message.trim().length > 3;
+    const validBase = (inquiry.kind === "contact" || inquiry.kind === "franchise" || inquiry.kind === "consulting") &&
+        typeof inquiry.name === "string" && inquiry.name.trim().length > 1 && inquiry.name.length <= 100 &&
+        typeof inquiry.email === "string" && inquiry.email.length <= 160 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiry.email) &&
+        typeof inquiry.message === "string" && inquiry.message.trim().length > 3 && inquiry.message.length <= 2000;
+    if (!validBase) return false;
+    if (inquiry.phone !== undefined && (typeof inquiry.phone !== "string" || inquiry.phone.length > 20)) return false;
+    if (inquiry.city !== undefined && (typeof inquiry.city !== "string" || inquiry.city.length > 100)) return false;
+    if (inquiry.kind === "consulting") {
+        return typeof inquiry.phone === "string" && inquiry.phone.trim().length >= 7 &&
+            typeof inquiry.restaurantName === "string" && inquiry.restaurantName.trim().length > 1 && inquiry.restaurantName.length <= 120 &&
+            typeof inquiry.city === "string" && inquiry.city.trim().length > 1 &&
+            typeof inquiry.service === "string" && inquiry.service.trim().length > 1 && inquiry.service.length <= 100 &&
+            inquiry.consent === true;
+    }
+    return true;
 }
 
 router.post("/inquiries", async (req, res) => {
@@ -28,7 +43,7 @@ router.post("/inquiries", async (req, res) => {
     }
 
     try {
-        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...req.body, createdAt: new Date() });
+        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...req.body, name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(), message: req.body.message.trim(), createdAt: new Date() });
     } catch (error) {
         req.log.error({ error }, "Could not persist inquiry");
         res.status(503).json({ message: "The enquiry could not be saved. Please call the dhaba directly." });
