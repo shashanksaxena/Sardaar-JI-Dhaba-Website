@@ -357,7 +357,7 @@ const additionalStories: BlogPost[] = [
       'Submitting an enquiry is not a franchise offer, approval, promise of territory or guarantee of revenue. Any potential arrangement would be subject to due diligence, written commercial terms, required approvals and a signed agreement.',
       'If you would like to start a conversation, use the franchise enquiry page and share your preferred city, approximate budget and relevant experience. The budget field is indicative only and is not an official fee or project-cost quote.',
     ],
-  }
+  },
   {
     id: 'things-to-do-in-prayagraj',
     publishedAt: '2026-09-12',
