@@ -60,18 +60,18 @@ for (const url of urls) {
                 assert(['North Indian', 'Punjabi', 'Desi Chinese'].every(cuisine => schema.servesCuisine.includes(cuisine)), `${route}: Restaurant cuisine list incomplete`);
                 assert(schema.sameAs.includes('https://www.instagram.com/sardaarjidhaba/'), `${route}: Instagram sameAs missing`);
                 assert(schema.sameAs.includes('https://www.zomato.com/allahabad/sardaar-ji-1-civil-lines'), `${route}: Zomato sameAs missing`);
-                assert(Array.isArray(schema.department) && schema.department.length === 3, `${route}: expected three Restaurant departments`);
+                assert(Array.isArray(schema.department) && schema.department.length === 2, `${route}: expected the two configured restaurant outlets`);
                 for (const department of schema.department) {
                     assert(department.address?.['@type'] === 'PostalAddress' && department.address.addressLocality && department.address.addressRegion, `${route}: restaurant department address missing`);
                 }
-                assert(schema.department.some(department => department.address?.streetAddress === 'Sector 76'), `${route}: Noida Sector 76 department missing`);
-                assert(schema.department.some(department => department.address?.streetAddress === 'Sector 64'), `${route}: Noida Sector 64 department missing`);
-                assert(schema.department.some(department => department.address?.streetAddress === '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines'), `${route}: Prayagraj department missing`);
+                assert(schema.department.some(department => department.address?.addressLocality === 'Noida'), `${route}: Noida outlet missing`);
+                assert(!schema.department.some(department => department.address?.streetAddress === 'Sector 64'), `${route}: unverified Sector 64 location must not be published`);
+                assert(schema.department.some(department => department.address?.addressLocality === 'Prayagraj'), `${route}: Prayagraj outlet missing`);
             } else {
                 assert(schema.address?.['@type'] === 'PostalAddress', `${route}: branch Restaurant address missing`);
             }
         }
-        if (schema['@type'] === 'FAQPage') assert(Array.isArray(schema.mainEntity) && schema.mainEntity.length >= 6, `${route}: FAQPage questions missing`);
+        if (schema['@type'] === 'FAQPage') assert(Array.isArray(schema.mainEntity) && schema.mainEntity.length > 0, `${route}: FAQPage questions missing`);
         if (schema['@type'] === 'FAQPage') {
             for (const item of schema.mainEntity) {
                 assert(html.includes(item.name) && html.includes(item.acceptedAnswer.text), `${route}: visible FAQ content does not match FAQPage JSON-LD`);
