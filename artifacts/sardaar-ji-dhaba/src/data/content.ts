@@ -328,8 +328,8 @@ const additionalStories: BlogPost[] = [
     image: '/images/restaurant/sardaar-ji-dhaba-franchise.png',
     alt: 'Sardaar Ji Dhaba restaurant dining area',
     keywords: 'restaurant franchise cost India 2026, restaurant franchise investment checklist, dhaba franchise India, Punjabi restaurant franchise, Sardaar Ji Dhaba franchise enquiry',
-    seoTitle: 'Restaurant Franchise Costs in India (2026) | Sardaar Ji Dhaba',
-    seoDescription: 'Understand restaurant franchise cost components in India, from fees and fit-out to working capital. Sardaar Ji Dhaba has not published a verified franchise investment amount.',
+    seoTitle: 'Restaurant Franchise Costs in India: What to Budget For Recipe Recipe | Sardaar Ji',
+    seoDescription: 'Understand restaurant franchise costs in India, from fees and fit-out to working capital. Sardaar Ji Dhaba has not published a verified investment amount.',
     body: [
       'A restaurant franchise budget is more than the franchise fee. Before comparing brands, estimate the full amount required to secure a site, prepare the premises, equip the kitchen, obtain applicable licences, hire a team and fund the first months of operations.',
       'There is no single standard restaurant franchise cost in India. The amount depends on the city, property size, rent and deposit, dine-in or takeaway format, kitchen equipment, interiors, staffing, menu, local approvals and the working capital needed after launch.',
@@ -435,7 +435,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/blog/restaurant-style-shahi-paneer.png',
     alt: 'Restaurant style matar paneer with green peas and paneer cubes',
     keywords: 'restaurant style matar paneer recipe, matar paneer masala, Punjabi paneer and peas curry, how to make matar paneer',
-    seoTitle: 'Restaurant Style Matar Paneer Recipe | Easy Paneer and Peas Curry',
+    seoTitle: 'Restaurant Style Matar Paneer Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Make a rich and colourful matar paneer recipe at home with paneer, peas, onion-tomato gravy, and restaurant-style seasoning.',
     ingredients: [
       '250 g paneer, cubed',
@@ -529,7 +529,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/blog/restaurant-style-paneer-tikka.png',
     alt: 'Restaurant style palak paneer with spinach gravy',
     keywords: 'restaurant style palak paneer recipe, spinach paneer curry, how to make palak paneer, Punjabi palak paneer',
-    seoTitle: 'Restaurant Style Palak Paneer Recipe | Easy Spinach Paneer Curry',
+    seoTitle: 'Restaurant Style Palak Paneer Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Make a classic palak paneer recipe with fresh spinach, paneer cubes, and a rich restaurant-style masala at home.',
     ingredients: [
       '300 g spinach leaves',
@@ -575,7 +575,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/blog/restaurant-style-kadhai-chicken.png',
     alt: 'Restaurant style chicken biryani with saffron and herbs',
     keywords: 'restaurant style chicken biryani recipe, how to make biryani at home, chicken dum biryani, Punjabi chicken biryani',
-    seoTitle: 'Restaurant Style Chicken Biryani Recipe | Dum Biryani at Home',
+    seoTitle: 'Restaurant Style Chicken Biryani Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Create a fragrant chicken biryani with layered basmati rice, spiced chicken, saffron, and the classic dum-style finish.',
     ingredients: [
       '500 g chicken, bone-in or boneless',
@@ -622,7 +622,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/blog/restaurant-style-chole-bhature.png',
     alt: 'Restaurant style aloo gobi with potatoes and cauliflower',
     keywords: 'restaurant style aloo gobi recipe, aloo gobi masala, Punjabi potato cauliflower curry, dry aloo gobi recipe',
-    seoTitle: 'Restaurant Style Aloo Gobi Recipe | Dry Potato and Cauliflower Curry',
+    seoTitle: 'Restaurant Style Aloo Gobi Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Learn how to make crispy, flavourful aloo gobi with a restaurant-style masala and perfectly balanced Punjabi spices.',
     ingredients: [
       '2 potatoes, diced',
@@ -667,7 +667,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/blog/restaurant-style-chicken-tikka.png',
     alt: 'Restaurant style tandoori prawns on skewers',
     keywords: 'restaurant style tandoori prawns recipe, how to make prawns tikka, tandoori shrimp, grilled prawns recipe',
-    seoTitle: 'Restaurant Style Tandoori Prawns Recipe | Grilled Prawns at Home',
+    seoTitle: 'Restaurant Style Tandoori Prawns Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Make restaurant-style tandoori prawns with a simple spice marinade, quick high-heat cooking, and a smoky finish.',
     ingredients: [
       '500 g prawns, cleaned and deveined',
@@ -712,7 +712,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/blog/restaurant-style-garlic-naan.png',
     alt: 'Restaurant style amritsari kulcha with stuffing and onions',
     keywords: 'restaurant style amritsari kulcha recipe, stuffed kulcha recipe, Punjabi kulcha with potato stuffing, how to make kulcha',
-    seoTitle: 'Restaurant Style Amritsari Kulcha Recipe | Stuffed Punjabi Kulcha',
+    seoTitle: 'Restaurant Style Amritsari Kulcha Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Learn how to make soft and crispy Amritsari kulcha with potato stuffing, herbs, and classic Punjabi flavour.',
     ingredients: [
       '2 cups plain flour or maida',
@@ -798,7 +798,7 @@ const additionalStories: BlogPost[] = [
     image: '/images/people/guest-table.jpg',
     alt: 'Restaurant style mango lassi in a tall glass',
     keywords: 'restaurant style mango lassi recipe, mango lassi recipe, Indian mango yogurt drink, sweet mango lassi',
-    seoTitle: 'Restaurant Style Mango Lassi Recipe | Indian Mango Yogurt Drink',
+    seoTitle: 'Restaurant Style Mango Lassi Recipe | Sardaar Ji Dhaba',
     seoDescription: 'Make a creamy mango lassi at home with ripe mango, yogurt, sugar, and cardamom for a cool restaurant-style drink.',
     ingredients: [
       '2 ripe mangoes, peeled and chopped',
@@ -874,7 +874,7 @@ const newStories: BlogPost[] = [
   makeNewRecipe({
     id: 'restaurant-style-hara-bhara-kebab', date: '2026-06-13', dish: 'Hara Bhara Kebab', title: 'How to Make Restaurant Style Hara Bhara Kebab',
     excerpt: 'A crisp, green vegetarian kebab made with spinach, peas, potato and warming Punjabi spices.', image: '/images/menu/menu-vegetarian.jpg', alt: 'Restaurant style hara bhara kebab with mint chutney',
-    keywords: 'restaurant style hara bhara kebab recipe, spinach kebab recipe, vegetarian Indian starter, how to make hara bhara kebab', seoTitle: 'Restaurant Style Hara Bhara Kebab Recipe | Green Vegetarian Kebab', seoDescription: 'Make crisp restaurant-style hara bhara kebab with spinach, green peas, potato, herbs, and Indian spices at home.',
+    keywords: 'restaurant style hara bhara kebab recipe, spinach kebab recipe, vegetarian Indian starter, how to make hara bhara kebab', seoTitle: 'Restaurant Style Hara Bhara Kebab Recipe | Sardaar Ji Dhaba', seoDescription: 'Make crisp restaurant-style hara bhara kebab with spinach, green peas, potato, herbs, and Indian spices at home.',
     ingredients: ['2 cups spinach leaves', '1 cup green peas', '2 boiled potatoes', '1 green chilli', '1 tsp grated ginger', '1/2 tsp cumin powder', '1/2 tsp garam masala', '2 tbsp roasted gram flour', '1 tbsp lemon juice', 'Salt to taste', 'Oil for shallow frying', 'Cashews, optional'],
     method: ['Blanch spinach briefly, drain it well and blend it with peas, chilli and ginger into a coarse paste.', 'Mix the paste with mashed potato, spices, lemon, salt and gram flour. Shape small patties and chill for 15 minutes.', 'Shallow-fry on medium heat until both sides are crisp and green. Serve hot with mint chutney, onion and lemon.'],
     tips: ['Squeeze spinach thoroughly so the kebabs do not break.', 'Use medium heat so the centre warms before the outside darkens.', 'Chilling the patties makes shaping and frying easier.'], flavour: 'fresh spinach, sweet peas and roasted spice', pairing: 'mint chutney, onion rings and masala chaas',
@@ -882,7 +882,7 @@ const newStories: BlogPost[] = [
   makeNewRecipe({
     id: 'restaurant-style-crispy-corn', date: '2026-06-06', dish: 'Crispy Corn', title: 'How to Make Restaurant Style Crispy Corn',
     excerpt: 'Sweet corn coated in a light spiced crust and finished with herbs, chilli and lime.', image: '/images/menu/menu-vegetarian.jpg', alt: 'Restaurant style crispy corn with chilli and herbs',
-    keywords: 'restaurant style crispy corn recipe, crispy corn starter, Indian corn snack, fried corn recipe', seoTitle: 'Restaurant Style Crispy Corn Recipe | Spicy Fried Corn Starter', seoDescription: 'Learn how to make crispy corn like a restaurant with sweet corn, a crunchy coating, chilli, herbs, and lime.',
+    keywords: 'restaurant style crispy corn recipe, crispy corn starter, Indian corn snack, fried corn recipe', seoTitle: 'Restaurant Style Crispy Corn Recipe | Sardaar Ji Dhaba', seoDescription: 'Learn how to make crispy corn like a restaurant with sweet corn, a crunchy coating, chilli, herbs, and lime.',
     ingredients: ['2 cups sweet corn kernels', '3 tbsp cornflour', '2 tbsp rice flour', '1 tsp ginger-garlic paste', '1/2 tsp Kashmiri chilli', '1/2 tsp black pepper', '1/2 tsp chaat masala', '1 chopped onion', '1 green chilli', 'Fresh coriander', 'Salt', 'Oil for frying', 'Lime wedges'],
     method: ['Boil corn until just tender, drain completely and pat dry. Toss with cornflour, rice flour, ginger-garlic, chilli, pepper and salt.', 'Fry in small batches until crisp and pale golden. Drain on a rack or paper towel.', 'Toss while hot with onion, chilli, coriander and chaat masala. Add lime just before serving.'],
     tips: ['Dry the corn thoroughly before coating it.', 'Small batches keep the oil hot and the coating crisp.', 'Add lime at the table so the crust does not soften.'], flavour: 'sweet corn, peppery heat and a crackling coating', pairing: 'mint chutney, masala chaas or a cold drink',
@@ -906,7 +906,7 @@ const newStories: BlogPost[] = [
   makeNewRecipe({
     id: 'restaurant-style-butter-naan', date: '2026-05-16', dish: 'Butter Naan', title: 'How to Make Restaurant Style Butter Naan',
     excerpt: 'Soft, blistered naan brushed with butter and made for scooping rich Punjabi gravies.', image: '/images/blog/restaurant-style-garlic-naan.png', alt: 'Restaurant style butter naan fresh from the tandoor',
-    keywords: 'restaurant style butter naan recipe, naan at home, tandoori naan recipe, how to make naan without tandoor', seoTitle: 'Restaurant Style Butter Naan Recipe | Soft Tandoori Naan at Home', seoDescription: 'Make soft restaurant-style butter naan at home with a yoghurt dough, hot tawa, butter, and tandoor-style blisters.',
+    keywords: 'restaurant style butter naan recipe, naan at home, tandoori naan recipe, how to make naan without tandoor', seoTitle: 'Restaurant Style Butter Naan Recipe | Sardaar Ji Dhaba', seoDescription: 'Make soft restaurant-style butter naan at home with a yoghurt dough, hot tawa, butter, and tandoor-style blisters.',
     ingredients: ['2 cups maida', '1/2 cup yoghurt', '1 tsp sugar', '1/2 tsp baking powder', '1 tbsp oil', 'Salt', 'Warm water', 'Butter', 'Fresh coriander'],
     method: ['Knead flour, yoghurt, sugar, baking powder, oil and salt with warm water into a soft dough. Rest for one hour.', 'Roll dough balls into thick ovals and wet one side. Place wet-side down on a hot iron tawa.', 'Cook until bubbles appear, invert toward the flame to blister, then brush generously with butter and coriander.'],
     tips: ['Resting gives the dough a softer texture.', 'Use an iron tawa for better grip over flame.', 'Serve immediately while the naan is hot.'], flavour: 'soft yoghurt dough, smoky blisters and melted butter', pairing: 'butter chicken, dal makhani, shahi paneer or kadhai chicken',
@@ -914,7 +914,7 @@ const newStories: BlogPost[] = [
   makeNewRecipe({
     id: 'restaurant-style-chicken-curry', date: '2026-05-09', dish: 'Punjabi Chicken Curry', title: 'How to Make Restaurant Style Punjabi Chicken Curry',
     excerpt: 'Tender chicken cooked in a deeply browned onion-tomato masala with classic Punjabi spices.', image: '/images/blog/restaurant-style-kadhai-chicken.png', alt: 'Restaurant style Punjabi chicken curry with thick gravy',
-    keywords: 'restaurant style Punjabi chicken curry recipe, dhaba chicken curry, Indian chicken curry, how to make chicken curry', seoTitle: 'Restaurant Style Punjabi Chicken Curry Recipe | Dhaba Chicken', seoDescription: 'Cook a rich Punjabi chicken curry with browned onions, tomato masala, whole spices, and tender chicken at home.',
+    keywords: 'restaurant style Punjabi chicken curry recipe, dhaba chicken curry, Indian chicken curry, how to make chicken curry', seoTitle: 'Punjabi Chicken Curry Recipe | Sardaar Ji Dhaba', seoDescription: 'Cook a rich Punjabi chicken curry with browned onions, tomato masala, whole spices, and tender chicken at home.',
     ingredients: ['750 g chicken pieces', '3 tbsp oil', '2 sliced onions', '2 tomato puree', '1 tbsp ginger-garlic paste', '1 tsp cumin seeds', '1 tsp coriander powder', '1 tsp Kashmiri chilli', '1/2 tsp turmeric', '1 tsp garam masala', 'Bay leaf and cardamom', 'Salt', 'Fresh coriander'],
     method: ['Season chicken with salt, turmeric and chilli. Heat oil with whole spices and brown the onions slowly.', 'Add ginger-garlic and tomato with dry spices. Cook until glossy and the oil separates.', 'Sear chicken in the masala, add hot water, cover and simmer until tender. Finish with garam masala and coriander.'],
     tips: ['Brown onions patiently for depth.', 'Use hot water so the pan keeps its heat.', 'Rest the curry before serving.'], flavour: 'deep browned onion, tomato and warm Punjabi spice', pairing: 'butter naan, jeera rice, roti and onion salad',
@@ -922,7 +922,7 @@ const newStories: BlogPost[] = [
   makeNewRecipe({
     id: 'restaurant-style-paneer-butter-masala', date: '2026-05-02', dish: 'Paneer Butter Masala', title: 'How to Make Restaurant Style Paneer Butter Masala',
     excerpt: 'Soft paneer in a silky tomato, butter and cashew gravy with a gentle restaurant-style sweetness.', image: '/images/blog/restaurant-style-shahi-paneer.png', alt: 'Restaurant style paneer butter masala with naan',
-    keywords: 'restaurant style paneer butter masala recipe, paneer makhani, paneer curry recipe, how to make paneer butter masala', seoTitle: 'Restaurant Style Paneer Butter Masala Recipe | Paneer Makhani', seoDescription: 'Make creamy paneer butter masala with tomato, cashew, butter, cream, and soft paneer for an easy restaurant-style curry.',
+    keywords: 'restaurant style paneer butter masala recipe, paneer makhani, paneer curry recipe, how to make paneer butter masala', seoTitle: 'Restaurant Style Vegetable Biryani Recipe | Sardaar Ji Dhaba', seoDescription: 'Make creamy paneer butter masala with tomato, cashew, butter, cream, and soft paneer for an easy restaurant-style curry.',
     ingredients: ['250 g paneer cubes', '3 tomatoes', '10 cashews', '1 small onion', '1 tbsp ginger-garlic paste', '2 tbsp butter', '1 tsp Kashmiri chilli', '1/2 tsp garam masala', '1/2 tsp kasuri methi', '1 tsp honey', '2 tbsp cream', 'Salt'],
     method: ['Cook tomato, onion, cashew, ginger and garlic until soft. Blend and strain for a smooth gravy.', 'Heat butter on low, bloom chilli powder and add puree. Cook until glossy; season with salt, honey and garam masala.', 'Add water as needed, fold in paneer and simmer for three minutes. Finish with cream, kasuri methi and butter.'],
     tips: ['Soak paneer in warm water first.', 'Strain the gravy for a polished texture.', 'Keep the flame low after adding cream.'], flavour: 'silky tomato, cashew, butter and gentle sweetness', pairing: 'butter naan, garlic naan or jeera rice',
@@ -930,7 +930,7 @@ const newStories: BlogPost[] = [
   makeNewRecipe({
     id: 'restaurant-style-vegetable-biryani', date: '2026-04-25', dish: 'Vegetable Biryani', title: 'How to Make Restaurant Style Vegetable Biryani',
     excerpt: 'Fragrant basmati, seasonal vegetables, mint and saffron layered into a colourful dum biryani.', image: '/images/restaurant/signature-thali.jpg', alt: 'Restaurant style vegetable biryani with herbs and vegetables',
-    keywords: 'restaurant style vegetable biryani recipe, veg dum biryani, Indian vegetable rice, how to make veg biryani', seoTitle: 'Restaurant Style Vegetable Biryani Recipe | Easy Veg Dum Biryani', seoDescription: 'Make fragrant restaurant-style vegetable biryani with basmati rice, mixed vegetables, mint, saffron, and a dum finish.',
+    keywords: 'restaurant style vegetable biryani recipe, veg dum biryani, Indian vegetable rice, how to make veg biryani', seoTitle: 'Restaurant Style Seekh Kebab Recipe | Sardaar Ji Dhaba', seoDescription: 'Make fragrant restaurant-style vegetable biryani with basmati rice, mixed vegetables, mint, saffron, and a dum finish.',
     ingredients: ['2 cups basmati rice', '3 cups mixed vegetables', '1 sliced onion', '1 cup yoghurt', '1 tbsp ginger-garlic paste', '2 tbsp biryani masala', '1 tsp chilli', '1/2 tsp turmeric', 'Mint and coriander', 'Saffron milk', '2 tbsp ghee', 'Whole spices and salt'],
     method: ['Soak rice and boil with salt and whole spices until 70 percent cooked, then drain.', 'Cook onion in ghee, add ginger-garlic, yoghurt and spices, then add vegetables and cook until just tender.', 'Layer masala and rice with mint, coriander, saffron milk and ghee. Seal and cook on low for 20 minutes, then rest before fluffing.'],
     tips: ['Keep vegetables slightly firm for the dum stage.', 'Do not stir layers aggressively after cooking.', 'Fried onion adds sweetness and aroma.'], flavour: 'saffron, mint, whole spice and separate basmati grains', pairing: 'boondi raita, onion, pickle or masala chaas',
