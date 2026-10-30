@@ -46,7 +46,7 @@ for (const url of urls) {
     };
 
     assert(!html.includes('Description pending confirmation') && !html.includes('Guest quote placeholder'), `${route}: unfinished placeholder content is published`);
-    assert(!/<a\\b[^>]+href="\\/(?:noida|prayagraj)"/i.test(html), `${route}: internal links must use canonical location URLs`);
+    assert(!/<a\b[^>]+href="\/(?:noida|prayagraj)"/i.test(html), `${route}: internal links must use canonical location URLs`);
     const ogImage = html.match(/<meta property="og:image" content="([^"]*)">/)?.[1] ?? '';
     assert(ogImage.length > 0, `${route}: Open Graph image is missing`);
     const ogImageUrl = new URL(ogImage, url);
