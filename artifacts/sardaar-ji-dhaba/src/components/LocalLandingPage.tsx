@@ -3,6 +3,7 @@ import { business } from '@/config/business';
 
 type LocalLandingPageProps = {
     city: 'Noida' | 'Prayagraj';
+    canonicalPath: string;
     heading: string;
     address: string;
     postalCode?: string;
@@ -13,7 +14,7 @@ type LocalLandingPageProps = {
 
 const schemaDays = business.hours.days.map(day => `https://schema.org/${day}`);
 
-export function LocalLandingPage({ city, heading, address, postalCode, description, image, zomatoUrl }: LocalLandingPageProps) {
+export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, description, image, zomatoUrl }: LocalLandingPageProps) {
     const mapQuery = `${business.name}, ${address}, ${city}, Uttar Pradesh${postalCode ? ` ${postalCode}` : ''}`;
     const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
     const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
@@ -23,9 +24,9 @@ export function LocalLandingPage({ city, heading, address, postalCode, descripti
     const localBusinessSchema = {
         '@context': 'https://schema.org',
         '@type': 'Restaurant',
-        '@id': `${business.siteUrl}/${city.toLowerCase()}#restaurant`,
+        '@id': `${business.siteUrl}${canonicalPath}#restaurant`,
         name: business.name,
-        url: `${business.siteUrl}/${city.toLowerCase()}`,
+        url: `${business.siteUrl}${canonicalPath}`,
         telephone: business.phone.e164,
         image: `${business.siteUrl}${image}`,
         servesCuisine: business.cuisine,
