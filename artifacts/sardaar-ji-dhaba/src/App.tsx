@@ -610,7 +610,7 @@ function LocationDetail() {
 }
 
 function NoidaLanding() {
-  return <Shell><Meta title="Sardaar Ji Dhaba Noida | Sector 76" description="Visit Sardaar Ji Dhaba in Noida for Punjabi and North Indian food. Check outlet details, opening hours and directions before your visit." image="/images/og/noida-1200x630.jpg" /><NoidaPage /></Shell>;
+  return <Shell><Meta title="Punjabi Restaurant in Noida | Sardaar Ji Dhaba" description="Visit Sardaar Ji Dhaba in Noida for Punjabi and North Indian food. Check outlet details, opening hours and directions before your visit." image="/images/og/noida-1200x630.jpg" /><NoidaPage /></Shell>;
 }
 
 function PrayagrajLanding() {
