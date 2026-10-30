@@ -2,7 +2,7 @@
 
 ## Social Images
 
-Supply branded 1200 x 630 JPEG or WebP images at these paths. Each image should represent the page it is assigned to; blog posts use their own article image.
+The build currently generates 1200 x 630 JPEG previews at these paths from existing restaurant photography. Replace the source photos in `scripts/convert-images.mjs` with approved, page-specific branded photos when available. Blog posts use their own article image when it accurately represents the post.
 
 - `/images/og/home-1200x630.jpg`
 - `/images/og/about-1200x630.jpg`
@@ -22,7 +22,7 @@ The legal pages use the home image. The existing article images are currently us
 
 Fill the destination values in `src/data/redirects.ts` with the verified matching canonical paths. The build emits only completed mappings into `public/_redirects`.
 
-The old blog subdomain hostname was not included in the project configuration, and neither supplied example has a clearly matching current article. Confirm the old hostname and destination paths before enabling these mappings.
+The build emits completed legacy article and city-alias mappings as permanent path redirects. Confirm any historical blog subdomain hostname and additional old URLs in Search Console before adding further mappings.
 
 ## Canonical Host
 
@@ -32,4 +32,4 @@ Use Cloudflare Redirect Rules for host-wide redirects because Pages `_redirects`
 - `https://www.sardaarjidhaba.com/*` to `https://sardaarjidhaba.com/$1`
 - `http://www.sardaarjidhaba.com/*` to `https://sardaarjidhaba.com/$1`
 
-Ensure the apex domain is attached to the Pages project and redirects are evaluated before serving assets.
+Ensure the apex domain is attached to the Pages project and redirects are evaluated before serving assets. These host-wide rules must be verified in the Cloudflare dashboard; they are not created by the repository build.
