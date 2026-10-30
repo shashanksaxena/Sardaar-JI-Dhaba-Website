@@ -8,12 +8,6 @@ export const business = {
         display: '+91 88828 97431',
         e164: '+918882897431',
     },
-    hours: {
-        display: '11:00 AM - 11:00 PM',
-        opens: '11:00',
-        closes: '23:00',
-        days: openingDays,
-    },
     cuisine: ['North Indian', 'Punjabi', 'Desi Chinese'],
     dietaryClassification: null, // TODO: verify veg/non-veg labels for each published menu item.
     priceRange: '₹₹',
@@ -42,6 +36,7 @@ export const business = {
             id: 'noida',
             city: 'Noida',
             streetAddress: 'The Aranya, Sector 119',
+            hours: null as { display: string; opens: string; closes: string; days: string[] } | null,
             fssaiLicenseNumber: null as string | null,
             foodSafetyConnectQrUrl: null as string | null,
             postalCode: null, // TODO: supply and verify the outlet pincode.
@@ -58,6 +53,7 @@ export const business = {
             id: 'prayagraj',
             city: 'Prayagraj',
             streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines',
+            hours: { display: '11:00 AM - 11:00 PM', opens: '11:00', closes: '23:00', days: openingDays },
             fssaiLicenseNumber: null as string | null,
             foodSafetyConnectQrUrl: null as string | null, // TODO: verify 138C as the canonical outlet number.
             postalCode: '211001',
@@ -91,6 +87,6 @@ export const brand = {
 export const locations = business.outlets.map(outlet => ({
     ...outlet,
     area: `${outlet.streetAddress}, ${outlet.city}, ${outlet.addressRegion}${outlet.postalCode ? ` ${outlet.postalCode}` : ''}`,
-    hours: business.hours.display,
+    hours: outlet.hours?.display ?? 'Call to confirm hours',
     availability: '',
 }));
