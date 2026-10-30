@@ -107,6 +107,12 @@ for (const url of urls) {
 assert(urls.length > 0, 'Sitemap contains no URLs');
 assert(new Set(urls).size === urls.length, 'Sitemap contains duplicate URLs');
 assert(!urls.some(url => ['/noida', '/prayagraj'].includes(new URL(url).pathname)), 'Legacy city aliases must not be listed in the sitemap');
+const adminHtml = await readFile(path.join(outputRoot, 'admin/index.html'), 'utf8');
+assert(/<meta name="robots" content="noindex, nofollow">/.test(adminHtml), 'Admin route must be noindex');
+const robots = await readFile(path.join(outputRoot, 'robots.txt'), 'utf8');
+assert(robots.includes(`Sitemap: ${new URL(urls[0]).origin}/sitemap.xml`), 'robots.txt sitemap declaration missing');
+assert(robots.includes('Disallow: /api'), 'robots.txt must keep API routes out of crawlers');
+assert(!robots.includes('Disallow: /admin'), 'Admin must remain crawlable so search engines can see its noindex directive');
 const redirects = await readFile(path.join(outputRoot, '_redirects'), 'utf8');
 assert(redirects.includes('/noida /locations/noida 301'), 'Noida alias redirect missing');
 assert(redirects.includes('/prayagraj /locations/prayagraj 301'), 'Prayagraj alias redirect missing');
