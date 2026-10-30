@@ -780,7 +780,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
   const title = terms ? 'Terms & Conditions | Sardaar Ji Dhaba' : 'Privacy Policy | Sardaar Ji Dhaba';
   const description = terms ? 'Read the Terms & Conditions for Sardaar Ji Dhaba.' : 'Read the Privacy Policy for Sardaar Ji Dhaba.';
 
-  return <Shell><Meta title={title} description={description} /><PageIntro eyebrow="The fine print" title={terms ? 'Terms & conditions' : 'Privacy policy'} copy={terms ? 'These terms govern your use of the Sardaar Ji Dhaba website, including menu browsing, location information, franchise enquiries and contact forms.' : 'This privacy policy explains how Sardaar Ji Dhaba handles personal information provided through our website, contact forms, WhatsApp enquiries and related service requests.'} /><section className="mx-auto max-w-3xl px-5 pb-28 lg:px-8"><div className="space-y-10 border-t border-foreground/15 pt-8 text-sm leading-7 text-muted-foreground">
+  return <Shell><Meta title={title} description={description} /><PageIntro eyebrow="The fine print" title={terms ? 'Terms & conditions' : 'Privacy policy'} copy={terms ? 'These terms govern your use of the Sardaar Ji Dhaba website, including menu browsing, location information, franchise enquiries and contact forms.' : 'This privacy policy explains how Sardaar Ji Dhaba handles personal information provided through our website, contact forms, WhatsApp enquiries and related service requests.'} /><p className="mx-auto -mt-8 max-w-3xl px-5 pb-8 text-xs text-muted-foreground lg:px-8">Last updated: 31 October 2026</p><section className="mx-auto max-w-3xl px-5 pb-28 lg:px-8"><div className="space-y-10 border-t border-foreground/15 pt-8 text-sm leading-7 text-muted-foreground">
     {terms ? (
       <>
         <div>
@@ -794,6 +794,14 @@ function Legal({ terms = false }: { terms?: boolean }) {
         <div>
           <h2 className="font-display text-2xl text-foreground">Orders, reservations and enquiries</h2>
           <p className="mt-3">Any request submitted through our website, including contact forms, franchise enquiries, or WhatsApp communication, is subject to confirmation by Sardaar Ji Dhaba. We may contact you to verify details, clarify requirements or respond to your enquiry. The website is not a binding reservation or order platform unless explicitly stated otherwise.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Menu, prices and food information</h2>
+          <p className="mt-3">Menu descriptions, prices, photographs and availability are provided for general information and may vary by outlet or change without notice. Please confirm the current price and availability with the outlet before ordering. If you have a food allergy or dietary requirement, contact the outlet before ordering and ask the team to confirm ingredients and preparation.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Franchise and consulting information</h2>
+          <p className="mt-3">Franchise and RestroGrowth information on this website is for general information and initial enquiry purposes only. A form submission is not an offer, acceptance, approval, reservation of territory, or guarantee of sales, profit or return on investment. Any potential engagement or franchise arrangement is subject to due diligence, applicable approvals and a separate written agreement signed by the parties.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Third-party links and services</h2>
