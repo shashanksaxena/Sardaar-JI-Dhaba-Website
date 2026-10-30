@@ -14,6 +14,8 @@ type Inquiry = {
     service?: string;
     source?: string;
     consent?: boolean;
+    investmentRange?: string;
+    experience?: string;
 };
 
 function isInquiry(value: unknown): value is Inquiry {
@@ -31,6 +33,13 @@ function isInquiry(value: unknown): value is Inquiry {
             typeof inquiry.restaurantName === "string" && inquiry.restaurantName.trim().length > 1 && inquiry.restaurantName.length <= 120 &&
             typeof inquiry.city === "string" && inquiry.city.trim().length > 1 &&
             typeof inquiry.service === "string" && inquiry.service.trim().length > 1 && inquiry.service.length <= 100 &&
+            inquiry.consent === true;
+    }
+    if (inquiry.kind === "franchise") {
+        return typeof inquiry.phone === "string" && inquiry.phone.trim().length >= 7 &&
+            typeof inquiry.city === "string" && inquiry.city.trim().length > 1 &&
+            typeof inquiry.investmentRange === "string" && inquiry.investmentRange.trim().length > 1 && inquiry.investmentRange.length <= 100 &&
+            (inquiry.experience === undefined || (typeof inquiry.experience === "string" && inquiry.experience.length <= 120)) &&
             inquiry.consent === true;
     }
     return true;

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { getMongoDatabase } from "../lib/mongo";
 
 const router = Router();
-const allowedEvents = new Set(["menu_click", "phone_click", "whatsapp_click", "directions_click", "order_click", "contact_submission", "page_view", "consulting_form_cta_click", "consulting_lead_submission"]);
+const allowedEvents = new Set(["menu_click", "phone_click", "whatsapp_click", "directions_click", "order_click", "contact_submission", "page_view", "consulting_form_cta_click", "consulting_lead_submission", "franchise_cta_click", "franchise_form_submission"]);
 
 router.post("/analytics/events", async (req, res): Promise<void> => {
     const { name, path, metadata } = req.body ?? {};
