@@ -117,7 +117,7 @@ export function getSeoMetadata(route: string): SeoMetadata | undefined {
     return {
         title: story.seoTitle ?? `${dishName} Recipe | ${brand.name}`,
         description: story.seoDescription ?? story.excerpt,
-        image: story.image,
+        image: story.category === 'Recipe guide' && story.image !== `/images/blog/${story.id}.png` ? '/images/og/home-1200x630.jpg' : story.image,
         type: 'article',
     };
 }
