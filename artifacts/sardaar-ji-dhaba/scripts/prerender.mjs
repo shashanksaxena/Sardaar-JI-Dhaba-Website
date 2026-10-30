@@ -6,7 +6,6 @@ import { renderToString } from 'react-dom/server';
 import { createServer } from 'vite';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const repositoryRoot = path.resolve(appRoot, '../..');
 const outputRoot = path.join(appRoot, 'dist/public');
 let siteUrl;
 let brandName;
