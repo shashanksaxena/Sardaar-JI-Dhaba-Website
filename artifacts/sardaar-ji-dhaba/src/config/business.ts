@@ -14,6 +14,8 @@ export const business = {
     logo: '/images/logo/sardaar-ji-prayagraj.jpg',
     email: 'sardaarjifoods@gmail.com',
     foodSafetyConnectUrl: 'https://fssai.gov.in/cms/food-safety-connect.php',
+    foodSafetyConnectAndroidUrl: 'https://play.google.com/store/apps/details?id=safety.connect.food',
+    foodSafetyConnectIosUrl: 'https://apps.apple.com/in/app/food-safety-connect/id6446887958',
     social: {
         instagramHandle: '@sardaarjidhaba',
         instagramUrl: 'https://www.instagram.com/sardaarjidhaba/',
