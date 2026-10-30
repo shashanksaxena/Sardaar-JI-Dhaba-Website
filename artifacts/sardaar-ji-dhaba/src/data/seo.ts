@@ -12,10 +12,10 @@ export type SeoMetadata = {
 
 export const seoRoutes: Record<string, SeoMetadata> = {
     '/': {
-        title: 'Sardaar Ji Dhaba | Authentic Punjabi & North Indian Restaurant in Noida & Prayagraj',
-        description: 'Experience authentic North Indian roadside flavors at Sardaar Ji Dhaba. Signature Dal Makhani, Tandoori Tikka, Paranthas & Family Combos in Noida & Prayagraj.',
-        image: '/images/og/home-1200x630.jpg',
-        type: 'restaurant',
+        title: 'Sardaar Ji Dhaba Franchise | Explore Franchise Opportunities in India',
+        description: 'Explore a Sardaar Ji Dhaba franchise partnership. Bring a Punjabi and North Indian dhaba concept to your city. Share your details to start a franchise enquiry.',
+        image: '/images/og/franchise-1200x630.jpg',
+        type: 'website',
         priority: 1.0,
     },
     '/about': {
