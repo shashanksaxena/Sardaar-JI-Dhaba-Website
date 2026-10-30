@@ -21,7 +21,7 @@ export const seoRoutes: Record<string, SeoMetadata> = {
     '/about': {
         title: `Our Story Since ${business.established} | Sardaar Ji Dhaba`,
         description: `Read the Sardaar Ji Dhaba story, from its ${business.established} beginnings to Punjabi restaurant tables in Noida and Prayagraj.`,
-        image: '/images/og/home-1200x630.jpg',
+        image: '/images/og/about-1200x630.jpg',
         priority: 0.5,
     },
     '/menu': {
@@ -33,7 +33,7 @@ export const seoRoutes: Record<string, SeoMetadata> = {
     '/gallery': {
         title: 'Food & Restaurant Gallery | Sardaar Ji Dhaba',
         description: 'View food, restaurant spaces and menu imagery from Sardaar Ji Dhaba in Noida and Prayagraj.',
-        image: '/images/og/home-1200x630.jpg',
+        image: '/images/og/gallery-1200x630.jpg',
     },
     '/locations': {
         title: 'Noida & Prayagraj Outlets | Sardaar Ji Dhaba',
@@ -43,13 +43,13 @@ export const seoRoutes: Record<string, SeoMetadata> = {
     '/locations/noida': {
         title: 'Punjabi Restaurant in Noida | Sardaar Ji Dhaba',
         description: 'Visit Sardaar Ji Dhaba at The Aranya in Sector 119, Noida for Punjabi food, outlet details and directions.',
-        image: '/images/og/home-1200x630.jpg',
+        image: '/images/og/noida-1200x630.jpg',
         type: 'restaurant',
     },
     '/locations/prayagraj': {
         title: 'Punjabi Restaurant in Prayagraj | Sardaar Ji Dhaba',
         description: 'Find Sardaar Ji Dhaba on Mahatma Gandhi Marg near El Chico in Civil Lines, Prayagraj, with hours and directions.',
-        image: '/images/og/noida-1200x630.jpg',
+        image: '/images/og/prayagraj-1200x630.jpg',
         type: 'restaurant',
     },
 
@@ -57,7 +57,7 @@ export const seoRoutes: Record<string, SeoMetadata> = {
     '/success-story': {
         title: 'Sardaar Ji Dhaba Success Story | Noida & Prayagraj',
         description: `Discover how Sardaar Ji Dhaba grew from its ${business.established} beginnings into Punjabi restaurant outlets in Noida and Prayagraj.`,
-        image: '/images/og/franchise-1200x630.jpg',
+        image: '/images/og/success-story-1200x630.jpg',
     },
     '/restaurant-consulting': {
         title: 'Restaurant Consulting | RestroGrowth by Sardaar Ji Dhaba',
@@ -68,12 +68,12 @@ export const seoRoutes: Record<string, SeoMetadata> = {
     '/franchise': {
         title: 'Restaurant Franchise Enquiries | Sardaar Ji Dhaba',
         description: 'Explore a potential Sardaar Ji Dhaba partnership and share your restaurant franchise enquiry with the team.',
-        image: '/images/og/home-1200x630.jpg',
+        image: '/images/og/franchise-1200x630.jpg',
     },
     '/franchise/apply': {
         title: 'Franchise Application | Sardaar Ji Dhaba',
         description: 'Contact Sardaar Ji Dhaba about a Punjabi restaurant franchise opportunity in your city.',
-        image: '/images/og/home-1200x630.jpg',
+        image: '/images/og/franchise-1200x630.jpg',
     },
     '/blog': {
         title: 'Punjabi Recipes & City Guides | Sardaar Ji Dhaba',
@@ -83,7 +83,7 @@ export const seoRoutes: Record<string, SeoMetadata> = {
     '/contact': {
         title: 'Contact Sardaar Ji Dhaba | Noida & Prayagraj',
         description: 'Contact Sardaar Ji Dhaba for questions about its Noida and Prayagraj outlets, menu or franchise enquiries.',
-        image: '/images/og/home-1200x630.jpg',
+        image: '/images/og/contact-1200x630.jpg',
         priority: 0.5,
     },
     '/privacy-policy': {
