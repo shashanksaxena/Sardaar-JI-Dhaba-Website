@@ -809,7 +809,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Cookies and analytics</h2>
-          <p className="mt-3">Strictly necessary local storage is used to remember your cookie preference. Google Analytics 4, Google Tag Manager and this website’s first-party interaction-event tracking are not activated until you choose to accept optional analytics. If you accept, Google services may process online identifiers, device and browser information, and website interaction data to measure site use. If you reject, optional analytics tags and first-party interaction-event tracking remain disabled. You can change your choice at any time using the Cookie preferences link in the footer. Your browser may also provide controls to clear stored preferences.</p>
+          <p className="mt-3">Strictly necessary local storage is used to remember your cookie preference. Google Analytics 4, Google Tag Manager and this website’s first-party interaction-event tracking are not activated before you accept optional analytics. If you accept, Google services may process online identifiers, device and browser information, and website interaction data to measure site use. If you reject or later withdraw consent, analytics storage and first-party interaction-event tracking are disabled; tags already downloaded during a previously accepted session may remain loaded until you leave or reload the page. You can change your choice at any time using the Cookie preferences link in the footer. Your browser may also provide controls to clear stored preferences.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Data retention and security</h2>
