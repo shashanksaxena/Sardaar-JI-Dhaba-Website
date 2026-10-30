@@ -152,7 +152,7 @@ function buildRouteSchemas(route: string) {
             '@type': 'BlogPosting',
             headline: story.title,
             description: story.excerpt,
-            image: `${business.siteUrl}${story.image}`,
+            ...(story.category !== 'Recipe guide' || story.image === `/images/blog/${story.id}.png` ? { image: `${business.siteUrl}${story.image}` } : {}),
             author: { '@type': 'Organization', name: business.name },
             publisher: { '@type': 'Organization', name: business.name, url: business.siteUrl },
             ...(story.publishedAt ? { datePublished: story.publishedAt } : {}),
