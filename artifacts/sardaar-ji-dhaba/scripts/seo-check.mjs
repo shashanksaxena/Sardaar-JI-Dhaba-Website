@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -44,6 +44,19 @@ for (const url of urls) {
         sitemap: urls.includes(url),
         noKeywords: !/<meta\s+name="keywords"/i.test(html),
     };
+
+    assert(!html.includes('Description pending confirmation') && !html.includes('Guest quote placeholder'), `${route}: unfinished placeholder content is published`);
+    const images = [...html.matchAll(/<img\\b[^>]*src="([^"]+)"[^>]*alt="([^"]*)"/gi)];
+    for (const [, imageSrc, imageAlt] of images) {
+        assert(imageAlt.trim().length > 0, `${route}: image has no descriptive alt text`);
+        if (imageSrc.startsWith('/')) {
+            try {
+                await access(path.join(outputRoot, imageSrc.replace(/^\\//, '')));
+            } catch {
+                assert(false, `${route}: image file is missing: ${imageSrc}`);
+            }
+        }
+    }
 
     for (const schema of schemas) {
         assert(schema['@context'] === 'https://schema.org', `${route}: JSON-LD context missing`);
