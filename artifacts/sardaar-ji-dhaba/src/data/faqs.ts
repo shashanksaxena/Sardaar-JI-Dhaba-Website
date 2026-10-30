@@ -39,7 +39,7 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     },
     {
         question: `What are the opening hours of ${business.name} in ${location.city}?`,
-        answer: `The ${location.city} outlet is open daily from ${business.hours.display}.`,
+        answer: location.hours === 'Call to confirm hours' ? `Please call the ${location.city} outlet to confirm today's opening hours before travelling.` : `The ${location.city} outlet is open daily from ${location.hours}.`,
     },
     {
         question: `Where is ${business.name} in ${location.city} located?`,
