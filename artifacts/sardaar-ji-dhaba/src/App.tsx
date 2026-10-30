@@ -38,7 +38,7 @@ async function trackEvent(name: string) {
     await fetch(apiUrl('/api/analytics/events'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, path: window.location.pathname }),
+      body: JSON.stringify({ name, path: window.location.pathname, consent: true }),
       keepalive: true,
     });
   } catch {
@@ -161,7 +161,7 @@ function Footer() {
       </div>
       <div className="border-t border-secondary-foreground/15"><div className="mx-auto max-w-7xl px-5 py-4 text-xs text-secondary-foreground/70 lg:px-8"><a href={business.foodSafetyConnectUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">Food Safety Connect · FSSAI consumer app and grievance portal</a></div></div>
       {business.outlets.some(outlet => outlet.fssaiLicenseNumber) && <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-3 px-5 py-5 text-xs text-secondary-foreground/70 lg:px-8">{business.outlets.filter(outlet => outlet.fssaiLicenseNumber).map(outlet => <div key={outlet.id}><span className="font-semibold">{outlet.city} FSSAI Licence/Registration No.:</span> {outlet.fssaiLicenseNumber} {outlet.foodSafetyConnectQrUrl && <a className="ml-2 underline underline-offset-2" href={outlet.foodSafetyConnectQrUrl} target="_blank" rel="noreferrer">Food Safety Connect QR</a>}</div>)}</div></div>}
-      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2024 Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link><button type="button" onClick={() => window.dispatchEvent(new Event('open-cookie-preferences'))} className="text-left hover:text-accent">Cookie preferences</button></div></div></div>
+      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© {new Date().getFullYear()} Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link><button type="button" onClick={() => window.dispatchEvent(new Event('open-cookie-preferences'))} className="text-left hover:text-accent">Cookie preferences</button></div></div></div>
     </footer>
   );
 }
@@ -746,7 +746,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
       <>
         <div>
           <h2 className="font-display text-3xl text-foreground">Website use</h2>
-          <p className="mt-3">By accessing or using this website, you agree to use it only for lawful, non-commercial purposes. You may browse the menu, locations, blog content, contact details and franchise information for personal reference and general restaurant discovery.</p>
+          <p className="mt-3">By accessing or using this website, you agree to use it only for lawful purposes. You may browse the menu, locations, blog content, contact details and franchise information for personal reference and general restaurant discovery.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Content and accuracy</h2>
@@ -778,7 +778,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Applicable law</h2>
-          <p className="mt-3">These terms are governed by the laws of India, and any dispute arising from the use of this website shall be subject to the exclusive jurisdiction of the courts in Uttar Pradesh, India.</p>
+          <p className="mt-3">These terms are governed by the laws of India, and any dispute arising from the use of this website shall be subject to the jurisdiction of the competent courts under applicable Indian law.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Contact</h2>
@@ -797,7 +797,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Information we collect</h2>
-          <p className="mt-3">We may collect personal information that you voluntarily provide through website forms, direct messages, franchise enquiries, reservations, WhatsApp communication or other contact methods. This may include your name, email address, phone number, city, message content and any other information you choose to share.</p>
+          <p className="mt-3">If you contact us by phone, email or WhatsApp, we may process the information you choose to share so that we can respond. WhatsApp conversations are also subject to WhatsApp/Meta’s own privacy terms.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">How we use your information</h2>
@@ -813,7 +813,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Data retention and security</h2>
-          <p className="mt-3">We retain personal information only for as long as needed to fulfil the purpose for which it was collected, comply with legal obligations, maintain records, or protect against misuse. We take reasonable administrative, technical and organizational measures to help keep information secure.</p>
+          <p className="mt-3">We retain personal information only for as long as needed to fulfil the purpose for which it was collected, comply with legal obligations, maintain records, or protect against misuse. We take reasonable administrative, technical and organisational measures to help protect information against unauthorised access, loss, misuse or disclosure. If a personal data breach occurs, we will take appropriate steps and provide notifications where required by applicable law.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Your choices</h2>
