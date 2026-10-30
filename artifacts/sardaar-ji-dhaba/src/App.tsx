@@ -139,6 +139,7 @@ function Header() {
     ['/locations', 'Find us'],
     ['/success-story', 'Success story'],
     ['/blog', 'Blog'],
+    ['/restaurant-consulting', 'Restaurant consulting'],
   ];
   const isActive = (href: string) => location === href || (href === '/locations' && location.startsWith('/locations/'));
   return (
@@ -189,7 +190,7 @@ function Footer() {
           <p className="max-w-xs text-sm leading-6 text-secondary-foreground/70">A generous roadside table, serving the flavours we grew up with in Noida and Prayagraj.</p>
           <div className="mt-6 flex gap-3"><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="WhatsApp" data-testid="link-whatsapp-footer"><MessageCircle size={15} /></a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="Instagram" data-testid="link-instagram-footer"><Instagram size={15} /></a></div>
         </div>
-        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link></div></div>
+        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link><Link href="/restaurant-consulting" className="hover:text-accent" data-testid="link-footer-consulting">Restaurant consulting · RestroGrowth</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phoneLink}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-accent">{brand.instagram}</a>{brand.googleBusinessUrl && <a href={brand.googleBusinessUrl} target="_blank" rel="noreferrer" className="hover:text-accent">Google reviews</a>}</div></div>
@@ -308,6 +309,16 @@ function Home() {
           ))}
         </div>
       </section>
+      <section className="border-y border-foreground/10 bg-secondary text-secondary-foreground">
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8 lg:py-20">
+          <div>
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">A new chapter · RestroGrowth</p>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">We run a restaurant too. Now we're helping other restaurants run better.</h2>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-secondary-foreground/75">Practical guidance for independent restaurants on operations, food costs, marketing and technology. Remote-first, with on-site support when it makes sense.</p>
+          </div>
+          <Link href="/restaurant-consulting" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-home-consulting">Explore RestroGrowth <ArrowRight size={16} /></Link>
+        </div>
+      </section>
       <section className="border-t border-foreground/10 bg-accent">
         <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-16 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
@@ -319,6 +330,146 @@ function Home() {
       </section>
     </Shell>
   );
+}
+
+function RestaurantConsulting() {
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    setSending(true);
+    setError('');
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+    try {
+      const response = await fetch(apiUrl('/api/inquiries'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, kind: 'consulting', source: 'restaurant-consulting-page', consent: formData.get('consent') === 'on' }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message ?? 'Your enquiry could not be submitted. Please try again or contact us directly.');
+      await trackEvent('consulting_lead_submission');
+      setSent(true);
+      form.reset();
+    } catch (submissionError) {
+      setError(submissionError instanceof Error ? submissionError.message : 'Your enquiry could not be submitted. Please try again.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const services = [
+    { title: 'Restaurant operations & SOPs', copy: 'Practical checklists, service workflows, kitchen coordination and day-to-day operating discipline.' },
+    { title: 'Food cost & profitability', copy: 'Menu costing, portion controls, wastage reviews and a clearer view of outlet-level margins.' },
+    { title: 'Marketing & customer growth', copy: 'Local visibility, offers, repeat-customer ideas, delivery-platform presence and lead capture.' },
+    { title: 'Technology & automation', copy: 'POS workflows, billing, reporting and simple automations that reduce manual work.' },
+    { title: 'Launch & expansion planning', copy: 'Pre-opening priorities, vendor and process planning, and practical readiness reviews.' },
+    { title: 'Business performance reviews', copy: 'A structured look at sales, costs, operations and the next actions worth prioritising.' },
+  ];
+
+  return <Shell>
+    <Meta title="RestroGrowth | Restaurant Consulting in India" description="Practical restaurant consulting for small and medium restaurants in India. Improve operations, food costs, marketing and technology with RestroGrowth by Sardaar Ji Dhaba." />
+    <section className="overflow-hidden bg-secondary text-secondary-foreground">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:px-8 lg:py-28">
+        <div>
+          <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">Restaurant consulting · A Sardaar Ji Dhaba initiative</p>
+          <h1 className="mt-7 max-w-3xl font-display text-6xl leading-[.9] tracking-[-.07em] md:text-8xl">Restro<span className="text-accent">Growth.</span></h1>
+          <p className="mt-7 max-w-2xl font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl">Better systems. Healthier margins. Stronger restaurants.</p>
+          <p className="mt-6 max-w-xl text-base leading-7 text-secondary-foreground/75">Practical, operator-minded support for small and medium restaurants. Start remotely; bring us on-site when your business needs hands-on attention.</p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a href="#consulting-enquiry" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-consulting-hero-cta">Book a discovery call <ArrowRight size={16} /></a>
+            <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-secondary-foreground/30 px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-consulting-whatsapp"><MessageCircle size={16} /> WhatsApp us</a>
+          </div>
+          <p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-secondary-foreground/55">Remote-first · On-site when required · India</p>
+        </div>
+        <div className="border border-secondary-foreground/20 bg-secondary-foreground/[.04] p-7 md:p-9">
+          <p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Who we work with</p>
+          <h2 className="mt-5 font-display text-3xl leading-tight">Independent restaurants ready to get more organised.</h2>
+          <ul className="mt-7 space-y-4 text-sm leading-6 text-secondary-foreground/75">
+            <li className="flex gap-3"><span className="text-accent">01</span><span>Single-outlet restaurants looking for tighter daily controls</span></li>
+            <li className="flex gap-3"><span className="text-accent">02</span><span>Growing operators preparing for a second outlet</span></li>
+            <li className="flex gap-3"><span className="text-accent">03</span><span>Owners who want clearer numbers and practical next steps</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24">
+      <div className="max-w-3xl">
+        <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">What we can help with</p>
+        <h2 className="mt-5 font-display text-4xl tracking-[-.05em] md:text-6xl">Good food needs good systems behind it.</h2>
+        <p className="mt-6 text-base leading-7 text-muted-foreground">We focus on the business behind the plate: the processes, costs, customer experience and tools that help a restaurant operate with more confidence.</p>
+      </div>
+      <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {services.map((service, index) => <article key={service.title} className="border-t-2 border-secondary bg-muted/40 p-6">
+          <span className="font-mono-brand text-xs text-primary">0{index + 1}</span>
+          <h3 className="mt-7 font-display text-2xl leading-tight">{service.title}</h3>
+          <p className="mt-4 text-sm leading-7 text-muted-foreground">{service.copy}</p>
+        </article>)}
+      </div>
+    </section>
+
+    <section className="bg-muted/70">
+      <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24">
+        <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">A clear, useful process</p>
+        <h2 className="mt-4 max-w-3xl font-display text-4xl tracking-[-.05em] md:text-5xl">Start with the problem. Leave with a plan.</h2>
+        <div className="mt-12 grid gap-8 md:grid-cols-4">
+          {[
+            ['01', 'Discovery', 'A focused conversation about your restaurant, goals and current challenges.'],
+            ['02', 'Business review', 'We review the information relevant to the problem you want to solve.'],
+            ['03', 'Action roadmap', 'You get prioritised recommendations and clear next steps.'],
+            ['04', 'Implementation support', 'Remote follow-through, with an on-site visit when the work calls for it.'],
+          ].map(([number, title, copy]) => <div key={number} className="border-t border-foreground/20 pt-5">
+            <span className="font-mono-brand text-xs text-primary">{number}</span>
+            <h3 className="mt-6 font-display text-2xl">{title}</h3>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">{copy}</p>
+          </div>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-24" id="consulting-enquiry">
+      <div>
+        <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Let's talk about your restaurant</p>
+        <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">Tell us where you want to grow.</h2>
+        <p className="mt-6 max-w-md text-sm leading-7 text-muted-foreground">Share a few details. The RestroGrowth team can use them to understand your restaurant and prepare for an initial conversation. No payment is required to send an enquiry.</p>
+        <div className="mt-9 space-y-4 border-t border-foreground/15 pt-6 text-sm">
+          <a href={`tel:${brand.phoneLink}`} className="flex items-center gap-3 font-semibold"><Phone size={17} className="text-primary" />{brand.phone}</a>
+          <a href={`mailto:${brand.email}`} className="flex items-center gap-3 font-semibold break-all"><ArrowUpRight size={17} className="text-primary" />{brand.email}</a>
+        </div>
+      </div>
+      <div className="bg-muted/60 p-6 md:p-10">
+        {sent ? <div className="flex min-h-[420px] flex-col justify-center">
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-accent font-bold text-secondary">✓</span>
+          <h3 className="mt-7 font-display text-3xl">Thanks. Your enquiry is in.</h3>
+          <p className="mt-4 max-w-lg text-sm leading-7 text-muted-foreground">We have received your details. The team will review your requirements and get in touch using the contact information you provided.</p>
+          <button type="button" onClick={() => setSent(false)} className="mt-7 w-fit font-bold text-primary underline">Send another enquiry</button>
+        </div> : <form onSubmit={submit} className="space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label className="block text-sm font-semibold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="Full name" /></label>
+            <label className="block text-sm font-semibold">Phone number<input name="phone" required type="tel" maxLength={20} autoComplete="tel" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="+91 ..." /></label>
+            <label className="block text-sm font-semibold">Email address<input name="email" required type="email" maxLength={160} autoComplete="email" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="you@restaurant.com" /></label>
+            <label className="block text-sm font-semibold">Restaurant name<input name="restaurantName" required maxLength={120} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="Your restaurant" /></label>
+            <label className="block text-sm font-semibold">City<input name="city" required maxLength={100} autoComplete="address-level2" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="City" /></label>
+            <label className="block text-sm font-semibold">What would you like help with?
+              <select name="service" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary">
+                <option value="" disabled>Select a focus area</option>
+                <option>Operations & SOPs</option><option>Food cost & profitability</option><option>Marketing & customer growth</option><option>Technology & automation</option><option>Launch & expansion planning</option><option>Business performance review</option><option>Not sure yet</option>
+              </select>
+            </label>
+          </div>
+          <label className="block text-sm font-semibold">What is the main challenge?<textarea name="message" required minLength={4} maxLength={2000} rows={4} className="mt-2 w-full resize-y border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="Tell us briefly about your restaurant and what you want to improve." /></label>
+          <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba / RestroGrowth may contact me about this consulting enquiry.</span></label>
+          <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-consulting">{sending ? 'Sending...' : 'Send consulting enquiry'} <ArrowRight size={16} /></button>
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+        </form>}
+      </div>
+    </section>
+  </Shell>;
 }
 
 function About() {
@@ -705,7 +856,7 @@ function Admin() {
 
 function Router() {
   const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/noida" component={NoidaLanding} /><Route path="/prayagraj" component={PrayagrajLanding} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
+  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/noida" component={NoidaLanding} /><Route path="/prayagraj" component={PrayagrajLanding} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/restaurant-consulting" component={RestaurantConsulting} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
 function App({ staticPath }: { staticPath?: string } = {}) {

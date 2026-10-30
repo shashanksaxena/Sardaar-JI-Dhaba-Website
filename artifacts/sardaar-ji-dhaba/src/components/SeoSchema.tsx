@@ -111,6 +111,27 @@ function buildRouteSchemas(route: string) {
         });
     }
 
+    if (route === '/restaurant-consulting') {
+        schemas.push({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            '@id': `${business.siteUrl}/restaurant-consulting#service`,
+            name: 'RestroGrowth Restaurant Consulting',
+            serviceType: 'Restaurant consulting',
+            description: getSeoMetadata(route)?.description,
+            url: `${business.siteUrl}/restaurant-consulting`,
+            provider: {
+                '@type': 'Organization',
+                name: 'Sardaar Ji Dhaba',
+                url: business.siteUrl,
+            },
+            areaServed: {
+                '@type': 'Country',
+                name: 'India',
+            },
+        });
+    }
+
     if (outlet) {
         schemas.push({
             '@context': 'https://schema.org',

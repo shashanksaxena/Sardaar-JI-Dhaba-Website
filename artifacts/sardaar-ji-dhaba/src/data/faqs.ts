@@ -81,8 +81,28 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     },
 ];
 
+const consultingFaqs: FaqItem[] = [
+    {
+        question: 'Who does RestroGrowth work with?',
+        answer: 'RestroGrowth is designed for small and medium restaurants, including independent single-outlet operators and growing businesses planning their next stage.',
+    },
+    {
+        question: 'What restaurant consulting services are available?',
+        answer: 'Support can cover restaurant operations and SOPs, food cost and profitability, marketing and customer growth, technology and automation, launch planning, and business performance reviews.',
+    },
+    {
+        question: 'Is RestroGrowth consulting remote or on-site?',
+        answer: 'The service is remote-first. On-site support can be discussed when the restaurant and the work require it.',
+    },
+    {
+        question: 'How do I get started with RestroGrowth?',
+        answer: 'Submit the consulting enquiry form with your restaurant details and the area where you need help. The team can then review your requirements and arrange an initial conversation.',
+    },
+];
+
 export function getFaqItems(route: string): FaqItem[] {
     if (route === '/') return homeFaqs;
+    if (route === '/restaurant-consulting') return consultingFaqs;
     const location = locations.find(item => route === `/locations/${item.id}` || route === `/${item.id}`);
     return location ? cityFaqs(location) : [];
 }
