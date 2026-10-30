@@ -36,11 +36,6 @@ export const business = {
         averageSpendForTwo: null, // TODO: add a verified current average cost for two.
     },
     orderUrl: 'https://www.zomato.com/allahabad/sardaar-ji-1-civil-lines',
-    schemaDepartments: [
-        { id: 'noida-sector-76', city: 'Noida', streetAddress: 'Sector 76', addressRegion: 'Uttar Pradesh', postalCode: null },
-        { id: 'noida-sector-64', city: 'Noida', streetAddress: 'Sector 64', addressRegion: 'Uttar Pradesh', postalCode: null },
-        { id: 'prayagraj-civil-lines', city: 'Prayagraj', streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines', addressRegion: 'Uttar Pradesh', postalCode: '211001' },
-    ],
     outlets: [
         {
             id: 'noida',
