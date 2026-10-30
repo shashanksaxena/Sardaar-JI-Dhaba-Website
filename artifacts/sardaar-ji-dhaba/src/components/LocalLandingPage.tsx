@@ -9,12 +9,14 @@ type LocalLandingPageProps = {
     postalCode?: string;
     hours?: { display: string; opens: string; closes: string; days: string[] };
     mapUrl?: string;
+    latitude?: number | null;
+    longitude?: number | null;
     description: string;
     image: string;
     zomatoUrl?: string;
 };
 
-export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, hours, mapUrl: configuredMapUrl, description, image, zomatoUrl }: LocalLandingPageProps) {
+export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, hours, mapUrl: configuredMapUrl, latitude, longitude, description, image, zomatoUrl }: LocalLandingPageProps) {
     const mapQuery = `${business.name}, ${address}, ${city}, Uttar Pradesh${postalCode ? ` ${postalCode}` : ''}`;
     const mapUrl = configuredMapUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
     const searchQuery = encodeURIComponent(`${business.name} ${city}`);
@@ -46,6 +48,7 @@ export function LocalLandingPage({ city, canonicalPath, heading, address, postal
             opens: hours.opens,
             closes: hours.closes,
         }] } : {}),
+        ...(latitude != null && longitude != null ? { geo: { '@type': 'GeoCoordinates', latitude, longitude } } : {}),
         hasMap: mapUrl,
     };
 
