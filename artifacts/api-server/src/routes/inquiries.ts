@@ -21,6 +21,8 @@ type Inquiry = {
 function isInquiry(value: unknown): value is Inquiry {
     if (!value || typeof value !== "object") return false;
     const inquiry = value as Record<string, unknown>;
+    if (typeof inquiry.website === "string" && inquiry.website.trim().length > 0) return false;
+    if (inquiry.source !== undefined && (typeof inquiry.source !== "string" || inquiry.source.length > 100)) return false;
     const validBase = (inquiry.kind === "contact" || inquiry.kind === "franchise" || inquiry.kind === "consulting") &&
         typeof inquiry.name === "string" && inquiry.name.trim().length > 1 && inquiry.name.length <= 100 &&
         typeof inquiry.email === "string" && inquiry.email.length <= 160 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiry.email) &&
