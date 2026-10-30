@@ -5,4 +5,8 @@ export const legacyBlogRedirects: Record<string, string> = {
     '/blog/top-5-restaurants-to-eat-in-prayagraj/': '/blog/punjabi-food-guide-civil-lines-prayagraj',
     '/blog/best-restaurant-franchise-under-5-lakh-india-2026': '/blog/restaurant-franchise-costs-india',
     '/blog/best-restaurant-franchise-under-5-lakh-india-2026/': '/blog/restaurant-franchise-costs-india',
+    '/noida': '/locations/noida',
+    '/noida/': '/locations/noida',
+    '/prayagraj': '/locations/prayagraj',
+    '/prayagraj/': '/locations/prayagraj',
 };
