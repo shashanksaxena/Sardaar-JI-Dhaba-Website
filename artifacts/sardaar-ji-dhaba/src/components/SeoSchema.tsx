@@ -140,7 +140,7 @@ function buildRouteSchemas(route: string) {
                 hasMenuItem: menu.filter(item => item.category === category).map(item => ({
                     '@type': 'MenuItem',
                     name: item.name,
-                    description: item.description,
+                    ...(item.description?.trim() && !/pending confirmation/i.test(item.description) ? { description: item.description } : {}),
                 })),
             })),
         });
