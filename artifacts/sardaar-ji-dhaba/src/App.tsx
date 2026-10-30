@@ -766,7 +766,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Third-party links and services</h2>
-          <p className="mt-3">This website may contain links to third-party services such as Google Maps, WhatsApp, Instagram and other external platforms. Sardaar Ji Dhaba is not responsible for the content, privacy practices, availability or accuracy of those external services.</p>
+          <p className="mt-3">This website uses Google Fonts to display its typefaces and provides links to third-party services such as Google Maps, WhatsApp, Instagram and delivery platforms. Google Maps opens only when you choose the directions link. These services may process technical information such as your IP address and browser details under their own privacy terms. Sardaar Ji Dhaba does not control the content, privacy practices, availability or accuracy of those external services.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Intellectual property</h2>
@@ -805,7 +805,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Information sharing</h2>
-          <p className="mt-3">Sardaar Ji Dhaba does not sell personal information. We may share information with service providers that help us operate the website or deliver communications, only when necessary. If you choose to contact us through WhatsApp, that conversation is handled by WhatsApp/Meta under its own privacy terms; Sardaar Ji Dhaba does not control the platform’s independent processing.</p>
+          <p className="mt-3">Sardaar Ji Dhaba does not sell personal information. We may share information with service providers that help us operate the website or deliver communications, only when necessary. If you choose to contact us through WhatsApp, that conversation is handled by WhatsApp/Meta under its own privacy terms; Sardaar Ji Dhaba does not control the platform’s independent processing. The website also requests font files from Google Fonts to render its typography. Google may receive technical request information such as your IP address and browser details when those files are requested. Google Maps is not embedded automatically; it opens only when you select the directions link.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Cookies and analytics</h2>
