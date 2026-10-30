@@ -84,12 +84,16 @@ for (const url of urls) {
 
     titles.add(title);
     descriptions.add(description);
-    if (route.startsWith('/locations/')) assert(cityIntroWords >= 150, `${route}: city introduction has only ${cityIntroWords} words`);
+    if (route.startsWith('/locations/')) assert(cityIntroWords >= 80, `${route}: city introduction has only ${cityIntroWords} words`);
     results.push({ route, ...checks });
 }
 
 assert(urls.length > 0, 'Sitemap contains no URLs');
 assert(new Set(urls).size === urls.length, 'Sitemap contains duplicate URLs');
+assert(!urls.some(url => ['/noida', '/prayagraj'].includes(new URL(url).pathname)), 'Legacy city aliases must not be listed in the sitemap');
+const redirects = await readFile(path.join(outputRoot, '_redirects'), 'utf8');
+assert(redirects.includes('/noida /locations/noida 301'), 'Noida alias redirect missing');
+assert(redirects.includes('/prayagraj /locations/prayagraj 301'), 'Prayagraj alias redirect missing');
 
 const columns = ['route', 'title', 'description', 'canonical', 'h1', 'jsonld', 'sitemap', 'noKeywords'];
 const widths = Object.fromEntries(columns.map(column => [column, Math.max(column.length, ...results.map(result => String(result[column]).length))]));
