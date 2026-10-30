@@ -7,10 +7,11 @@ export default function NoidaPage() {
     return (
         <LocalLandingPage
             city="Noida"
+            canonicalPath="/locations/noida"
             heading="Sardaar Ji Dhaba in Noida"
             address={outlet?.streetAddress ?? 'Noida, Uttar Pradesh'}
             postalCode={outlet?.postalCode ?? undefined}
-            description="Find Sardaar Ji Dhaba in Noida and plan your visit for Punjabi and North Indian food. Check the published outlet address and directions before travelling."
+            description="Visit Sardaar Ji Dhaba in Noida for Punjabi and North Indian food, including tandoori favourites, curries, breads and other dhaba-style dishes. The configured outlet address is The Aranya, Sector 119, Noida. Use this page to review the address, opening hours, contact number and map directions before travelling. Menu availability and prices can change, so contact the restaurant if you are visiting for a particular dish or need current details. If you have a food allergy or dietary requirement, speak to the team about ingredients and preparation before ordering. The outlet is listed as open daily from 11:00 AM to 11:00 PM."
             image={outlet?.image ?? '/images/restaurant/dining-room.jpg'}
         />
     );
