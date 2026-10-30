@@ -46,12 +46,12 @@ for (const url of urls) {
     };
 
     assert(!html.includes('Description pending confirmation') && !html.includes('Guest quote placeholder'), `${route}: unfinished placeholder content is published`);
-    const images = [...html.matchAll(/<img\\b[^>]*src="([^"]+)"[^>]*alt="([^"]*)"/gi)];
+    const images = [...html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*alt="([^"]*)"/gi)];
     for (const [, imageSrc, imageAlt] of images) {
         assert(imageAlt.trim().length > 0, `${route}: image has no descriptive alt text`);
         if (imageSrc.startsWith('/')) {
             try {
-                await access(path.join(outputRoot, imageSrc.replace(/^\\//, '')));
+                await access(path.join(outputRoot, imageSrc.replace(/^\//, '')));
             } catch {
                 assert(false, `${route}: image file is missing: ${imageSrc}`);
             }
