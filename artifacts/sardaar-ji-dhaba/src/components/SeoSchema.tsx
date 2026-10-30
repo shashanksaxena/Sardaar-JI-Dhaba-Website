@@ -39,7 +39,7 @@ function buildRestaurantSchema() {
             servesCuisine: business.cuisine,
             priceRange: business.priceRange,
             hasMenu: `${business.siteUrl}/menu`,
-            sameAs,
+            sameAs: [business.social.instagramUrl, ...(outlet.id === 'prayagraj' && business.social.zomatoUrl ? [business.social.zomatoUrl] : [])],
             address: {
                 '@type': 'PostalAddress',
                 streetAddress: outlet.streetAddress,
