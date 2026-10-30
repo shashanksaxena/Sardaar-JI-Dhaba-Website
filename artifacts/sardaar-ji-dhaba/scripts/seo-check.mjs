@@ -128,6 +128,10 @@ const robots = await readFile(path.join(outputRoot, 'robots.txt'), 'utf8');
 assert(robots.includes(`Sitemap: ${new URL(urls[0]).origin}/sitemap.xml`), 'robots.txt sitemap declaration missing');
 assert(robots.includes('Disallow: /api'), 'robots.txt must keep API routes out of crawlers');
 assert(!robots.includes('Disallow: /admin'), 'Admin must remain crawlable so search engines can see its noindex directive');
+const headers = await readFile(path.join(outputRoot, '_headers'), 'utf8');
+for (const header of ['X-Content-Type-Options: nosniff', 'Referrer-Policy: strict-origin-when-cross-origin', 'X-Frame-Options: DENY', 'Permissions-Policy: camera=(), microphone=(), geolocation=()', 'Strict-Transport-Security: max-age=31536000']) {
+    assert(headers.includes(header), `Security response header missing: ${header}`);
+}
 const redirects = await readFile(path.join(outputRoot, '_redirects'), 'utf8');
 assert(redirects.includes('/noida /locations/noida 301'), 'Noida alias redirect missing');
 assert(redirects.includes('/prayagraj /locations/prayagraj 301'), 'Prayagraj alias redirect missing');
