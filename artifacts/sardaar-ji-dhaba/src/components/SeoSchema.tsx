@@ -159,7 +159,7 @@ function buildRouteSchemas(route: string) {
             ...(story.modifiedAt ? { dateModified: story.modifiedAt } : {}),
             mainEntityOfPage: `${business.siteUrl}${route}`,
         });
-        if (story.ingredients?.length && story.method?.length) {
+        if (story.ingredients?.length && story.method?.length && story.image === `/images/blog/${story.id}.png`) {
             schemas.push({
                 '@context': 'https://schema.org',
                 '@type': 'Recipe',
