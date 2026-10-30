@@ -131,7 +131,7 @@ function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North 
 function Header() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
-  const nav = [
+  const allNav = [
     ['/about', 'Our story'],
     ['/menu', 'Menu'],
     ['/noida', 'Noida'],
@@ -140,7 +140,11 @@ function Header() {
     ['/success-story', 'Success story'],
     ['/blog', 'Blog'],
     ['/restaurant-consulting', 'Restaurant consulting'],
+    ['/franchise', 'Franchise opportunity'],
   ];
+  const nav = location === '/'
+    ? allNav.filter(([href]) => ['/about', '/success-story', '/locations'].includes(href))
+    : allNav;
   const isActive = (href: string) => location === href || (href === '/locations' && location.startsWith('/locations/'));
   return (
     <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/90 backdrop-blur-md">
@@ -161,7 +165,7 @@ function Header() {
         </nav>
         <div className="hidden items-center gap-3 md:flex">
           <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="grid h-10 w-10 place-items-center rounded-full border border-secondary/30 text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground" aria-label="Chat on WhatsApp" data-testid="link-whatsapp-header"><MessageCircle size={17} /></a>
-          <a href={`tel:${brand.phoneLink}`} onClick={() => trackEvent('phone_click')} className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="link-call-header">Call the dhaba</a>
+          {location === '/' ? <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="link-franchise-header">Apply for franchise <ArrowRight className="ml-1 inline" size={14} /></Link> : <a href={`tel:${brand.phoneLink}`} onClick={() => trackEvent('phone_click')} className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="link-call-header">Call the dhaba</a>}
         </div>
         <button type="button" onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-full border border-foreground/15 lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-toggle-menu">
           {open ? <X size={20} /> : <MenuIcon size={20} />}
@@ -173,7 +177,7 @@ function Header() {
             {nav.map(([href, label]) => (
               <Link key={href} href={href} onClick={() => setOpen(false)} className="flex items-center justify-between border-b border-foreground/10 py-3 text-lg font-semibold" data-testid={`link-mobile-${label.toLowerCase().replace(' ', '-')}`}>{label}<ArrowUpRight size={17} /></Link>
             ))}
-            <a href={`tel:${brand.phoneLink}`} className="mt-4 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-center font-bold text-primary-foreground" data-testid="link-call-mobile"><Phone size={16} /> Call the dhaba</a>
+            {location === '/' ? <Link href="/franchise/apply" onClick={() => { setOpen(false); trackEvent('franchise_cta_click'); }} className="mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-center font-bold text-primary-foreground" data-testid="link-franchise-mobile-header">Apply for franchise <ArrowRight size={16} /></Link> : <a href={`tel:${brand.phoneLink}`} className="mt-4 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-center font-bold text-primary-foreground" data-testid="link-call-mobile"><Phone size={16} /> Call the dhaba</a>}
           </nav>
         </div>
       )}
@@ -192,7 +196,6 @@ function Footer() {
         </div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link><Link href="/restaurant-consulting" className="hover:text-accent" data-testid="link-footer-consulting">Restaurant consulting · RestroGrowth</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
-        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phoneLink}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-accent">{brand.instagram}</a>{brand.googleBusinessUrl && <a href={brand.googleBusinessUrl} target="_blank" rel="noreferrer" className="hover:text-accent">Google reviews</a>}</div></div>
       </div>
       <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2024 Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link></div></div></div>
@@ -203,8 +206,8 @@ function Footer() {
 function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const faqItems = getFaqItems(location);
-  return <><Header /><main>{children}{location === '/' && <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><h2 className="font-display text-3xl">Visit an outlet</h2><div className="mt-5 flex flex-wrap gap-6"><Link href="/locations/noida" className="font-semibold text-primary underline decoration-accent underline-offset-4">Sardaar Ji Dhaba in Noida</Link><Link href="/locations/prayagraj" className="font-semibold text-primary underline decoration-accent underline-offset-4">Sardaar Ji Dhaba in Prayagraj</Link></div></section>}{faqItems.length > 0 && <FaqSection items={faqItems} />}</main><SeoSchema route={location} /><Footer /><MobileActionBar /></>;
-  return <><Header /><main>{children}{location === '/' && <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><h2 className="font-display text-3xl">Visit an outlet</h2><div className="mt-5 flex flex-wrap gap-6"><Link href="/noida" className="font-semibold text-primary underline decoration-accent underline-offset-4">Sardaar Ji Dhaba in Noida</Link><Link href="/prayagraj" className="font-semibold text-primary underline decoration-accent underline-offset-4">Sardaar Ji Dhaba in Prayagraj</Link></div></section>}{faqItems.length > 0 && <FaqSection items={faqItems} />}</main><SeoSchema route={location} /><Footer /><MobileActionBar /></>;
+  return <><Header /><main>{children}{faqItems.length > 0 && <FaqSection items={faqItems} />}</main><SeoSchema route={location} /><Footer /><MobileActionBar /></>;
+
 }
 
 function FaqSection({ items }: { items: FaqItem[] }) {
@@ -212,6 +215,13 @@ function FaqSection({ items }: { items: FaqItem[] }) {
 }
 
 function MobileActionBar() {
+  const [location] = useLocation();
+  if (location === '/') {
+    return <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 border-t border-foreground/15 bg-background/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_hsl(var(--foreground)/.12)] backdrop-blur-md md:hidden" aria-label="Franchise enquiry actions">
+      <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="flex min-h-14 items-center justify-center gap-2 bg-primary px-2 text-xs font-bold text-primary-foreground" data-testid="link-mobile-franchise-apply"><ArrowRight size={17} /> Apply for franchise</Link>
+      <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="flex min-h-14 items-center justify-center gap-2 text-xs font-bold text-foreground" data-testid="link-mobile-franchise-whatsapp"><MessageCircle size={17} /> WhatsApp us</a>
+    </nav>;
+  }
   return <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-foreground/15 bg-background/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_hsl(var(--foreground)/.12)] backdrop-blur-md md:hidden" aria-label="Quick actions">
     <Link href="/menu" onClick={() => trackEvent('menu_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-menu"><Utensils size={17} />Menu</Link>
     <a href={`tel:${brand.phoneLink}`} onClick={() => trackEvent('phone_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 bg-primary text-[10px] font-bold uppercase tracking-wide text-primary-foreground" data-testid="link-mobile-call"><Phone size={17} />Call</a>
@@ -232,100 +242,176 @@ function PageIntro({ eyebrow, title, copy }: { eyebrow: string; title: string; c
   return <section className="mx-auto max-w-7xl px-5 pb-14 pt-16 lg:px-8 lg:pb-20 lg:pt-24"><div className="max-w-3xl fade-up"><p className="mb-5 font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">{eyebrow}</p><h1 className="text-balance font-display text-5xl leading-[.96] tracking-[-.06em] md:text-7xl">{title}</h1><p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground md:text-lg">{copy}</p></div></section>;
 }
 
+function FranchiseLeadForm() {
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const values = Object.fromEntries(new FormData(form).entries());
+    setSending(true);
+    setError('');
+    const message = `Homepage franchise enquiry. Preferred investment range: ${values.investmentRange}. Restaurant / hospitality experience: ${values.experience || 'Not specified'}.`;
+    try {
+      const response = await fetch(apiUrl('/api/inquiries'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...values, message, kind: 'franchise', source: 'homepage-franchise-form', consent: true }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message ?? 'We could not save your enquiry. Please try again or contact us directly.');
+      await trackEvent('franchise_form_submission');
+      setSent(true);
+      form.reset();
+    } catch (submissionError) {
+      setError(submissionError instanceof Error ? submissionError.message : 'We could not save your enquiry. Please try again.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (sent) return <div className="flex min-h-[390px] flex-col justify-center">
+    <span className="grid h-12 w-12 place-items-center rounded-full bg-accent font-bold text-secondary">✓</span>
+    <h2 className="mt-7 font-display text-3xl">Your franchise enquiry is with us.</h2>
+    <p className="mt-4 text-sm leading-7 text-muted-foreground">Thank you for sharing your details. Our team will review your interest and contact you to discuss the next step.</p>
+    <p className="mt-5 text-xs text-muted-foreground">Prefer to speak now? <a href={`tel:${brand.phoneLink}`} className="font-bold text-primary underline">{brand.phone}</a></p>
+  </div>;
+
+  return <div className="bg-background p-6 text-foreground shadow-2xl md:p-8">
+    <p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Start a conversation</p>
+    <h2 className="mt-3 font-display text-3xl leading-tight tracking-[-.04em]">Explore a franchise partnership.</h2>
+    <p className="mt-3 text-sm leading-6 text-muted-foreground">Share a few details. We’ll take it from there.</p>
+    <form onSubmit={submit} className="mt-6 space-y-4">
+      <label className="block text-xs font-bold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="Full name" /></label>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="block text-xs font-bold">Phone number<input name="phone" required type="tel" minLength={7} maxLength={20} autoComplete="tel" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="+91 ..." /></label>
+        <label className="block text-xs font-bold">Email address<input name="email" required type="email" maxLength={160} autoComplete="email" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="you@example.com" /></label>
+      </div>
+      <label className="block text-xs font-bold">City where you want to open<input name="city" required minLength={2} maxLength={100} autoComplete="address-level2" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="Your preferred city" /></label>
+      <label className="block text-xs font-bold">Approximate investment budget
+        <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative budget only — not an official franchise fee or project cost.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary">
+          <option value="" disabled>Select your budget range</option>
+          <option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
+        </select>
+      </label>
+      <label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
+      <button type="submit" disabled={sending} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60" data-testid="button-home-franchise-submit">{sending ? 'Sending enquiry...' : 'Request franchise details'} <ArrowRight size={16} /></button>
+      {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
+      <p className="text-center text-[10px] leading-4 text-muted-foreground">Submitting this form is an enquiry, not a franchise offer or approval.</p>
+    </form>
+  </div>;
+}
+
 function Home() {
+  const franchiseReasons = [
+    ['A recognisable food identity', 'A Punjabi and North Indian dhaba concept with a clear menu personality and familiar comfort-food appeal.'],
+    ['An operating brand story', `Sardaar Ji Dhaba has been building its restaurant story since ${business.established}, with a presence in Noida and Prayagraj.`],
+    ['A conversation before commitment', 'Start by discussing your city, business goals, site readiness and the practical questions that matter to you.'],
+  ];
+  const steps = [
+    ['01', 'Share your interest', 'Tell us who you are, where you want to open and the investment range you are considering.'],
+    ['02', 'Have an initial conversation', 'We’ll understand your goals, answer what we can and learn more about your market and plans.'],
+    ['03', 'Explore the fit', 'If there is a mutual fit, we can discuss the concept, requirements and possible next steps in more detail.'],
+  ];
   return (
     <Shell>
       <Meta
-        title="Sardaar Ji Dhaba | Authentic Punjabi & North Indian Restaurant in Noida & Prayagraj"
-        description="Experience authentic North Indian roadside flavors at Sardaar Ji Dhaba. Signature Dal Makhani, Tandoori Tikka, Paranthas & Family Combos in Noida & Prayagraj."
+        title="Sardaar Ji Dhaba Franchise | Explore Franchise Opportunities in India"
+        description="Explore a Sardaar Ji Dhaba franchise partnership. Bring a Punjabi and North Indian dhaba concept to your city. Share your details to start a franchise enquiry."
+        image="/images/og/franchise-1200x630.jpg"
       />
-      <section className="relative overflow-hidden border-b border-foreground/10 bg-primary text-primary-foreground">
-        <div className="mx-auto grid min-h-[650px] max-w-7xl items-end gap-12 px-5 pb-14 pt-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8 lg:pb-20">
-          <div className="relative z-10 max-w-2xl fade-up">
-            <p className="mb-7 font-mono-brand text-[10px] uppercase tracking-[.27em] text-accent">Noida · Prayagraj · India</p>
-            <h1 className="mb-6 max-w-xl font-display text-3xl leading-tight md:text-4xl">Authentic Punjabi &amp; North Indian Dhaba in Noida &amp; Prayagraj</h1>
-            <h2 className="font-display text-[clamp(4.5rem,11vw,9.7rem)] leading-[.78] tracking-[-.09em]">Pull over.</h2>
-            <h3 className="font-display text-[clamp(4.5rem,11vw,9.7rem)] leading-[.78] tracking-[-.09em]"><span className="text-accent">Eat well.</span></h3>
-            <p className="mt-9 max-w-md text-lg leading-7 text-primary-foreground/80">The kind of food that makes a long drive worth taking — cooked with time, served with both hands.</p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/menu" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-1" data-testid="link-hero-menu">See what's cooking <ArrowRight size={16} /></Link>
-              <Link href="/locations" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-6 py-3.5 text-sm font-bold text-primary-foreground hover:bg-primary-foreground/10" data-testid="link-hero-locations">Find a stop <MapPin size={16} /></Link>
+      <section className="relative overflow-hidden bg-primary text-primary-foreground">
+        <div className="absolute -right-24 -top-28 h-[430px] w-[430px] rounded-full border border-accent/25" />
+        <div className="absolute -right-10 -top-14 h-[300px] w-[300px] rounded-full border border-accent/20" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-14 lg:grid-cols-[1.05fr_.8fr] lg:px-8 lg:py-20">
+          <div className="max-w-2xl">
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.27em] text-accent">Franchise enquiries · India</p>
+            <h1 className="mt-7 font-display text-[clamp(3.5rem,7vw,6.8rem)] leading-[.88] tracking-[-.08em]">Bring a little<br /><span className="text-accent">dhaba</span> to your city.</h1>
+            <p className="mt-7 max-w-xl font-display text-2xl leading-tight md:text-3xl">A familiar Punjabi table. A new chapter with you.</p>
+            <p className="mt-5 max-w-lg text-sm leading-7 text-primary-foreground/75 md:text-base">Explore a franchise partnership with Sardaar Ji Dhaba — a Punjabi and North Indian restaurant brand with an operating story dating back to {business.established}.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#franchise-enquiry" onClick={() => trackEvent('franchise_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-1" data-testid="link-home-hero-franchise">Start your franchise enquiry <ArrowRight size={16} /></a>
+              <Link href="/success-story" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/35 px-6 py-3.5 text-sm font-bold text-primary-foreground hover:bg-primary-foreground/10" data-testid="link-home-hero-story">Our story <ArrowUpRight size={16} /></Link>
+            </div>
+            <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-primary-foreground/20 pt-5 font-mono-brand text-[10px] uppercase tracking-[.15em] text-primary-foreground/70">
+              <span>Established {business.established}</span><span>Noida · Prayagraj</span><span>Punjabi · North Indian</span>
             </div>
           </div>
-          <div className="relative min-h-[330px] lg:min-h-[430px] fade-up delay-2">
-            <div className="absolute inset-0 rotate-3 border border-accent/50" />
-            <div className="absolute inset-4 -rotate-3 bg-background p-4 text-foreground shadow-2xl">
-              <PhotoArt src="/images/blog/restaurant-style-butter-chicken.png" alt="Restaurant style butter chicken with naan at Sardaar Ji Dhaba" label="signature spread" className="h-full min-h-0" priority />
-              <div className="absolute bottom-7 left-7 right-7 flex justify-between font-mono-brand text-[9px] uppercase tracking-[.18em]"><span>Made for sharing</span><span>Est. {business.established}</span></div>
-            </div>
-            <div className="absolute -bottom-3 -left-5 grid h-24 w-24 -rotate-12 place-items-center rounded-full border-2 border-accent bg-accent font-display text-center text-lg leading-none text-accent-foreground shadow-lg">full<br />plates<br />only</div>
+          <div id="franchise-enquiry" className="scroll-mt-28">
+            <FranchiseLeadForm />
           </div>
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
-        <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
-          <div>
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">The dhaba promise</p>
-            <h2 className="mt-5 max-w-sm font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">Come as a stranger. Leave with a favourite.</h2>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {values.map((value, i) => (
-              <div key={value.number} className={`border-t-2 ${i === 1 ? 'border-accent' : 'border-secondary'} pt-4 fade-up delay-${i + 1}`}>
-                <span className="font-mono-brand text-xs text-primary">{value.number}</span>
-                <h3 className="mt-8 font-display text-2xl">{value.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{value.copy}</p>
-              </div>
-            ))}
-          </div>
+
+      <section className="border-b border-foreground/10 bg-background">
+        <div className="mx-auto grid max-w-7xl grid-cols-3 gap-4 px-5 py-7 lg:px-8">
+          {[['Since', String(business.established)], ['Cities', 'Noida + Prayagraj'], ['Cuisine', 'Punjabi & North Indian']].map(([label, value]) => <div key={label} className="border-l-2 border-accent pl-3 sm:pl-5"><p className="font-mono-brand text-[9px] uppercase tracking-[.16em] text-muted-foreground">{label}</p><p className="mt-2 font-display text-sm leading-tight sm:text-xl">{value}</p></div>)}
         </div>
       </section>
+
+      <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:py-28">
+        <div>
+          <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">A brand built around the table</p>
+          <h2 className="mt-5 max-w-xl font-display text-4xl leading-[.98] tracking-[-.06em] md:text-6xl">Good food brings people in. A good experience brings them back.</h2>
+          <p className="mt-7 max-w-lg text-sm leading-7 text-muted-foreground md:text-base">Sardaar Ji Dhaba brings together the warmth of a Punjabi dhaba, a recognisable North Indian menu and a guest-first approach. We’re inviting thoughtful entrepreneurs to start a conversation about bringing that experience to their city.</p>
+          <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-home-story-franchise">I’m interested in a franchise <ArrowRight size={16} /></Link>
+        </div>
+        <PhotoArt src="/images/restaurant/dining-room.jpg" alt="Sardaar Ji Dhaba dining room and guest experience" label="the Sardaar Ji table" className="min-h-[360px] md:min-h-[500px]" priority />
+      </section>
+
       <section className="bg-muted/70">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8 lg:py-24">
-          <div>
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-secondary">The plate that started conversations</p>
-            <h2 className="mt-5 font-display text-5xl leading-[.95] tracking-[-.06em] md:text-7xl">More gravy.<br />More naan.<br /><span className="text-primary">No apologies.</span></h2>
-            <p className="mt-7 max-w-md leading-7 text-muted-foreground">We are here for the second helping, the table-wide order and that quiet moment when everyone stops talking because the food arrived.</p>
-            <Link href="/menu" className="mt-8 inline-flex items-center gap-2 font-bold text-primary underline decoration-accent decoration-2 underline-offset-4" data-testid="link-home-menu">Browse the full menu <ArrowRight size={16} /></Link>
+        <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24">
+          <div className="max-w-3xl">
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Why explore Sardaar Ji Dhaba</p>
+            <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">A clear food identity. A real restaurant story. A conversation about your city.</h2>
           </div>
-          <PhotoArt src="/images/people/family-table.jpg" alt="Guests sharing a generous dhaba meal" label="the big table" className="min-h-[400px] rotate-2 lg:min-h-[500px]" />
+          <div className="mt-12 grid gap-7 md:grid-cols-3">
+            {franchiseReasons.map(([title, copy], index) => <article key={title} className="border-t-2 border-secondary bg-background p-6">
+              <span className="font-mono-brand text-xs text-primary">0{index + 1}</span>
+              <h3 className="mt-8 font-display text-2xl leading-tight">{title}</h3>
+              <p className="mt-4 text-sm leading-7 text-muted-foreground">{copy}</p>
+            </article>)}
+          </div>
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
-        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">The blog</p>
-            <h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">Restaurant-style recipes</h2>
+
+      <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-28">
+        <PhotoArt src="/images/restaurant/celebration-room.jpg" alt="Sardaar Ji Dhaba restaurant space ready for guests" label="a place to gather" className="min-h-[360px] md:min-h-[470px]" />
+        <div>
+          <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">From first conversation to next step</p>
+          <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">A thoughtful process, without pressure.</h2>
+          <div className="mt-9 space-y-7">
+            {steps.map(([number, title, copy]) => <div key={number} className="flex gap-5 border-t border-foreground/15 pt-5">
+              <span className="font-mono-brand text-xs text-primary">{number}</span>
+              <div><h3 className="font-display text-2xl">{title}</h3><p className="mt-2 max-w-lg text-sm leading-7 text-muted-foreground">{copy}</p></div>
+            </div>)}
           </div>
-          <Link href="/blog" className="font-bold text-primary underline decoration-accent underline-offset-4" data-testid="link-home-blog">Read all recipes <ArrowRight className="ml-2 inline" size={16} /></Link>
-        </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {stories.slice(0, 3).map((story, i) => (
-            <Link href={`/blog/${story.id}`} key={story.id} className={`group ${i === 1 ? 'md:translate-y-8' : ''}`} data-testid={`card-home-story-${story.id}`}>
-              <PhotoArt src={story.image} alt={story.alt} label={story.category} className="min-h-[220px] transition-transform duration-300 group-hover:rotate-1" />
-              <p className="mt-5 font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">{story.category}</p>
-              <h3 className="mt-2 font-display text-2xl leading-tight group-hover:text-primary">{story.title}</h3>
-              <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold">Read recipe <ArrowUpRight size={14} /></span>
-            </Link>
-          ))}
+          <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="mt-9 inline-flex items-center gap-2 font-bold text-primary underline decoration-accent decoration-2 underline-offset-4" data-testid="link-home-process-apply">Take the first step <ArrowRight size={16} /></Link>
         </div>
       </section>
-      <section className="border-y border-foreground/10 bg-secondary text-secondary-foreground">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8 lg:py-20">
+
+      <section className="bg-secondary text-secondary-foreground">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-24">
           <div>
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">A new chapter · RestroGrowth</p>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">We run a restaurant too. Now we're helping other restaurants run better.</h2>
-            <p className="mt-5 max-w-2xl text-sm leading-7 text-secondary-foreground/75">Practical guidance for independent restaurants on operations, food costs, marketing and technology. Remote-first, with on-site support when it makes sense.</p>
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">Who should get in touch?</p>
+            <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">For people who care about building a good local business.</h2>
           </div>
-          <Link href="/restaurant-consulting" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-home-consulting">Explore RestroGrowth <ArrowRight size={16} /></Link>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {['Entrepreneurs exploring the food business', 'Restaurant operators considering another concept', 'People with a city or location in mind', 'Hands-on partners who value consistency and hospitality'].map((item, index) => <div key={item} className="border-t border-secondary-foreground/25 pt-4"><span className="font-mono-brand text-xs text-accent">0{index + 1}</span><p className="mt-6 font-display text-xl leading-snug">{item}</p></div>)}
+          </div>
         </div>
       </section>
-      <section className="border-t border-foreground/10 bg-accent">
-        <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-16 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+
+      <section className="bg-accent text-accent-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-16 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-20">
           <div>
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent-foreground/60">Have a question?</p>
-            <h2 className="mt-2 font-display text-4xl tracking-[-.05em]">Ring the bell. We pick up.</h2>
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent-foreground/65">Your city could be next</p>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">Let’s see if a Sardaar Ji Dhaba partnership is right for you.</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-accent-foreground/75">Start with a short enquiry. We’ll take the conversation from there.</p>
           </div>
-          <a href={`tel:${brand.phoneLink}`} className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-home-call"><Phone size={16} /> {brand.phone}</a>
+          <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="inline-flex w-fit items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-home-bottom-apply">Apply for franchise <ArrowRight size={16} /></Link>
         </div>
       </section>
     </Shell>
@@ -585,12 +671,13 @@ async function sendInquiry(form: HTMLFormElement, kind: 'contact' | 'franchise')
     const response = await fetch(apiUrl('/api/inquiries'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...values, kind }),
+      body: JSON.stringify({ ...values, kind, ...(kind === 'franchise' ? { source: 'franchise-application', consent: values.consent === 'on' } : {}) }),
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.message ?? 'The message could not be sent.');
     return;
-  } catch {
+  } catch (error) {
+    if (kind === 'franchise') throw error;
     const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
     const rawPayload = payload as Record<string, string | undefined>;
     const submission = {
@@ -616,6 +703,7 @@ function Application() {
     setSending(true);
     try {
       await sendInquiry(event.currentTarget, 'franchise');
+      await trackEvent('franchise_form_submission');
       setSent(true);
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : 'The message could not be sent.');
@@ -625,31 +713,45 @@ function Application() {
   };
   return (
     <Shell>
-      <Meta title="Franchise application" />
+      <Meta title="Sardaar Ji Dhaba Franchise Enquiry | Start an Application" description="Tell Sardaar Ji Dhaba about your city, investment readiness and restaurant plans. Submit a franchise enquiry to start a conversation." image="/images/og/franchise-1200x630.jpg" />
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-16 lg:grid-cols-[.7fr_1.3fr] lg:px-8 lg:py-24">
         <div>
-          <Link href="/franchise" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-franchise"><ChevronLeft size={14} /> Franchise</Link>
-          <h1 className="mt-12 font-display text-6xl leading-[.88] tracking-[-.07em]">Let's talk<br /><span className="text-primary">over chai.</span></h1>
-          <p className="mt-7 max-w-sm leading-7 text-muted-foreground">Tell us a little about yourself and the place you imagine. This first form is just a hello — no hard sell, no jargon.</p>
+          <Link href="/" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-franchise"><ChevronLeft size={14} /> Sardaar Ji Dhaba</Link>
+          <h1 className="mt-12 font-display text-6xl leading-[.88] tracking-[-.07em]">Let's talk<br /><span className="text-primary">about your city.</span></h1>
+          <p className="mt-7 max-w-sm leading-7 text-muted-foreground">Share a few details about yourself and your plans. This is an initial enquiry, not a commitment or franchise approval. Our team will review your details and contact you about the next step.</p>
           <div className="mt-10 flex items-center gap-3 border-t border-foreground/10 pt-5 text-sm"><Phone size={16} className="text-primary" /><a href={`tel:${brand.phoneLink}`} className="font-bold" data-testid="link-application-phone">{brand.phone}</a></div>
         </div>
         <div className="bg-muted/60 p-6 md:p-10">
           {sent ? (
             <div className="flex min-h-[500px] flex-col items-start justify-center">
               <span className="grid h-12 w-12 place-items-center rounded-full bg-accent font-bold text-secondary">✓</span>
-              <h2 className="mt-7 font-display text-4xl">Message received.</h2>
-              <p className="mt-4 max-w-md leading-7 text-muted-foreground">Thank you for reaching out. The Sardaar Ji team will review your note and get back to you at the contact details you shared.</p>
-              <button type="button" onClick={() => setSent(false)} className="mt-7 font-bold text-primary underline" data-testid="button-application-another">Send another note</button>
+              <h2 className="mt-7 font-display text-4xl">Enquiry received.</h2>
+              <p className="mt-4 max-w-md leading-7 text-muted-foreground">Thank you for your interest in Sardaar Ji Dhaba. The team will review your details and get in touch using the contact information you shared.</p>
+              <Link href="/" className="mt-7 font-bold text-primary underline">Back to home</Link>
             </div>
           ) : (
-            <form className="mt-8 space-y-6" onSubmit={submit}>
+            <form className="space-y-6" onSubmit={submit}>
               <div className="grid gap-6 sm:grid-cols-2">
-                <input required aria-label="Your name" placeholder="Your name" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none transition-colors focus:border-primary" data-testid="input-application-name" />
-                <input required type="email" aria-label="Email address" placeholder="Email address" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-email" />
+                <label className="block text-sm font-semibold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" placeholder="Full name" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-name" /></label>
+                <label className="block text-sm font-semibold">Phone number<input name="phone" required type="tel" minLength={7} maxLength={20} autoComplete="tel" placeholder="+91 ..." className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-phone-number" /></label>
+                <label className="block text-sm font-semibold">Email address<input name="email" required type="email" maxLength={160} autoComplete="email" placeholder="you@example.com" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-email" /></label>
+                <label className="block text-sm font-semibold">Preferred city<input name="city" required minLength={2} maxLength={100} autoComplete="address-level2" placeholder="City you have in mind" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-city" /></label>
+                <label className="block text-sm font-semibold">Approximate investment budget
+                  <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative budget only — not an official franchise fee or project cost.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-budget">
+                    <option value="" disabled>Select a range</option><option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold">Restaurant / hospitality experience
+                  <select name="experience" defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-experience">
+                    <option value="">Choose if applicable</option><option>Currently operate a restaurant</option><option>Worked in hospitality</option><option>First-time entrepreneur</option><option>Other business experience</option>
+                  </select>
+                </label>
               </div>
-              <textarea required rows={5} aria-label="Your message" placeholder="What can we help with?" className="w-full resize-none border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-application-message" />
-              <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-application">Send enquiry <ArrowRight size={16} /></button>
+              <label className="block text-sm font-semibold">Anything else we should know?<textarea name="message" required minLength={4} maxLength={2000} rows={4} placeholder="Tell us about your plans, preferred location or any questions." className="mt-2 w-full resize-y border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-message" /></label>
+              <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
+              <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-application">{sending ? 'Sending...' : 'Submit franchise enquiry'} <ArrowRight size={16} /></button>
               {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+              <p className="text-xs text-muted-foreground">Your details will only be used to respond to this enquiry. See our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p>
             </form>
           )}
         </div>
@@ -804,7 +906,7 @@ function NotFound() {
   return <Shell><Meta title="Page not found" /><section className="mx-auto flex min-h-[65vh] max-w-7xl flex-col justify-center px-5 py-20 lg:px-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Wrong turn</p><h1 className="mt-6 max-w-3xl font-display text-[clamp(5rem,14vw,12rem)] leading-[.75] tracking-[-.1em]">404<span className="text-primary">.</span></h1><p className="mt-10 max-w-sm text-lg leading-7 text-muted-foreground">This road does not go to the dhaba. Let us get you back to something tasty.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-404-home">Take me home <ArrowRight size={16} /></Link><Link href="/menu" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-bold" data-testid="link-404-menu">See the menu <Utensils size={16} /></Link></div></section></Shell>;
 }
 
-type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }[] };
+type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; investmentRange?: string; experience?: string; source?: string; message: string; createdAt: string }[] };
 
 function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -851,7 +953,7 @@ function Admin() {
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
 function Router() {
