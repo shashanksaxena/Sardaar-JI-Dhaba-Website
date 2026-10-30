@@ -22,7 +22,7 @@ export function LocalLandingPage({ city, heading, address, postalCode, descripti
         .filter((profile): profile is string => Boolean(profile));
     const localBusinessSchema = {
         '@context': 'https://schema.org',
-        '@type': 'LocalBusiness',
+        '@type': 'Restaurant',
         '@id': `${business.siteUrl}/${city.toLowerCase()}#localbusiness`,
         name: business.name,
         url: `${business.siteUrl}/${city.toLowerCase()}`,
@@ -30,6 +30,7 @@ export function LocalLandingPage({ city, heading, address, postalCode, descripti
         image: `${business.siteUrl}${image}`,
         servesCuisine: business.cuisine,
         priceRange: business.priceRange,
+        hasMenu: `${business.siteUrl}/menu`,
         sameAs,
         address: {
             '@type': 'PostalAddress',
