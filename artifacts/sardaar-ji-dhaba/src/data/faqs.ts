@@ -1,7 +1,7 @@
 import { business, locations } from '../config/business';
 
-const noidaDepartments = business.schemaDepartments.filter(department => department.city === 'Noida');
-const prayagrajDepartment = business.schemaDepartments.find(department => department.city === 'Prayagraj')!;
+const noidaOutlets = business.outlets.filter(outlet => outlet.city === 'Noida');
+const prayagrajOutlet = business.outlets.find(outlet => outlet.city === 'Prayagraj')!;
 
 export type FaqItem = {
     question: string;
@@ -44,8 +44,8 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     {
         question: `Where is ${business.name} in ${location.city} located?`,
         answer: location.city === 'Noida'
-            ? `The Noida branches are in ${noidaDepartments.map(department => department.streetAddress).join(' and ')}, Noida, Uttar Pradesh.`
-            : `The Prayagraj branch is at ${prayagrajDepartment.streetAddress}, Prayagraj, ${prayagrajDepartment.addressRegion} ${prayagrajDepartment.postalCode}.`,
+            ? `The Noida branches are in ${noidaOutlets.map(outlet => outlet.streetAddress).join(' and ')}, Noida, Uttar Pradesh.`
+            : `The Prayagraj branch is at ${prayagrajOutlet.streetAddress}, Prayagraj, ${prayagrajOutlet.addressRegion} ${prayagrajOutlet.postalCode}.`,
     },
     {
         question: `What signature dishes are listed at ${business.name} in ${location.city}?`,
