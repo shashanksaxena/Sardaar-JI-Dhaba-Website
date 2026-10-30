@@ -12,8 +12,8 @@ export type SeoMetadata = {
 
 export const seoRoutes: Record<string, SeoMetadata> = {
     '/': {
-        title: 'Sardaar Ji Dhaba Franchise | Explore Franchise Opportunities in India',
-        description: 'Explore a Sardaar Ji Dhaba franchise partnership. Bring a Punjabi and North Indian dhaba concept to your city. Share your details to start a franchise enquiry.',
+        title: 'Sardaar Ji Dhaba | Punjabi Restaurant & Franchise Opportunities',
+        description: 'Sardaar Ji Dhaba is a Punjabi and North Indian restaurant brand operating in Noida and Prayagraj. Explore a franchise partnership and submit an enquiry.',
         image: '/images/og/franchise-1200x630.jpg',
         type: 'website',
         priority: 1.0,
