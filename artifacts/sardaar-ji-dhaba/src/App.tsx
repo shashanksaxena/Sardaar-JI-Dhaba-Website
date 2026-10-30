@@ -957,7 +957,7 @@ function CookieConsent() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
           <h2 className="font-display text-xl">Your privacy choices</h2>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">We use essential storage to remember your choice. Optional Google Analytics and Tag Manager tags load only if you accept. Read our <a href="/privacy-policy" className="font-semibold text-primary underline">privacy policy</a>.</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">We use essential storage to remember your choice. Optional Google Analytics, Tag Manager and first-party interaction tracking run only if you accept. Read our <a href="/privacy-policy" className="font-semibold text-primary underline">privacy policy</a>.</p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
           <button type="button" onClick={() => choose(false)} className="rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold">Reject optional</button>
