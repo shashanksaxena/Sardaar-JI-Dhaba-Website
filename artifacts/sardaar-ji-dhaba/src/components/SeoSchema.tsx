@@ -23,17 +23,11 @@ function buildRestaurantSchema() {
         priceRange: business.priceRange,
         hasMenu: `${business.siteUrl}/menu`,
         sameAs,
-        openingHoursSpecification: [{
-            '@type': 'OpeningHoursSpecification',
-            dayOfWeek: business.hours.days,
-            opens: business.hours.opens,
-            closes: business.hours.closes,
-        }],
         department: business.outlets.map(outlet => ({
             '@type': 'Restaurant',
-            '@id': `${business.siteUrl}/#${outlet.id}`,
+            '@id': `${business.siteUrl}/locations/${outlet.id}#restaurant`,
             name: business.name,
-            url: `${business.siteUrl}/${outlet.id}`,
+            url: `${business.siteUrl}/locations/${outlet.id}`,
             telephone: business.phone.e164,
             image: `${business.siteUrl}${outlet.image}`,
             servesCuisine: business.cuisine,
@@ -49,12 +43,12 @@ function buildRestaurantSchema() {
                 addressCountry: 'IN',
             },
             ...(outlet.latitude !== null && outlet.longitude !== null ? { geo: { '@type': 'GeoCoordinates', latitude: outlet.latitude, longitude: outlet.longitude } } : {}),
-            openingHoursSpecification: [{
+            ...(outlet.hours ? { openingHoursSpecification: [{
                 '@type': 'OpeningHoursSpecification',
-                dayOfWeek: business.hours.days,
-                opens: business.hours.opens,
-                closes: business.hours.closes,
-            }],
+                dayOfWeek: outlet.hours.days,
+                opens: outlet.hours.opens,
+                closes: outlet.hours.closes,
+            }] } : {}),
             hasMap: outlet.mapUrl,
         })),
     };
