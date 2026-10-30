@@ -77,7 +77,6 @@ function buildFaqSchema(route: string) {
 function buildRouteSchemas(route: string) {
     const schemas: Record<string, unknown>[] = [];
     const faqSchema = buildFaqSchema(route);
-    const outlet = business.outlets.find(item => route === `/locations/${item.id}`);
     const story = route.startsWith('/blog/') ? stories.find(item => route === `/blog/${item.id}`) : undefined;
 
     if (route === '/') {
@@ -132,39 +131,6 @@ function buildRouteSchemas(route: string) {
                 '@type': 'Country',
                 name: 'India',
             },
-        });
-    }
-
-    if (outlet) {
-        schemas.push({
-            '@context': 'https://schema.org',
-            '@type': 'Restaurant',
-            '@id': `${business.siteUrl}${route}#restaurant`,
-            name: business.name,
-            url: `${business.siteUrl}${route}`,
-            telephone: business.phone.e164,
-            image: `${business.siteUrl}${outlet.image}`,
-            address: {
-                '@type': 'PostalAddress',
-                streetAddress: outlet.streetAddress,
-                addressLocality: outlet.city,
-                addressRegion: outlet.addressRegion,
-                ...(outlet.postalCode ? { postalCode: outlet.postalCode } : {}),
-                addressCountry: 'IN',
-            },
-            ...(outlet.latitude !== null && outlet.longitude !== null ? { geo: { '@type': 'GeoCoordinates', latitude: outlet.latitude, longitude: outlet.longitude } } : {}),
-            openingHoursSpecification: [{
-                '@type': 'OpeningHoursSpecification',
-                dayOfWeek: business.hours.days,
-                opens: business.hours.opens,
-                closes: business.hours.closes,
-            }],
-            servesCuisine: business.cuisine,
-            priceRange: business.priceRange,
-            hasMenu: `${business.siteUrl}/menu`,
-            hasMap: outlet.mapUrl,
-            sameAs,
-            parentOrganization: { '@type': 'Organization', name: business.name, url: business.siteUrl },
         });
     }
 
