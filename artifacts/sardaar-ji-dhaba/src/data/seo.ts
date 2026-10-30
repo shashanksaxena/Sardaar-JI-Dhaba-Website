@@ -12,7 +12,7 @@ export type SeoMetadata = {
 
 export const seoRoutes: Record<string, SeoMetadata> = {
     '/': {
-        title: 'Sardaar Ji Dhaba | Punjabi Restaurant & Franchise Opportunities',
+        title: 'Sardaar Ji Dhaba | Punjabi Restaurant & Franchise',
         description: 'Sardaar Ji Dhaba is a Punjabi and North Indian restaurant brand operating in Noida and Prayagraj. Explore a franchise partnership and submit an enquiry.',
         image: '/images/og/franchise-1200x630.jpg',
         type: 'website',
@@ -60,7 +60,7 @@ export const seoRoutes: Record<string, SeoMetadata> = {
         image: '/images/og/success-story-1200x630.jpg',
     },
     '/restaurant-consulting': {
-        title: 'Restaurant Consulting in India | RestroGrowth by Sardaar Ji Dhaba',
+        title: 'Restaurant Consulting | RestroGrowth by Sardaar Ji Dhaba',
         description: 'Practical restaurant consulting for small and medium restaurants in India. Improve operations, food costs, marketing and technology with RestroGrowth.',
         image: '/images/og/home-1200x630.jpg',
         priority: 0.8,
