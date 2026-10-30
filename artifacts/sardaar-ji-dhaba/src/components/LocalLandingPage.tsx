@@ -23,7 +23,7 @@ export function LocalLandingPage({ city, heading, address, postalCode, descripti
     const localBusinessSchema = {
         '@context': 'https://schema.org',
         '@type': 'Restaurant',
-        '@id': `${business.siteUrl}/${city.toLowerCase()}#localbusiness`,
+        '@id': `${business.siteUrl}/${city.toLowerCase()}#restaurant`,
         name: business.name,
         url: `${business.siteUrl}/${city.toLowerCase()}`,
         telephone: business.phone.e164,
