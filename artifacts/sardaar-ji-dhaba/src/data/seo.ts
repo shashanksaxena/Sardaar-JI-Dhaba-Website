@@ -52,20 +52,8 @@ export const seoRoutes: Record<string, SeoMetadata> = {
         image: '/images/og/prayagraj-1200x630.jpg',
         type: 'restaurant',
     },
-    '/noida': {
-        title: 'Punjabi Restaurant in Noida | Sardaar Ji Dhaba',
-        description: 'Visit Sardaar Ji Dhaba in Noida for Punjabi and North Indian food. Check outlet details, opening hours and directions before your visit.',
-        image: '/images/og/noida-1200x630.jpg',
-        type: 'restaurant',
-        priority: 0.8,
-    },
-    '/prayagraj': {
-        title: 'Sardaar Ji Dhaba Prayagraj | Civil Lines',
-        description: 'Visit Sardaar Ji Dhaba at 138C Mahatma Gandhi Marg, near El Chico in Civil Lines, Prayagraj. Get directions, opening hours and ordering links.',
-        image: '/images/og/prayagraj-1200x630.jpg',
-        type: 'restaurant',
-        priority: 0.8,
-    },
+
+
     '/success-story': {
         title: 'Sardaar Ji Dhaba Success Story | Noida & Prayagraj',
         description: `Discover how Sardaar Ji Dhaba grew from its ${business.established} beginnings into Punjabi restaurant outlets in Noida and Prayagraj.`,
