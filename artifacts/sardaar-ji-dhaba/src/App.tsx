@@ -158,7 +158,7 @@ function Footer() {
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phoneLink}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-accent">{brand.instagram}</a>{brand.googleBusinessUrl && <a href={brand.googleBusinessUrl} target="_blank" rel="noreferrer" className="hover:text-accent">Google reviews</a>}</div></div>
       </div>
-      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2024 Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link></div></div></div>
+      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2024 Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link><button type="button" onClick={() => window.dispatchEvent(new Event('open-cookie-preferences'))} className="text-left hover:text-accent">Cookie preferences</button></div></div></div>
     </footer>
   );
 }
@@ -817,7 +817,15 @@ function Legal({ terms = false }: { terms?: boolean }) {
     ) : (
       <>
         <div>
-          <h2 className="font-display text-3xl text-foreground">Information we collect</h2>
+          <h2 className="font-display text-3xl text-foreground">Who is responsible for your information</h2>
+          <p className="mt-3">Sardaar Ji Dhaba is responsible for personal information submitted through this website. For privacy questions, requests or complaints, contact us at <a href={`mailto:${brand.email}`} className="font-bold text-primary underline">{brand.email}</a> or call <a href={`tel:${brand.phoneLink}`} className="font-bold text-primary underline">{brand.phone}</a>.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Information we collect and why</h2>
+          <p className="mt-3">When you submit a contact, franchise or restaurant-consulting enquiry, we collect the details shown in that form, such as your name, email address, phone number, city, restaurant details, indicative budget and message. We use those details to respond to the specific enquiry, assess the request and keep a record of the conversation. Please do not submit payment details, identity documents or other sensitive information through these forms.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Information we collect</h2>
           <p className="mt-3">We may collect personal information that you voluntarily provide through website forms, direct messages, franchise enquiries, reservations, WhatsApp communication or other contact methods. This may include your name, email address, phone number, city, message content and any other information you choose to share.</p>
         </div>
         <div>
@@ -830,7 +838,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Cookies and analytics</h2>
-          <p className="mt-3">Our website may use cookies, analytics tools and similar technologies to understand how visitors use the site, improve performance, support security and measure marketing effectiveness. You can disable cookies in your browser settings, though some website features may not function properly as a result.</p>
+          <p className="mt-3">Strictly necessary storage is used to remember your cookie preference. Google Analytics 4 and Google Tag Manager are not loaded until you choose to accept optional analytics cookies. If you accept, those services may process online identifiers, device and browser information, and website interaction data to measure site use. If you reject, optional analytics tags are not loaded by this website. You can change your choice at any time using the Cookie preferences link in the footer. Your browser may also provide controls to clear stored preferences.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Data retention and security</h2>
@@ -838,7 +846,7 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Your choices</h2>
-          <p className="mt-3">You may contact us at any time to ask what information we hold about you, request a correction, or ask that we stop using your information for a particular purpose, subject to applicable legal requirements.</p>
+          <p className="mt-3">Subject to applicable law, you may ask us for information about personal data processed through this website, request correction or erasure, withdraw consent for processing that relies on consent, and raise a grievance. Withdrawal does not affect processing already carried out lawfully before withdrawal. To make a request, contact us using the details below and identify the enquiry so we can locate it. We may need to verify your request before acting on it.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Contact</h2>
@@ -888,6 +896,63 @@ function Admin() {
   return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
+function loadOptionalAnalytics() {
+  const analyticsWindow = window as Window & { dataLayer?: unknown[] };
+  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
+  if (!document.getElementById('sardaar-google-analytics')) {
+    analyticsWindow.dataLayer.push(['js', new Date()]);
+    analyticsWindow.dataLayer.push(['config', 'G-XFGBQ9E94J']);
+    const analyticsScript = document.createElement('script');
+    analyticsScript.id = 'sardaar-google-analytics';
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XFGBQ9E94J';
+    document.head.appendChild(analyticsScript);
+  }
+  if (!document.getElementById('sardaar-google-tag-manager')) {
+    analyticsWindow.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    const tagManagerScript = document.createElement('script');
+    tagManagerScript.id = 'sardaar-google-tag-manager';
+    tagManagerScript.async = true;
+    tagManagerScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-T32V895H';
+    document.head.appendChild(tagManagerScript);
+  }
+}
+
+function CookieConsent() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const storedChoice = window.localStorage.getItem('sardaar_cookie_consent');
+    if (storedChoice === 'accepted') loadOptionalAnalytics();
+    setVisible(storedChoice !== 'accepted' && storedChoice !== 'rejected');
+    const openPreferences = () => setVisible(true);
+    window.addEventListener('open-cookie-preferences', openPreferences);
+    return () => window.removeEventListener('open-cookie-preferences', openPreferences);
+  }, []);
+
+  const choose = (accepted: boolean) => {
+    window.localStorage.setItem('sardaar_cookie_consent', accepted ? 'accepted' : 'rejected');
+    if (accepted) loadOptionalAnalytics();
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+  return (
+    <aside className="fixed inset-x-3 bottom-20 z-[60] mx-auto max-w-3xl border border-foreground/15 bg-background p-5 text-foreground shadow-2xl md:bottom-5 md:p-6" aria-label="Cookie preferences" aria-live="polite">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="max-w-xl">
+          <h2 className="font-display text-xl">Your privacy choices</h2>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">We use essential storage to remember your choice. Optional Google Analytics and Tag Manager tags load only if you accept. Read our <a href="/privacy-policy" className="font-semibold text-primary underline">privacy policy</a>.</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <button type="button" onClick={() => choose(false)} className="rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold">Reject optional</button>
+          <button type="button" onClick={() => choose(true)} className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground">Accept optional</button>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 function Router() {
   const [location] = useLocation();
   return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/noida" component={NoidaLanding} /><Route path="/prayagraj" component={PrayagrajLanding} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/restaurant-consulting" component={RestaurantConsulting} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
@@ -900,7 +965,7 @@ function App({ staticPath }: { staticPath?: string } = {}) {
       { searchHook: () => '' },
     )
     : undefined;
-  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter hook={locationHook} base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;
+  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter hook={locationHook} base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><CookieConsent /><Toaster /></TooltipProvider></QueryClientProvider>;
 }
 
 export default App;
