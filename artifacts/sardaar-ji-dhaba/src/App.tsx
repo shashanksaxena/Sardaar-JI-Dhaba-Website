@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowRight, ArrowUpRight, ChevronLeft, Clock3, Instagram, Linkedin, MapPin, Menu as MenuIcon, MessageCircle, Phone, Search, Star, Utensils, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ChevronLeft, Clock3, Instagram, Linkedin, MapPin, Menu as MenuIcon, MessageCircle, Phone, Search, Utensils, X } from 'lucide-react';
 import { Link, Route, Switch, useLocation, useParams, Router as WouterRouter } from 'wouter';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
