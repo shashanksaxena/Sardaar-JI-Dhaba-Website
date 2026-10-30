@@ -7,14 +7,13 @@ type LocalLandingPageProps = {
     heading: string;
     address: string;
     postalCode?: string;
+    hours?: { display: string; opens: string; closes: string; days: string[] };
     description: string;
     image: string;
     zomatoUrl?: string;
 };
 
-const schemaDays = business.hours.days.map(day => `https://schema.org/${day}`);
-
-export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, description, image, zomatoUrl }: LocalLandingPageProps) {
+export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, hours, description, image, zomatoUrl }: LocalLandingPageProps) {
     const mapQuery = `${business.name}, ${address}, ${city}, Uttar Pradesh${postalCode ? ` ${postalCode}` : ''}`;
     const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
     const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
@@ -41,12 +40,12 @@ export function LocalLandingPage({ city, canonicalPath, heading, address, postal
             ...(postalCode ? { postalCode } : {}),
             addressCountry: 'IN',
         },
-        openingHoursSpecification: [{
+        ...(hours ? { openingHoursSpecification: [{
             '@type': 'OpeningHoursSpecification',
-            dayOfWeek: schemaDays,
-            opens: '11:00',
-            closes: '23:00',
-        }],
+            dayOfWeek: hours.days.map(day => `https://schema.org/${day}`),
+            opens: hours.opens,
+            closes: hours.closes,
+        }] } : {}),
         hasMap: mapUrl,
     };
 
@@ -77,7 +76,7 @@ export function LocalLandingPage({ city, canonicalPath, heading, address, postal
                     <dl className="mt-8 divide-y divide-foreground/15 border-y border-foreground/15">
                         <div className="flex gap-4 py-5"><MapPin className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Address</dt><dd className="mt-1 text-sm leading-6 text-muted-foreground">{address}{postalCode ? `, ${postalCode}` : ''}, {city}, Uttar Pradesh</dd></div></div>
                         <div className="flex gap-4 py-5"><Phone className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Phone</dt><dd className="mt-1 text-sm"><a href={`tel:${business.phone.e164}`} className="text-primary underline underline-offset-4">{business.phone.display}</a></dd></div></div>
-                        <div className="flex gap-4 py-5"><Clock3 className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Opening hours</dt><dd className="mt-1 text-sm text-muted-foreground">Daily, 11:00 AM – 11:00 PM</dd></div></div>
+                        <div className="flex gap-4 py-5"><Clock3 className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Opening hours</dt><dd className="mt-1 text-sm text-muted-foreground">{hours?.display ?? 'Call to confirm current hours'}</dd></div></div>
                     </dl>
                     <a href={mapUrl} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 font-semibold text-primary underline decoration-accent underline-offset-4">Get directions <ArrowUpRight size={16} /></a>
                 </div>
