@@ -430,7 +430,7 @@ function RestaurantConsulting() {
           <p className="mt-7 max-w-2xl font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl">Better systems. Healthier margins. Stronger restaurants.</p>
           <p className="mt-6 max-w-xl text-base leading-7 text-secondary-foreground/75">Practical, operator-minded support for small and medium restaurants. Start remotely; bring us on-site when your business needs hands-on attention.</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#consulting-enquiry" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-consulting-hero-cta">Book a discovery call <ArrowRight size={16} /></a>
+            <a href="#consulting-enquiry" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-consulting-hero-cta">Request a discovery call <ArrowRight size={16} /></a>
             <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-secondary-foreground/30 px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-consulting-whatsapp"><MessageCircle size={16} /> WhatsApp us</a>
           </div>
           <p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-secondary-foreground/55">Remote-first · On-site when required · India</p>
