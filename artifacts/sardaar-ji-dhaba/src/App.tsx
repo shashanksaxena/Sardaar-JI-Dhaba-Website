@@ -56,7 +56,7 @@ function setMeta(name: string, content: string, attr: 'name' | 'property' = 'nam
   element.content = content;
 }
 
-function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North Indian food in Noida and Prayagraj.', image = '/images/restaurant/dining-room.jpg', type = 'website' }: { title: string; description?: string; image?: string; type?: string }) {
+function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North Indian food in Noida and Prayagraj.', image = '/images/og/home-1200x630.jpg', type = 'website' }: { title: string; description?: string; image?: string; type?: string }) {
   const [location] = useLocation();
   const seo = getSeoMetadata(location);
   useEffect(() => {
@@ -283,7 +283,7 @@ function Home() {
       <Meta
         title="Sardaar Ji Dhaba Franchise | Explore Franchise Opportunities in India"
         description="Explore a Sardaar Ji Dhaba franchise partnership. Bring a Punjabi and North Indian dhaba concept to your city. Share your details to start a franchise enquiry."
-        image="/images/restaurant/sardaar-ji-dhaba-franchise.png"
+        image="/images/og/franchise-1200x630.jpg"
       />
       <section className="relative overflow-hidden bg-primary text-primary-foreground">
         <div className="absolute -right-24 -top-28 h-[430px] w-[430px] rounded-full border border-accent/25" />
@@ -321,7 +321,7 @@ function Home() {
           <p className="mt-7 max-w-lg text-sm leading-7 text-muted-foreground md:text-base">Sardaar Ji Dhaba brings together the warmth of a Punjabi dhaba, a recognisable North Indian menu and a guest-first approach. We’re inviting thoughtful entrepreneurs to start a conversation about bringing that experience to their city.</p>
           <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-home-story-franchise">I’m interested in a franchise <ArrowRight size={16} /></Link>
         </div>
-        <PhotoArt src="/images/restaurant/dining-room.jpg" alt="Sardaar Ji Dhaba dining room and guest experience" label="the Sardaar Ji table" className="min-h-[360px] md:min-h-[500px]" priority />
+        <PhotoArt src="/images/og/home-1200x630.jpg" alt="Sardaar Ji Dhaba dining room and guest experience" label="the Sardaar Ji table" className="min-h-[360px] md:min-h-[500px]" priority />
       </section>
 
       <section className="bg-muted/70">
@@ -522,7 +522,7 @@ function RestaurantConsulting() {
 }
 
 function About() {
-  return <Shell><Meta title="Our story" /><PageIntro eyebrow="The long way round" title="A dhaba is more than a place to eat." copy="It is a pause in the journey. A familiar smell from the open kitchen. A table where the food keeps coming and nobody checks the time." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-20 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:pb-32"><PhotoArt src="/images/restaurant/dining-room.jpg" alt="Warm Sardaar Ji Dhaba dining room" label="our beginning" className="min-h-[440px] lg:min-h-[580px]" /><div className="lg:pt-12"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">A note from the family</p><div className="mt-7 space-y-6 font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl"><p>In {business.established}, we opened our first table with one simple belief: roadside food should never feel like a compromise.</p><p>We wanted the warmth of a Punjabi home, the theatre of a live tandoor and the kind of portions that make you loosen your belt.</p></div><p className="mt-8 max-w-lg text-sm leading-7 text-muted-foreground">Since then, Sardaar Ji Dhaba has grown from a single busy stop into a trusted place for family meals, Punjabi comfort food and memorable evenings in Noida and Prayagraj.</p><div className="mt-10 border-l-2 border-accent pl-5 font-mono-brand text-[10px] uppercase tracking-[.17em] text-secondary">Built on repeat guests, slow-cooked gravies and a simple promise:<br /><span className="text-muted-foreground">serve honest food, serve it generously, and make every table feel welcome.</span></div></div></section><section className="bg-secondary text-secondary-foreground"><div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">What has not changed</p><div className="mt-12 grid gap-10 md:grid-cols-3">{values.map(value => <div key={value.number} className="border-t border-secondary-foreground/25 pt-5"><span className="font-mono-brand text-xs text-accent">{value.number}</span><h2 className="mt-10 font-display text-3xl">{value.title}</h2><p className="mt-4 text-sm leading-7 text-secondary-foreground/70">{value.copy}</p></div>)}</div></div></section></Shell>;
+  return <Shell><Meta title="Our story" /><PageIntro eyebrow="The long way round" title="A dhaba is more than a place to eat." copy="It is a pause in the journey. A familiar smell from the open kitchen. A table where the food keeps coming and nobody checks the time." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-20 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:pb-32"><PhotoArt src="/images/og/home-1200x630.jpg" alt="Warm Sardaar Ji Dhaba dining room" label="our beginning" className="min-h-[440px] lg:min-h-[580px]" /><div className="lg:pt-12"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">A note from the family</p><div className="mt-7 space-y-6 font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl"><p>In {business.established}, we opened our first table with one simple belief: roadside food should never feel like a compromise.</p><p>We wanted the warmth of a Punjabi home, the theatre of a live tandoor and the kind of portions that make you loosen your belt.</p></div><p className="mt-8 max-w-lg text-sm leading-7 text-muted-foreground">Since then, Sardaar Ji Dhaba has grown from a single busy stop into a trusted place for family meals, Punjabi comfort food and memorable evenings in Noida and Prayagraj.</p><div className="mt-10 border-l-2 border-accent pl-5 font-mono-brand text-[10px] uppercase tracking-[.17em] text-secondary">Built on repeat guests, slow-cooked gravies and a simple promise:<br /><span className="text-muted-foreground">serve honest food, serve it generously, and make every table feel welcome.</span></div></div></section><section className="bg-secondary text-secondary-foreground"><div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">What has not changed</p><div className="mt-12 grid gap-10 md:grid-cols-3">{values.map(value => <div key={value.number} className="border-t border-secondary-foreground/25 pt-5"><span className="font-mono-brand text-xs text-accent">{value.number}</span><h2 className="mt-10 font-display text-3xl">{value.title}</h2><p className="mt-4 text-sm leading-7 text-secondary-foreground/70">{value.copy}</p></div>)}</div></div></section></Shell>;
 }
 
 function SuccessStory() {
@@ -551,7 +551,7 @@ function MenuCard({ item, categoryStart }: { item: MenuItem; categoryStart: bool
 function Gallery() {
   const photos = [
     ...menuBoards,
-    { id: 'dining-room', title: 'Dining room', image: '/images/restaurant/dining-room.jpg', alt: 'Sardaar Ji Dhaba dining room' },
+    { id: 'dining-room', title: 'Dining room', image: '/images/og/home-1200x630.jpg', alt: 'Sardaar Ji Dhaba dining room' },
     { id: 'dhaba-exterior', title: 'Dhaba exterior', image: '/images/restaurant/dhaba-exterior.jpg', alt: 'Sardaar Ji Dhaba exterior' },
     { id: 'guest-table', title: 'Family table', image: '/images/people/guest-table.jpg', alt: 'Guests enjoying a meal at Sardaar Ji Dhaba' },
   ];
@@ -576,7 +576,7 @@ function LocationDetail() {
     <Meta
       title={`Punjabi Restaurant in ${place.city} | Sardaar Ji Dhaba`}
       description={`Visit Sardaar Ji Dhaba in ${place.city} for Punjabi and North Indian food, outlet details and directions.`}
-      image={place.image}
+      image={`/images/og/${place.id}-1200x630.jpg`}
     />
     {page}
   </Shell>;
@@ -623,7 +623,7 @@ function Application() {
   };
   return (
     <Shell>
-      <Meta title="Sardaar Ji Dhaba Franchise Enquiry | Start an Application" description="Tell Sardaar Ji Dhaba about your city, investment readiness and restaurant plans. Submit a franchise enquiry to start a conversation." image="/images/restaurant/sardaar-ji-dhaba-franchise.png" />
+      <Meta title="Sardaar Ji Dhaba Franchise Enquiry | Start an Application" description="Tell Sardaar Ji Dhaba about your city, investment readiness and restaurant plans. Submit a franchise enquiry to start a conversation." image="/images/og/franchise-1200x630.jpg" />
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-16 lg:grid-cols-[.7fr_1.3fr] lg:px-8 lg:py-24">
         <div>
           <Link href="/" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-franchise"><ChevronLeft size={14} /> Sardaar Ji Dhaba</Link>
