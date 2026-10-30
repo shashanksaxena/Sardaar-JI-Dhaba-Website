@@ -291,7 +291,7 @@ function FranchiseLeadForm() {
       </div>
       <label className="block text-xs font-bold">City where you want to open<input name="city" required minLength={2} maxLength={100} autoComplete="address-level2" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="Your preferred city" /></label>
       <label className="block text-xs font-bold">Approximate investment budget
-        <select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary">
+        <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative budget only — not an official franchise fee or project cost.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary">
           <option value="" disabled>Select your budget range</option>
           <option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
         </select>
@@ -737,7 +737,7 @@ function Application() {
                 <label className="block text-sm font-semibold">Email address<input name="email" required type="email" maxLength={160} autoComplete="email" placeholder="you@example.com" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-email" /></label>
                 <label className="block text-sm font-semibold">Preferred city<input name="city" required minLength={2} maxLength={100} autoComplete="address-level2" placeholder="City you have in mind" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-city" /></label>
                 <label className="block text-sm font-semibold">Approximate investment budget
-                  <select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-budget">
+                  <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative budget only — not an official franchise fee or project cost.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-budget">
                     <option value="" disabled>Select a range</option><option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
                   </select>
                 </label>
