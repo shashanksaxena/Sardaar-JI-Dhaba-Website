@@ -8,14 +8,15 @@ type LocalLandingPageProps = {
     address: string;
     postalCode?: string;
     hours?: { display: string; opens: string; closes: string; days: string[] };
+    mapUrl?: string;
     description: string;
     image: string;
     zomatoUrl?: string;
 };
 
-export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, hours, description, image, zomatoUrl }: LocalLandingPageProps) {
+export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, hours, mapUrl: configuredMapUrl, description, image, zomatoUrl }: LocalLandingPageProps) {
     const mapQuery = `${business.name}, ${address}, ${city}, Uttar Pradesh${postalCode ? ` ${postalCode}` : ''}`;
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+    const mapUrl = configuredMapUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
     const searchQuery = encodeURIComponent(`${business.name} ${city}`);
     const sameAs = [business.social.instagramUrl, city === 'Prayagraj' ? business.orderUrl : null]
         .filter((profile): profile is string => Boolean(profile));
