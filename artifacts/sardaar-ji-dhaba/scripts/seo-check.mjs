@@ -54,7 +54,9 @@ for (const url of urls) {
         if (schema['@type'] === 'Restaurant') {
             assert(schema.name && schema.url && schema.telephone, `${route}: Restaurant required field missing`);
             assert(schema.geo === undefined || (Number.isFinite(schema.geo.latitude) && Number.isFinite(schema.geo.longitude)), `${route}: invalid restaurant geo`);
-            assert(Array.isArray(schema.servesCuisine) && Array.isArray(schema.openingHoursSpecification) && schema.hasMenu, `${route}: Restaurant schema fields missing`);
+            assert(Array.isArray(schema.servesCuisine) && schema.hasMenu, `${route}: Restaurant schema fields missing`);
+            if (route === '/locations/prayagraj') assert(Array.isArray(schema.openingHoursSpecification), `${route}: verified opening hours missing`);
+            if (route === '/locations/noida') assert(!schema.openingHoursSpecification, `${route}: do not publish unverified opening hours`);
             if (route === '/') {
                 assert(schema.priceRange === '₹₹', `${route}: Restaurant priceRange missing`);
                 assert(['North Indian', 'Punjabi', 'Desi Chinese'].every(cuisine => schema.servesCuisine.includes(cuisine)), `${route}: Restaurant cuisine list incomplete`);
