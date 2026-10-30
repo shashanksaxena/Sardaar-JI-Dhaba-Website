@@ -220,7 +220,7 @@ function FranchiseLeadForm() {
       const response = await fetch(apiUrl('/api/inquiries'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, message, kind: 'franchise', source: 'homepage-franchise-form', consent: true }),
+        body: JSON.stringify({ ...values, message, kind: 'franchise', source: 'homepage-franchise-form', consent: values.consent === 'on' }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message ?? 'We could not save your enquiry. Please try again or contact us directly.');
@@ -258,7 +258,7 @@ function FranchiseLeadForm() {
           <option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
         </select>
       </label>
-      <label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this franchise enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
+      <label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this franchise enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
       <button type="submit" disabled={sending} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60" data-testid="button-home-franchise-submit">{sending ? 'Sending enquiry...' : 'Request franchise details'} <ArrowRight size={16} /></button>
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
       <p className="text-center text-[10px] leading-4 text-muted-foreground">Submitting this form is an enquiry, not a franchise offer or approval.</p>
@@ -511,7 +511,7 @@ function RestaurantConsulting() {
             </label>
           </div>
           <label className="block text-sm font-semibold">What is the main challenge?<textarea name="message" required minLength={4} maxLength={2000} rows={4} className="mt-2 w-full resize-y border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="Tell us briefly about your restaurant and what you want to improve." /></label>
-          <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba / RestroGrowth may contact me about this consulting enquiry.</span></label>
+          <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba / RestroGrowth may use my details to respond to this consulting enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
           <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-consulting">{sending ? 'Sending...' : 'Send consulting enquiry'} <ArrowRight size={16} /></button>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         </form>}
