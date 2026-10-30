@@ -41,6 +41,8 @@ export const business = {
             id: 'noida',
             city: 'Noida',
             streetAddress: 'The Aranya, Sector 119',
+            fssaiLicenseNumber: null as string | null,
+            foodSafetyConnectQrUrl: null as string | null,
             postalCode: null, // TODO: supply and verify the outlet pincode.
             addressRegion: 'Uttar Pradesh',
             latitude: null, // TODO: supply and verify the outlet coordinates.
@@ -54,7 +56,9 @@ export const business = {
         {
             id: 'prayagraj',
             city: 'Prayagraj',
-            streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines', // TODO: verify 138C as the canonical outlet number.
+            streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines',
+            fssaiLicenseNumber: null as string | null,
+            foodSafetyConnectQrUrl: null as string | null, // TODO: verify 138C as the canonical outlet number.
             postalCode: '211001',
             addressRegion: 'Uttar Pradesh',
             latitude: null, // TODO: supply and verify the outlet coordinates.
