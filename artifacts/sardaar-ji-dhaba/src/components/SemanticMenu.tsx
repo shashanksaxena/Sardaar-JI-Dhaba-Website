@@ -46,16 +46,16 @@ function MenuItemRow({ item }: { item: MenuItem }) {
             itemType="https://schema.org/MenuItem"
         >
             <div>
-                <span className="block font-display text-xl" itemProp="name">{item.name}</span>
-                <span className="mt-1 block text-sm leading-6 text-muted-foreground" itemProp="description">{item.description}</span>
-                <span className={`mt-2 inline-flex items-center gap-2 text-xs font-semibold ${dietBadgeClass}`}>
-                    {schemaDiet && <span aria-hidden="true" className={`grid h-4 w-4 place-items-center border-2 ${diet === 'vegetarian' ? 'border-emerald-700' : 'border-amber-900'}`}>
+                <span className="flex items-center gap-2 font-display text-xl" itemProp="name">
+                    {schemaDiet && <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center border-2 ${diet === 'vegetarian' ? 'border-emerald-700' : 'border-amber-900'}`}>
                         {diet === 'vegetarian'
                             ? <span className="h-2 w-2 rounded-full bg-emerald-700" />
                             : <span className="h-0 w-0 border-x-[5px] border-b-[9px] border-x-transparent border-b-amber-900" />}
                     </span>}
-                    {dietLabel}
+                    {item.name}
                 </span>
+                <span className="mt-1 block text-sm leading-6 text-muted-foreground" itemProp="description">{item.description}</span>
+                <span className={`mt-2 inline-flex text-xs font-semibold ${dietBadgeClass}`}>{dietLabel}</span>
                 {schemaDiet && <meta itemProp="suitableForDiet" content={schemaDiet} />}
             </div>
             <span className="text-sm font-semibold text-primary" itemProp="offers" itemScope itemType="https://schema.org/Offer">
