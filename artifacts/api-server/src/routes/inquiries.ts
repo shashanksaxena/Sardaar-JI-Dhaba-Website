@@ -16,11 +16,13 @@ type Inquiry = {
     consent?: boolean;
     investmentRange?: string;
     experience?: string;
+    website?: string;
 };
 
 function isInquiry(value: unknown): value is Inquiry {
     if (!value || typeof value !== "object") return false;
     const inquiry = value as Record<string, unknown>;
+    if (inquiry.website !== undefined && typeof inquiry.website !== "string") return false;
     if (typeof inquiry.website === "string" && inquiry.website.trim().length > 0) return false;
     if (inquiry.source !== undefined && (typeof inquiry.source !== "string" || inquiry.source.length > 100)) return false;
     const validBase = (inquiry.kind === "contact" || inquiry.kind === "franchise" || inquiry.kind === "consulting") &&
