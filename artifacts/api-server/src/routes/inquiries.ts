@@ -54,7 +54,9 @@ router.post("/inquiries", async (req, res) => {
     }
 
     try {
-        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...req.body, name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(), message: req.body.message.trim(), createdAt: new Date() });
+        const inquiryToSave = { ...req.body };
+        delete inquiryToSave.website;
+        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...inquiryToSave, name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(), message: req.body.message.trim(), createdAt: new Date() });
     } catch (error) {
         req.log.error({ error }, "Could not persist inquiry");
         res.status(503).json({ message: "The enquiry could not be saved. Please call the dhaba directly." });
