@@ -30,7 +30,7 @@ export type BlogPost = {
 export { brand, locations } from '../config/business';
 
 export const menu: MenuItem[] = [
-  { id: 'butter-chicken', name: 'Butter Chicken', description: 'Description pending confirmation.', category: 'Main Course' },
+  { id: 'butter-chicken', name: 'Butter Chicken', description: '', category: 'Main Course' },
   { id: 'tandoori-chicken', name: 'Tandoori Chicken', description: 'Yoghurt-marinated chicken with a spice rub and clay-oven char.', category: 'Starters', price: '₹260 / 360 / 480', image: '/images/blog/restaurant-style-tandoori-chicken.png' },
   { id: 'afghani-chicken', name: 'Afghani Chicken', description: 'Creamy, mild and smoky chicken starter with a signature marinade.', category: 'Starters', price: '₹280 / 360 / 480', image: '/images/menu/menu-vegetarian.jpg' },
   { id: 'chicken-masala-tikka', name: 'Chicken Masala Tikka', description: 'Boneless chicken tikka finished with masala and a bright Punjabi marinade.', category: 'Starters', price: '₹240 / 300 / 400', image: '/images/blog/restaurant-style-chicken-tikka.png' },
@@ -41,7 +41,7 @@ export const menu: MenuItem[] = [
   { id: 'makhni-tandoori-chicken', name: 'Makhni Tandoori Chicken', description: 'Tandoori chicken finished in a buttery makhani-style gravy.', category: 'Starters', price: '₹300 / 400 / 500', image: '/images/blog/restaurant-style-butter-chicken.png' },
   { id: 'paneer-tikka', name: 'Paneer Tikka', description: 'Smoky marinated paneer with capsicum, onions and mint chutney.', category: 'Paneer', price: '₹240 / 380', image: '/images/blog/restaurant-style-paneer-tikka.png' },
   { id: 'paneer-do-pyaza', name: 'Paneer Do Pyaza', description: 'Description pending confirmation.', category: 'Paneer' },
-  { id: 'angara-masala-chaap', name: 'Angara Masala Chaap', description: 'Description and dietary status pending confirmation.', category: 'Starters' },
+  { id: 'angara-masala-chaap', name: 'Angara Masala Chaap', description: '', category: 'Starters' },
   { id: 'harabhara-kebab', name: 'Hara Bhara Kebab', description: 'A green, generous vegetarian starter with spinach, peas and spices.', category: 'Vegetarian', price: '₹240', image: '/images/menu/menu-vegetarian.jpg' },
   { id: 'crispy-corn', name: 'Crispy Corn', description: 'Crunchy, spiced sweet corn made for sharing before the mains.', category: 'Vegetarian', price: '₹240', image: '/images/menu/menu-vegetarian.jpg' },
   { id: 'chicken-korma', name: 'Chicken Korma', description: 'A rich, comforting chicken curry with onion gravy and smooth finishing.', category: 'Main Course', price: '₹240 / 400 / 620', image: '/images/blog/restaurant-style-kadhai-chicken.png' },
