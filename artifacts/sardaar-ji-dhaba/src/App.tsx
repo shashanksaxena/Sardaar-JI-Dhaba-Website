@@ -32,56 +32,16 @@ function apiUrl(path: string) {
   return `${getApiBase()}${path}`;
 }
 
-const DEMO_STORAGE_KEYS = {
-  enquiries: 'sardaar_ji_demo_enquiries',
-  analytics: 'sardaar_ji_demo_analytics',
-  adminSession: 'sardaar_ji_demo_admin_session',
-};
-
-const DEMO_ADMIN_USERNAME = 'shasha182';
-const DEMO_ADMIN_PASSWORD = 'Shasha@123';
-
-function readDemoCollection<T>(key: string): T[] {
-  try {
-    const value = window.localStorage.getItem(key);
-    return value ? JSON.parse(value) as T[] : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeDemoCollection<T>(key: string, value: T[]) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // Ignore localStorage quota failures in demo mode.
-  }
-}
-
-function getDemoSummary() {
-  const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
-  const events = readDemoCollection<{ name: string; path: string; createdAt: string }>(DEMO_STORAGE_KEYS.analytics);
-  const eventCounts = Object.entries(events.reduce<Record<string, number>>((accumulator, event) => {
-    accumulator[event.name] = (accumulator[event.name] ?? 0) + 1;
-    return accumulator;
-  }, {})).map(([name, count]) => ({ _id: name, count }));
-
-  return {
-    inquiries: enquiries.length,
-    events: events.length,
-    eventCounts: eventCounts.sort((left, right) => right.count - left.count),
-    recentInquiries: enquiries.slice().reverse().slice(0, 50),
-  };
-}
-
 async function trackEvent(name: string) {
-  const payload = { name, path: window.location.pathname, createdAt: new Date().toISOString() };
   try {
-    const response = await fetch(apiUrl('/api/analytics/events'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, path: window.location.pathname }) });
-    if (!response.ok) throw new Error('API unavailable');
+    await fetch(apiUrl('/api/analytics/events'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, path: window.location.pathname }),
+      keepalive: true,
+    });
   } catch {
-    const events = readDemoCollection<{ name: string; path: string; createdAt: string }>(DEMO_STORAGE_KEYS.analytics);
-    writeDemoCollection(DEMO_STORAGE_KEYS.analytics, [...events, payload]);
+    // Analytics must never block a customer action or persist identifiers locally.
   }
 }
 
@@ -296,7 +256,7 @@ function FranchiseLeadForm() {
           <option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
         </select>
       </label>
-      <label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
+      <label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this franchise enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
       <button type="submit" disabled={sending} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60" data-testid="button-home-franchise-submit">{sending ? 'Sending enquiry...' : 'Request franchise details'} <ArrowRight size={16} /></button>
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
       <p className="text-center text-[10px] leading-4 text-muted-foreground">Submitting this form is an enquiry, not a franchise offer or approval.</p>
@@ -665,32 +625,19 @@ function Franchise() {
 
 async function sendInquiry(form: HTMLFormElement, kind: 'contact' | 'franchise') {
   const values = Object.fromEntries(new FormData(form).entries());
-  const payload = { ...values, kind, createdAt: new Date().toISOString() };
-
-  try {
-    const response = await fetch(apiUrl('/api/inquiries'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...values, kind, ...(kind === 'franchise' ? { source: 'franchise-application', consent: values.consent === 'on' } : {}) }),
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.message ?? 'The message could not be sent.');
-    return;
-  } catch (error) {
-    if (kind === 'franchise') throw error;
-    const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
-    const rawPayload = payload as Record<string, string | undefined>;
-    const submission = {
-      kind: String(rawPayload.kind ?? 'contact'),
-      name: String(rawPayload.name ?? ''),
-      email: String(rawPayload.email ?? ''),
-      phone: typeof rawPayload.phone === 'string' ? rawPayload.phone : undefined,
-      city: typeof rawPayload.city === 'string' ? rawPayload.city : undefined,
-      message: String(rawPayload.message ?? ''),
-      createdAt: payload.createdAt,
-    };
-    writeDemoCollection(DEMO_STORAGE_KEYS.enquiries, [...enquiries, submission]);
-  }
+  const consent = values.consent === 'on';
+  const response = await fetch(apiUrl('/api/inquiries'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...values,
+      kind,
+      consent,
+      source: kind === 'franchise' ? 'franchise-application' : 'contact-page',
+    }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.message ?? 'The message could not be sent. Please try again.');
 }
 
 function Application() {
@@ -803,7 +750,7 @@ function ContactLegacy() {
       setSending(false);
     }
   };
-  return <Shell><Meta title="Contact" /><PageIntro eyebrow="Come say hello" title="The kettle is always on." copy="For table questions, feedback, catering conversations or just a friendly hello, reach out directly." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 lg:grid-cols-[.8fr_1.2fr] lg:px-8"><div className="space-y-4"><a href={`tel:${brand.phoneLink}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-phone"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Call</span><span className="mt-2 block font-display text-2xl">{brand.phone}</span></span><ArrowUpRight className="text-primary" /></a><a href={`mailto:${brand.email}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-email"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Email</span><span className="mt-2 block font-display text-2xl break-all">{brand.email}</span></span><ArrowUpRight className="text-primary" /></a><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="group flex items-center justify-between border-y border-foreground/15 py-5" data-testid="link-contact-whatsapp"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">WhatsApp</span><span className="mt-2 block font-display text-2xl">Start a chat</span></span><ArrowUpRight className="text-primary" /></a></div><div className="bg-muted/60 p-6 md:p-10"><h2 className="font-display text-3xl">Leave a note</h2>{sent ? <div className="mt-12"><h3 className="font-display text-2xl">We have your note.</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Thanks for writing. We will get back to you soon.</p></div> : <form className="mt-8 space-y-6" onSubmit={submit}><div className="grid gap-6 sm:grid-cols-2"><input name="name" required aria-label="Your name" placeholder="Your name" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-name" /><input name="email" required type="email" aria-label="Email address" placeholder="Email address" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-email" /></div><textarea name="message" required rows={5} aria-label="Your message" placeholder="What can we help with?" className="w-full resize-none border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-message" /><button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-contact">{sending ? 'Sending...' : 'Send note'} <ArrowRight size={16} /></button>{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</form>}</div></section></Shell>;
+  return <Shell><Meta title="Contact" /><PageIntro eyebrow="Come say hello" title="The kettle is always on." copy="For table questions, feedback, catering conversations or just a friendly hello, reach out directly." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 lg:grid-cols-[.8fr_1.2fr] lg:px-8"><div className="space-y-4"><a href={`tel:${brand.phoneLink}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-phone"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Call</span><span className="mt-2 block font-display text-2xl">{brand.phone}</span></span><ArrowUpRight className="text-primary" /></a><a href={`mailto:${brand.email}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-email"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Email</span><span className="mt-2 block font-display text-2xl break-all">{brand.email}</span></span><ArrowUpRight className="text-primary" /></a><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="group flex items-center justify-between border-y border-foreground/15 py-5" data-testid="link-contact-whatsapp"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">WhatsApp</span><span className="mt-2 block font-display text-2xl">Start a chat</span></span><ArrowUpRight className="text-primary" /></a></div><div className="bg-muted/60 p-6 md:p-10"><h2 className="font-display text-3xl">Leave a note</h2>{sent ? <div className="mt-12"><h3 className="font-display text-2xl">We have your note.</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Thanks for writing. We will get back to you soon.</p></div> : <form className="mt-8 space-y-6" onSubmit={submit}><div className="grid gap-6 sm:grid-cols-2"><input name="name" required aria-label="Your name" placeholder="Your name" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-name" /><input name="email" required type="email" aria-label="Email address" placeholder="Email address" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-email" /></div><textarea name="message" required minLength={4} maxLength={2000} rows={5} aria-label="Your message" placeholder="What can we help with?" className="w-full resize-none border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-message" /><label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this message. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label><button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-contact">{sending ? 'Sending...' : 'Send note'} <ArrowRight size={16} /></button>{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</form>}</div></section></Shell>;
 }
 
 function Contact() {
@@ -913,24 +860,15 @@ function Admin() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [summary, setSummary] = useState<AdminSummary | null>(null);
   const [error, setError] = useState('');
-  const api = getApiBase();
   const loadSummary = async () => {
-    try {
-      const response = await fetch(apiUrl('/api/admin/summary'), { credentials: 'include' });
-      if (!response.ok) throw new Error('Admin session required.');
-      setSummary(await response.json());
-      setAuthenticated(true);
+    const response = await fetch(apiUrl('/api/admin/summary'), { credentials: 'include' });
+    if (!response.ok) {
+      setAuthenticated(false);
+      setSummary(null);
       return;
-    } catch {
-      const session = window.localStorage.getItem(DEMO_STORAGE_KEYS.adminSession);
-      if (session !== 'active') {
-        setAuthenticated(false);
-        setSummary(null);
-        return;
-      }
-      setSummary(getDemoSummary());
-      setAuthenticated(true);
     }
+    setSummary(await response.json());
+    setAuthenticated(true);
   };
   useEffect(() => { loadSummary().catch(() => undefined); }, []);
   const login = async (event: FormEvent<HTMLFormElement>) => {
@@ -943,17 +881,11 @@ function Admin() {
       await loadSummary();
       return;
     } catch {
-      if (credentials.username === DEMO_ADMIN_USERNAME && credentials.password === DEMO_ADMIN_PASSWORD) {
-        window.localStorage.setItem(DEMO_STORAGE_KEYS.adminSession, 'active');
-        setSummary(getDemoSummary());
-        setAuthenticated(true);
-        return;
-      }
-      setError('Could not sign in.');
+      setError('Could not sign in. Please check the server connection and your credentials.');
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
 function Router() {
