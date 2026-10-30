@@ -159,6 +159,27 @@ function buildRouteSchemas(route: string) {
             ...(story.modifiedAt ? { dateModified: story.modifiedAt } : {}),
             mainEntityOfPage: `${business.siteUrl}${route}`,
         });
+        if (story.ingredients?.length && story.method?.length) {
+            schemas.push({
+                '@context': 'https://schema.org',
+                '@type': 'Recipe',
+                '@id': `${business.siteUrl}${route}#recipe`,
+                name: story.title,
+                description: story.excerpt,
+                image: `${business.siteUrl}${story.image}`,
+                author: { '@type': 'Organization', name: business.name },
+                ...(story.publishedAt ? { datePublished: story.publishedAt } : {}),
+                ...(story.modifiedAt ? { dateModified: story.modifiedAt } : {}),
+                recipeIngredient: story.ingredients,
+                recipeInstructions: story.method.map((step, index) => ({
+                    '@type': 'HowToStep',
+                    position: index + 1,
+                    text: step,
+                })),
+                keywords: story.keywords,
+                mainEntityOfPage: `${business.siteUrl}${route}`,
+            });
+        }
     }
 
     if (faqSchema) schemas.push(faqSchema);
