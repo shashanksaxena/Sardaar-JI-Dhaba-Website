@@ -1,7 +1,7 @@
 import { business, locations } from '../config/business';
 
-const noidaDepartments = business.schemaDepartments.filter(department => department.city === 'Noida');
-const prayagrajDepartment = business.schemaDepartments.find(department => department.city === 'Prayagraj')!;
+const noidaOutlets = business.outlets.filter(outlet => outlet.city === 'Noida');
+const prayagrajOutlet = business.outlets.find(outlet => outlet.city === 'Prayagraj')!;
 
 export type FaqItem = {
     question: string;
@@ -39,13 +39,13 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     },
     {
         question: `What are the opening hours of ${business.name} in ${location.city}?`,
-        answer: `The ${location.city} outlet is open daily from ${business.hours.display}.`,
+        answer: location.hours === 'Call to confirm hours' ? `Please call the ${location.city} outlet to confirm today's opening hours before travelling.` : `The ${location.city} outlet is open daily from ${location.hours}.`,
     },
     {
         question: `Where is ${business.name} in ${location.city} located?`,
         answer: location.city === 'Noida'
-            ? `The Noida branches are in ${noidaDepartments.map(department => department.streetAddress).join(' and ')}, Noida, Uttar Pradesh.`
-            : `The Prayagraj branch is at ${prayagrajDepartment.streetAddress}, Prayagraj, ${prayagrajDepartment.addressRegion} ${prayagrajDepartment.postalCode}.`,
+            ? `The Noida outlet is listed at ${noidaOutlets.map(outlet => outlet.streetAddress).join(' and ')}, Noida, Uttar Pradesh.`
+            : `The Prayagraj branch is at ${prayagrajOutlet.streetAddress}, Prayagraj, ${prayagrajOutlet.addressRegion} ${prayagrajOutlet.postalCode}.`,
     },
     {
         question: `What signature dishes are listed at ${business.name} in ${location.city}?`,
@@ -53,7 +53,7 @@ const cityFaqs = (location: (typeof locations)[number]): FaqItem[] => [
     },
     {
         question: `Does the ${location.city} outlet serve vegetarian and non-vegetarian food?`,
-        answer: 'The published menu includes vegetarian items such as paneer and dal dishes, as well as chicken, mutton, egg and fish dishes. Ask the outlet about current availability and ingredients.',
+        answer: 'The menu includes paneer and dal dishes as well as chicken, mutton, egg and fish dishes. Ask the outlet to confirm the dietary classification and preparation of individual dishes.',
     },
     {
         question: `Can I reserve a table or order delivery from the ${location.city} outlet?`,

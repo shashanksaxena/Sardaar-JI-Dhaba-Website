@@ -16,11 +16,15 @@ type Inquiry = {
     consent?: boolean;
     investmentRange?: string;
     experience?: string;
+    website?: string;
 };
 
 function isInquiry(value: unknown): value is Inquiry {
     if (!value || typeof value !== "object") return false;
     const inquiry = value as Record<string, unknown>;
+    if (inquiry.website !== undefined && typeof inquiry.website !== "string") return false;
+    if (typeof inquiry.website === "string" && inquiry.website.trim().length > 0) return false;
+    if (inquiry.source !== undefined && (typeof inquiry.source !== "string" || inquiry.source.length > 100)) return false;
     const validBase = (inquiry.kind === "contact" || inquiry.kind === "franchise" || inquiry.kind === "consulting") &&
         typeof inquiry.name === "string" && inquiry.name.trim().length > 1 && inquiry.name.length <= 100 &&
         typeof inquiry.email === "string" && inquiry.email.length <= 160 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiry.email) &&
@@ -42,7 +46,7 @@ function isInquiry(value: unknown): value is Inquiry {
             (inquiry.experience === undefined || (typeof inquiry.experience === "string" && inquiry.experience.length <= 120)) &&
             inquiry.consent === true;
     }
-    return true;
+    return inquiry.consent === true;
 }
 
 router.post("/inquiries", async (req, res) => {
@@ -52,7 +56,9 @@ router.post("/inquiries", async (req, res) => {
     }
 
     try {
-        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...req.body, name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(), message: req.body.message.trim(), createdAt: new Date() });
+        const inquiryToSave = { ...req.body };
+        delete inquiryToSave.website;
+        await (await getMongoDatabase()).collection("inquiries").insertOne({ ...inquiryToSave, name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(), message: req.body.message.trim(), createdAt: new Date(), consentGivenAt: new Date(), consentNoticeVersion: "2026-10-31-v1" });
     } catch (error) {
         req.log.error({ error }, "Could not persist inquiry");
         res.status(503).json({ message: "The enquiry could not be saved. Please call the dhaba directly." });

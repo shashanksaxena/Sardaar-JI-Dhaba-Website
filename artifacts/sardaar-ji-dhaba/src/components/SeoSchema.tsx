@@ -23,36 +23,33 @@ function buildRestaurantSchema() {
         priceRange: business.priceRange,
         hasMenu: `${business.siteUrl}/menu`,
         sameAs,
-        openingHoursSpecification: [{
-            '@type': 'OpeningHoursSpecification',
-            dayOfWeek: business.hours.days,
-            opens: business.hours.opens,
-            closes: business.hours.closes,
-        }],
-        department: business.schemaDepartments.map(department => ({
+        department: business.outlets.map(outlet => ({
             '@type': 'Restaurant',
-            '@id': `${business.siteUrl}/#${department.id}`,
+            '@id': `${business.siteUrl}/locations/${outlet.id}#restaurant`,
             name: business.name,
-            url: `${business.siteUrl}/${department.city.toLowerCase()}`,
+            url: `${business.siteUrl}/locations/${outlet.id}`,
             telephone: business.phone.e164,
+            image: `${business.siteUrl}${outlet.image}`,
             servesCuisine: business.cuisine,
             priceRange: business.priceRange,
             hasMenu: `${business.siteUrl}/menu`,
-            sameAs,
+            sameAs: [business.social.instagramUrl, ...(outlet.id === 'prayagraj' && business.social.zomatoUrl ? [business.social.zomatoUrl] : [])],
             address: {
                 '@type': 'PostalAddress',
-                streetAddress: department.streetAddress,
-                addressLocality: department.city,
-                addressRegion: department.addressRegion,
-                ...(department.postalCode ? { postalCode: department.postalCode } : {}),
+                streetAddress: outlet.streetAddress,
+                addressLocality: outlet.city,
+                addressRegion: outlet.addressRegion,
+                ...(outlet.postalCode ? { postalCode: outlet.postalCode } : {}),
                 addressCountry: 'IN',
             },
-            openingHoursSpecification: [{
+            ...(outlet.latitude !== null && outlet.longitude !== null ? { geo: { '@type': 'GeoCoordinates', latitude: outlet.latitude, longitude: outlet.longitude } } : {}),
+            ...(outlet.hours ? { openingHoursSpecification: [{
                 '@type': 'OpeningHoursSpecification',
-                dayOfWeek: business.hours.days,
-                opens: business.hours.opens,
-                closes: business.hours.closes,
-            }],
+                dayOfWeek: outlet.hours.days,
+                opens: outlet.hours.opens,
+                closes: outlet.hours.closes,
+            }] } : {}),
+            hasMap: outlet.mapUrl,
         })),
     };
 }
@@ -74,7 +71,6 @@ function buildFaqSchema(route: string) {
 function buildRouteSchemas(route: string) {
     const schemas: Record<string, unknown>[] = [];
     const faqSchema = buildFaqSchema(route);
-    const outlet = business.outlets.find(item => route === `/locations/${item.id}`);
     const story = route.startsWith('/blog/') ? stories.find(item => route === `/blog/${item.id}`) : undefined;
 
     if (route === '/') {
@@ -132,39 +128,6 @@ function buildRouteSchemas(route: string) {
         });
     }
 
-    if (outlet) {
-        schemas.push({
-            '@context': 'https://schema.org',
-            '@type': 'Restaurant',
-            '@id': `${business.siteUrl}${route}#restaurant`,
-            name: business.name,
-            url: `${business.siteUrl}${route}`,
-            telephone: business.phone.e164,
-            image: `${business.siteUrl}${outlet.image}`,
-            address: {
-                '@type': 'PostalAddress',
-                streetAddress: outlet.streetAddress,
-                addressLocality: outlet.city,
-                addressRegion: outlet.addressRegion,
-                ...(outlet.postalCode ? { postalCode: outlet.postalCode } : {}),
-                addressCountry: 'IN',
-            },
-            ...(outlet.latitude !== null && outlet.longitude !== null ? { geo: { '@type': 'GeoCoordinates', latitude: outlet.latitude, longitude: outlet.longitude } } : {}),
-            openingHoursSpecification: [{
-                '@type': 'OpeningHoursSpecification',
-                dayOfWeek: business.hours.days,
-                opens: business.hours.opens,
-                closes: business.hours.closes,
-            }],
-            servesCuisine: business.cuisine,
-            priceRange: business.priceRange,
-            hasMenu: `${business.siteUrl}/menu`,
-            hasMap: outlet.mapUrl,
-            sameAs,
-            parentOrganization: { '@type': 'Organization', name: business.name, url: business.siteUrl },
-        });
-    }
-
     if (route === '/menu') {
         schemas.push({
             '@context': 'https://schema.org',
@@ -177,7 +140,7 @@ function buildRouteSchemas(route: string) {
                 hasMenuItem: menu.filter(item => item.category === category).map(item => ({
                     '@type': 'MenuItem',
                     name: item.name,
-                    description: item.description,
+                    ...(item.description?.trim() && !/pending confirmation/i.test(item.description) ? { description: item.description } : {}),
                 })),
             })),
         });
@@ -189,13 +152,34 @@ function buildRouteSchemas(route: string) {
             '@type': 'BlogPosting',
             headline: story.title,
             description: story.excerpt,
-            image: `${business.siteUrl}${story.image}`,
+            ...(story.category !== 'Recipe guide' || story.image === `/images/blog/${story.id}.png` ? { image: `${business.siteUrl}${story.image}` } : {}),
             author: { '@type': 'Organization', name: business.name },
             publisher: { '@type': 'Organization', name: business.name, url: business.siteUrl },
             ...(story.publishedAt ? { datePublished: story.publishedAt } : {}),
             ...(story.modifiedAt ? { dateModified: story.modifiedAt } : {}),
             mainEntityOfPage: `${business.siteUrl}${route}`,
         });
+        if (story.ingredients?.length && story.method?.length && story.image === `/images/blog/${story.id}.png`) {
+            schemas.push({
+                '@context': 'https://schema.org',
+                '@type': 'Recipe',
+                '@id': `${business.siteUrl}${route}#recipe`,
+                name: story.title,
+                description: story.excerpt,
+                image: `${business.siteUrl}${story.image}`,
+                author: { '@type': 'Organization', name: business.name },
+                ...(story.publishedAt ? { datePublished: story.publishedAt } : {}),
+                ...(story.modifiedAt ? { dateModified: story.modifiedAt } : {}),
+                recipeIngredient: story.ingredients,
+                recipeInstructions: story.method.map((step, index) => ({
+                    '@type': 'HowToStep',
+                    position: index + 1,
+                    text: step,
+                })),
+                keywords: story.keywords,
+                mainEntityOfPage: `${business.siteUrl}${route}`,
+            });
+        }
     }
 
     if (faqSchema) schemas.push(faqSchema);

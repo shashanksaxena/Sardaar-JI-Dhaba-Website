@@ -12,9 +12,9 @@ export type SeoMetadata = {
 
 export const seoRoutes: Record<string, SeoMetadata> = {
     '/': {
-        title: 'Sardaar Ji Dhaba | Punjabi Restaurant & Franchise Opportunities',
+        title: 'Sardaar Ji Dhaba | Punjabi Restaurant & Franchise',
         description: 'Sardaar Ji Dhaba is a Punjabi and North Indian restaurant brand operating in Noida and Prayagraj. Explore a franchise partnership and submit an enquiry.',
-        image: '/images/og/franchise-1200x630.jpg',
+        image: '/images/og/home-1200x630.jpg',
         type: 'website',
         priority: 1.0,
     },
@@ -52,27 +52,15 @@ export const seoRoutes: Record<string, SeoMetadata> = {
         image: '/images/og/prayagraj-1200x630.jpg',
         type: 'restaurant',
     },
-    '/noida': {
-        title: 'Sardaar Ji Dhaba Noida | Sector 76',
-        description: 'Visit Sardaar Ji Dhaba at Gardenia Gateway near Kiosk A3 in Sector 76, Noida. Get directions, opening hours and ordering links.',
-        image: '/images/og/noida-1200x630.jpg',
-        type: 'restaurant',
-        priority: 0.8,
-    },
-    '/prayagraj': {
-        title: 'Sardaar Ji Dhaba Prayagraj | Civil Lines',
-        description: 'Visit Sardaar Ji Dhaba at 138C Mahatma Gandhi Marg, near El Chico in Civil Lines, Prayagraj. Get directions, opening hours and ordering links.',
-        image: '/images/og/prayagraj-1200x630.jpg',
-        type: 'restaurant',
-        priority: 0.8,
-    },
+
+
     '/success-story': {
         title: 'Sardaar Ji Dhaba Success Story | Noida & Prayagraj',
         description: `Discover how Sardaar Ji Dhaba grew from its ${business.established} beginnings into Punjabi restaurant outlets in Noida and Prayagraj.`,
         image: '/images/og/success-story-1200x630.jpg',
     },
     '/restaurant-consulting': {
-        title: 'Restaurant Consulting in India | RestroGrowth by Sardaar Ji Dhaba',
+        title: 'Restaurant Consulting | RestroGrowth by Sardaar Ji Dhaba',
         description: 'Practical restaurant consulting for small and medium restaurants in India. Improve operations, food costs, marketing and technology with RestroGrowth.',
         image: '/images/og/home-1200x630.jpg',
         priority: 0.8,
@@ -129,7 +117,7 @@ export function getSeoMetadata(route: string): SeoMetadata | undefined {
     return {
         title: story.seoTitle ?? `${dishName} Recipe | ${brand.name}`,
         description: story.seoDescription ?? story.excerpt,
-        image: story.image,
+        image: story.category === 'Recipe guide' && story.image !== `/images/blog/${story.id}.png` ? '/images/og/home-1200x630.jpg' : story.image,
         type: 'article',
     };
 }

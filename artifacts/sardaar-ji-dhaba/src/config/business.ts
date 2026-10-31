@@ -8,17 +8,14 @@ export const business = {
         display: '+91 88828 97431',
         e164: '+918882897431',
     },
-    hours: {
-        display: '11:00 AM - 11:00 PM',
-        opens: '11:00',
-        closes: '23:00',
-        days: openingDays,
-    },
     cuisine: ['North Indian', 'Punjabi', 'Desi Chinese'],
     dietaryClassification: null, // TODO: verify veg/non-veg labels for each published menu item.
     priceRange: '₹₹',
     logo: '/images/logo/sardaar-ji-prayagraj.jpg',
     email: 'sardaarjifoods@gmail.com',
+    foodSafetyConnectUrl: 'https://fssai.gov.in/cms/food-safety-connect.php',
+    foodSafetyConnectAndroidUrl: 'https://play.google.com/store/apps/details?id=safety.connect.food',
+    foodSafetyConnectIosUrl: 'https://apps.apple.com/in/app/food-safety-connect/id6446887958',
     social: {
         instagramHandle: '@sardaarjidhaba',
         instagramUrl: 'https://www.instagram.com/sardaarjidhaba/',
@@ -36,20 +33,18 @@ export const business = {
         averageSpendForTwo: null, // TODO: add a verified current average cost for two.
     },
     orderUrl: 'https://www.zomato.com/allahabad/sardaar-ji-1-civil-lines',
-    schemaDepartments: [
-        { id: 'noida-sector-76', city: 'Noida', streetAddress: 'Sector 76', addressRegion: 'Uttar Pradesh', postalCode: null },
-        { id: 'noida-sector-64', city: 'Noida', streetAddress: 'Sector 64', addressRegion: 'Uttar Pradesh', postalCode: null },
-        { id: 'prayagraj-civil-lines', city: 'Prayagraj', streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines', addressRegion: 'Uttar Pradesh', postalCode: '211001' },
-    ],
     outlets: [
         {
             id: 'noida',
             city: 'Noida',
             streetAddress: 'The Aranya, Sector 119',
+            hours: null as { display: string; opens: string; closes: string; days: string[] } | null,
+            fssaiLicenseNumber: null as string | null,
+            foodSafetyConnectQrUrl: null as string | null,
             postalCode: null, // TODO: supply and verify the outlet pincode.
             addressRegion: 'Uttar Pradesh',
-            latitude: null, // TODO: supply and verify the outlet coordinates.
-            longitude: null, // TODO: supply and verify the outlet coordinates.
+            latitude: 28.5897917,
+            longitude: 77.4045819,
             googleBusinessProfileUrl: null, // TODO: supply the verified Noida Google Business Profile URL.
             mapUrl: 'https://www.google.com/maps/place/Sardaar+Ji+Dhaba/@28.5897917,77.4045819,17z/data=!3m1!4b1!4m6!3m5!1s0x390cef9968db7e91:0xef20c2f12f647fa8!8m2!3d28.5897917!4d77.4045819!16s%2Fg%2F11qntlnhyr?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D',
             note: 'The original stop. Familiar faces, fresh tandoor.',
@@ -59,7 +54,10 @@ export const business = {
         {
             id: 'prayagraj',
             city: 'Prayagraj',
-            streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines', // TODO: verify 138C as the canonical outlet number.
+            streetAddress: '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines',
+            hours: { display: '11:00 AM - 11:00 PM', opens: '11:00', closes: '23:00', days: openingDays },
+            fssaiLicenseNumber: null as string | null,
+            foodSafetyConnectQrUrl: null as string | null, // TODO: verify 138C as the canonical outlet number.
             postalCode: '211001',
             addressRegion: 'Uttar Pradesh',
             latitude: null, // TODO: supply and verify the outlet coordinates.
@@ -91,6 +89,6 @@ export const brand = {
 export const locations = business.outlets.map(outlet => ({
     ...outlet,
     area: `${outlet.streetAddress}, ${outlet.city}, ${outlet.addressRegion}${outlet.postalCode ? ` ${outlet.postalCode}` : ''}`,
-    hours: business.hours.display,
+    hours: outlet.hours?.display ?? 'Call to confirm hours',
     availability: '',
 }));

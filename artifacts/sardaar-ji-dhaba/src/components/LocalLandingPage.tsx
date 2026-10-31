@@ -3,33 +3,36 @@ import { business } from '@/config/business';
 
 type LocalLandingPageProps = {
     city: 'Noida' | 'Prayagraj';
+    canonicalPath: string;
     heading: string;
     address: string;
     postalCode?: string;
+    hours?: { display: string; opens: string; closes: string; days: string[] };
+    mapUrl?: string;
+    latitude?: number | null;
+    longitude?: number | null;
     description: string;
     image: string;
     zomatoUrl?: string;
 };
 
-const schemaDays = business.hours.days.map(day => `https://schema.org/${day}`);
-
-export function LocalLandingPage({ city, heading, address, postalCode, description, image, zomatoUrl }: LocalLandingPageProps) {
+export function LocalLandingPage({ city, canonicalPath, heading, address, postalCode, hours, mapUrl: configuredMapUrl, latitude, longitude, description, image, zomatoUrl }: LocalLandingPageProps) {
     const mapQuery = `${business.name}, ${address}, ${city}, Uttar Pradesh${postalCode ? ` ${postalCode}` : ''}`;
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
-    const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
+    const mapUrl = configuredMapUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
     const searchQuery = encodeURIComponent(`${business.name} ${city}`);
     const sameAs = [business.social.instagramUrl, city === 'Prayagraj' ? business.orderUrl : null]
         .filter((profile): profile is string => Boolean(profile));
     const localBusinessSchema = {
         '@context': 'https://schema.org',
-        '@type': 'LocalBusiness',
-        '@id': `${business.siteUrl}/${city.toLowerCase()}#localbusiness`,
+        '@type': 'Restaurant',
+        '@id': `${business.siteUrl}${canonicalPath}#restaurant`,
         name: business.name,
-        url: `${business.siteUrl}/${city.toLowerCase()}`,
+        url: `${business.siteUrl}${canonicalPath}`,
         telephone: business.phone.e164,
         image: `${business.siteUrl}${image}`,
         servesCuisine: business.cuisine,
         priceRange: business.priceRange,
+        hasMenu: `${business.siteUrl}/menu`,
         sameAs,
         address: {
             '@type': 'PostalAddress',
@@ -39,12 +42,13 @@ export function LocalLandingPage({ city, heading, address, postalCode, descripti
             ...(postalCode ? { postalCode } : {}),
             addressCountry: 'IN',
         },
-        openingHoursSpecification: [{
+        ...(hours ? { openingHoursSpecification: [{
             '@type': 'OpeningHoursSpecification',
-            dayOfWeek: schemaDays,
-            opens: '11:00',
-            closes: '23:00',
-        }],
+            dayOfWeek: hours.days.map(day => `https://schema.org/${day}`),
+            opens: hours.opens,
+            closes: hours.closes,
+        }] } : {}),
+        ...(latitude != null && longitude != null ? { geo: { '@type': 'GeoCoordinates', latitude, longitude } } : {}),
         hasMap: mapUrl,
     };
 
@@ -75,12 +79,16 @@ export function LocalLandingPage({ city, heading, address, postalCode, descripti
                     <dl className="mt-8 divide-y divide-foreground/15 border-y border-foreground/15">
                         <div className="flex gap-4 py-5"><MapPin className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Address</dt><dd className="mt-1 text-sm leading-6 text-muted-foreground">{address}{postalCode ? `, ${postalCode}` : ''}, {city}, Uttar Pradesh</dd></div></div>
                         <div className="flex gap-4 py-5"><Phone className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Phone</dt><dd className="mt-1 text-sm"><a href={`tel:${business.phone.e164}`} className="text-primary underline underline-offset-4">{business.phone.display}</a></dd></div></div>
-                        <div className="flex gap-4 py-5"><Clock3 className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Opening hours</dt><dd className="mt-1 text-sm text-muted-foreground">Daily, 11:00 AM – 11:00 PM</dd></div></div>
+                        <div className="flex gap-4 py-5"><Clock3 className="mt-1 shrink-0 text-primary" size={18} /><div><dt className="font-semibold">Opening hours</dt><dd className="mt-1 text-sm text-muted-foreground">{hours?.display ?? 'Call to confirm current hours'}</dd></div></div>
                     </dl>
                     <a href={mapUrl} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 font-semibold text-primary underline decoration-accent underline-offset-4">Get directions <ArrowUpRight size={16} /></a>
                 </div>
-                <div className="min-h-[360px] overflow-hidden border border-foreground/15 bg-muted">
-                    <iframe title={`${business.name} Google Map in ${city}`} src={mapEmbedUrl} width="100%" height="100%" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="min-h-[360px] w-full border-0" />
+                <div className="flex min-h-[360px] flex-col items-start justify-center border border-foreground/15 bg-muted p-8 md:p-12">
+                    <MapPin className="text-primary" size={32} aria-hidden="true" />
+                    <p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Directions</p>
+                    <h3 className="mt-3 max-w-md font-display text-3xl">Find Sardaar Ji Dhaba in {city}</h3>
+                    <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">Open the location in Google Maps to view the route and plan your visit. The map service loads only when you choose to open it.</p>
+                    <a href={mapUrl} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">Open in Google Maps <ArrowUpRight size={16} /></a>
                 </div>
             </section>
         </>

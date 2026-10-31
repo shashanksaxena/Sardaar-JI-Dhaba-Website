@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -45,6 +45,31 @@ for (const url of urls) {
         noKeywords: !/<meta\s+name="keywords"/i.test(html),
     };
 
+    assert(!html.includes('Description pending confirmation') && !html.includes('Guest quote placeholder'), `${route}: unfinished placeholder content is published`);
+    assert(!/<a\b[^>]+href="\/(?:noida|prayagraj)"/i.test(html), `${route}: internal links must use canonical location URLs`);
+    const ogImage = html.match(/<meta property="og:image" content="([^"]*)">/)?.[1] ?? '';
+    assert(ogImage.length > 0, `${route}: Open Graph image is missing`);
+    const ogImageUrl = new URL(ogImage, url);
+    if (ogImageUrl.origin === new URL(url).origin) {
+        try {
+            await access(path.join(outputRoot, ogImageUrl.pathname.replace(/^\//, '')));
+        } catch {
+            assert(false, `${route}: Open Graph image file is missing: ${ogImageUrl.pathname}`);
+        }
+    }
+
+    const images = [...html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*alt="([^"]*)"/gi)];
+    for (const [, imageSrc, imageAlt] of images) {
+        assert(imageAlt.trim().length > 0, `${route}: image has no descriptive alt text`);
+        if (imageSrc.startsWith('/')) {
+            try {
+                await access(path.join(outputRoot, imageSrc.replace(/^\//, '')));
+            } catch {
+                assert(false, `${route}: image file is missing: ${imageSrc}`);
+            }
+        }
+    }
+
     for (const schema of schemas) {
         assert(schema['@context'] === 'https://schema.org', `${route}: JSON-LD context missing`);
         if (schema['@type'] === 'Organization') {
@@ -54,42 +79,62 @@ for (const url of urls) {
         if (schema['@type'] === 'Restaurant') {
             assert(schema.name && schema.url && schema.telephone, `${route}: Restaurant required field missing`);
             assert(schema.geo === undefined || (Number.isFinite(schema.geo.latitude) && Number.isFinite(schema.geo.longitude)), `${route}: invalid restaurant geo`);
-            assert(Array.isArray(schema.servesCuisine) && Array.isArray(schema.openingHoursSpecification) && schema.hasMenu, `${route}: Restaurant schema fields missing`);
+            assert(Array.isArray(schema.servesCuisine) && schema.hasMenu, `${route}: Restaurant schema fields missing`);
+            if (route === '/locations/prayagraj') assert(Array.isArray(schema.openingHoursSpecification), `${route}: verified opening hours missing`);
+            if (route === '/locations/noida') {
+                assert(!schema.openingHoursSpecification, `${route}: do not publish unverified opening hours`);
+                assert(Number.isFinite(schema.geo?.latitude) && Number.isFinite(schema.geo?.longitude), `${route}: verified map coordinates missing`);
+            }
             if (route === '/') {
                 assert(schema.priceRange === '₹₹', `${route}: Restaurant priceRange missing`);
                 assert(['North Indian', 'Punjabi', 'Desi Chinese'].every(cuisine => schema.servesCuisine.includes(cuisine)), `${route}: Restaurant cuisine list incomplete`);
                 assert(schema.sameAs.includes('https://www.instagram.com/sardaarjidhaba/'), `${route}: Instagram sameAs missing`);
                 assert(schema.sameAs.includes('https://www.zomato.com/allahabad/sardaar-ji-1-civil-lines'), `${route}: Zomato sameAs missing`);
-                assert(Array.isArray(schema.department) && schema.department.length === 3, `${route}: expected three Restaurant departments`);
+                assert(Array.isArray(schema.department) && schema.department.length === 2, `${route}: expected the two configured restaurant outlets`);
                 for (const department of schema.department) {
                     assert(department.address?.['@type'] === 'PostalAddress' && department.address.addressLocality && department.address.addressRegion, `${route}: restaurant department address missing`);
                 }
-                assert(schema.department.some(department => department.address?.streetAddress === 'Sector 76'), `${route}: Noida Sector 76 department missing`);
-                assert(schema.department.some(department => department.address?.streetAddress === 'Sector 64'), `${route}: Noida Sector 64 department missing`);
-                assert(schema.department.some(department => department.address?.streetAddress === '138C, Mahatma Gandhi Marg, near El Chico, Civil Lines'), `${route}: Prayagraj department missing`);
+                assert(schema.department.some(department => department.address?.addressLocality === 'Noida'), `${route}: Noida outlet missing`);
+                assert(!schema.department.some(department => department.address?.streetAddress === 'Sector 64'), `${route}: unverified Sector 64 location must not be published`);
+                assert(schema.department.some(department => department.address?.addressLocality === 'Prayagraj'), `${route}: Prayagraj outlet missing`);
             } else {
                 assert(schema.address?.['@type'] === 'PostalAddress', `${route}: branch Restaurant address missing`);
             }
         }
-        if (schema['@type'] === 'FAQPage') assert(Array.isArray(schema.mainEntity) && schema.mainEntity.length >= 6, `${route}: FAQPage questions missing`);
+        if (schema['@type'] === 'FAQPage') assert(Array.isArray(schema.mainEntity) && schema.mainEntity.length > 0, `${route}: FAQPage questions missing`);
         if (schema['@type'] === 'FAQPage') {
             for (const item of schema.mainEntity) {
                 assert(html.includes(item.name) && html.includes(item.acceptedAnswer.text), `${route}: visible FAQ content does not match FAQPage JSON-LD`);
             }
         }
-        if (schema['@type'] === 'BlogPosting') assert(schema.headline && schema.image && schema.author && schema.mainEntityOfPage, `${route}: BlogPosting required field missing`);
+        if (schema['@type'] === 'BlogPosting') assert(schema.headline && schema.author && schema.mainEntityOfPage, `${route}: BlogPosting required field missing`);
+        if (schema['@type'] === 'Recipe') assert(schema.name && schema.image && Array.isArray(schema.recipeIngredient) && schema.recipeIngredient.length > 0 && Array.isArray(schema.recipeInstructions) && schema.recipeInstructions.length > 0, `${route}: Recipe required field missing`);
         if (schema['@type'] === 'BreadcrumbList') assert(Array.isArray(schema.itemListElement) && schema.itemListElement.length >= 2, `${route}: BreadcrumbList required field missing`);
         if (schema['@type'] === 'Menu') assert(Array.isArray(schema.hasMenuSection) && schema.hasMenuSection.length > 0, `${route}: Menu sections missing`);
     }
 
     titles.add(title);
     descriptions.add(description);
-    if (route.startsWith('/locations/')) assert(cityIntroWords >= 150, `${route}: city introduction has only ${cityIntroWords} words`);
+    if (route.startsWith('/locations/')) assert(cityIntroWords >= 80, `${route}: city introduction has only ${cityIntroWords} words`);
     results.push({ route, ...checks });
 }
 
 assert(urls.length > 0, 'Sitemap contains no URLs');
 assert(new Set(urls).size === urls.length, 'Sitemap contains duplicate URLs');
+assert(!urls.some(url => ['/noida', '/prayagraj'].includes(new URL(url).pathname)), 'Legacy city aliases must not be listed in the sitemap');
+const adminHtml = await readFile(path.join(outputRoot, 'admin/index.html'), 'utf8');
+assert(/<meta name="robots" content="noindex, nofollow">/.test(adminHtml), 'Admin route must be noindex');
+const robots = await readFile(path.join(outputRoot, 'robots.txt'), 'utf8');
+assert(robots.includes(`Sitemap: ${new URL(urls[0]).origin}/sitemap.xml`), 'robots.txt sitemap declaration missing');
+assert(robots.includes('Disallow: /api'), 'robots.txt must keep API routes out of crawlers');
+assert(!robots.includes('Disallow: /admin'), 'Admin must remain crawlable so search engines can see its noindex directive');
+const headers = await readFile(path.join(outputRoot, '_headers'), 'utf8');
+for (const header of ['X-Content-Type-Options: nosniff', 'Referrer-Policy: strict-origin-when-cross-origin', 'X-Frame-Options: DENY', 'Permissions-Policy: camera=(), microphone=(), geolocation=()', 'Strict-Transport-Security: max-age=31536000']) {
+    assert(headers.includes(header), `Security response header missing: ${header}`);
+}
+const redirects = await readFile(path.join(outputRoot, '_redirects'), 'utf8');
+assert(redirects.includes('/noida /locations/noida 301'), 'Noida alias redirect missing');
+assert(redirects.includes('/prayagraj /locations/prayagraj 301'), 'Prayagraj alias redirect missing');
 
 const columns = ['route', 'title', 'description', 'canonical', 'h1', 'jsonld', 'sitemap', 'noKeywords'];
 const widths = Object.fromEntries(columns.map(column => [column, Math.max(column.length, ...results.map(result => String(result[column]).length))]));

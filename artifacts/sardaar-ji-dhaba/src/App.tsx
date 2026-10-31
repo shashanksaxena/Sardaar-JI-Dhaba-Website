@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowRight, ArrowUpRight, ChevronLeft, Clock3, Instagram, Linkedin, MapPin, Menu as MenuIcon, MessageCircle, Phone, Search, Star, Utensils, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ChevronLeft, Clock3, Instagram, Linkedin, MapPin, Menu as MenuIcon, MessageCircle, Phone, Search, Utensils, X } from 'lucide-react';
 import { Link, Route, Switch, useLocation, useParams, Router as WouterRouter } from 'wouter';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -32,56 +32,17 @@ function apiUrl(path: string) {
   return `${getApiBase()}${path}`;
 }
 
-const DEMO_STORAGE_KEYS = {
-  enquiries: 'sardaar_ji_demo_enquiries',
-  analytics: 'sardaar_ji_demo_analytics',
-  adminSession: 'sardaar_ji_demo_admin_session',
-};
-
-const DEMO_ADMIN_USERNAME = 'shasha182';
-const DEMO_ADMIN_PASSWORD = 'Shasha@123';
-
-function readDemoCollection<T>(key: string): T[] {
-  try {
-    const value = window.localStorage.getItem(key);
-    return value ? JSON.parse(value) as T[] : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeDemoCollection<T>(key: string, value: T[]) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // Ignore localStorage quota failures in demo mode.
-  }
-}
-
-function getDemoSummary() {
-  const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
-  const events = readDemoCollection<{ name: string; path: string; createdAt: string }>(DEMO_STORAGE_KEYS.analytics);
-  const eventCounts = Object.entries(events.reduce<Record<string, number>>((accumulator, event) => {
-    accumulator[event.name] = (accumulator[event.name] ?? 0) + 1;
-    return accumulator;
-  }, {})).map(([name, count]) => ({ _id: name, count }));
-
-  return {
-    inquiries: enquiries.length,
-    events: events.length,
-    eventCounts: eventCounts.sort((left, right) => right.count - left.count),
-    recentInquiries: enquiries.slice().reverse().slice(0, 50),
-  };
-}
-
 async function trackEvent(name: string) {
-  const payload = { name, path: window.location.pathname, createdAt: new Date().toISOString() };
+  if (window.localStorage.getItem('sardaar_cookie_consent') !== 'accepted') return;
   try {
-    const response = await fetch(apiUrl('/api/analytics/events'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, path: window.location.pathname }) });
-    if (!response.ok) throw new Error('API unavailable');
+    await fetch(apiUrl('/api/analytics/events'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, path: window.location.pathname, consent: true }),
+      keepalive: true,
+    });
   } catch {
-    const events = readDemoCollection<{ name: string; path: string; createdAt: string }>(DEMO_STORAGE_KEYS.analytics);
-    writeDemoCollection(DEMO_STORAGE_KEYS.analytics, [...events, payload]);
+    // Analytics must never block a customer action or persist identifiers locally.
   }
 }
 
@@ -134,8 +95,8 @@ function Header() {
   const allNav = [
     ['/about', 'Our story'],
     ['/menu', 'Menu'],
-    ['/noida', 'Noida'],
-    ['/prayagraj', 'Prayagraj'],
+    ['/locations/noida', 'Noida'],
+    ['/locations/prayagraj', 'Prayagraj'],
     ['/locations', 'Find us'],
     ['/success-story', 'Success story'],
     ['/blog', 'Blog'],
@@ -198,7 +159,9 @@ function Footer() {
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phoneLink}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-accent">{brand.instagram}</a>{brand.googleBusinessUrl && <a href={brand.googleBusinessUrl} target="_blank" rel="noreferrer" className="hover:text-accent">Google reviews</a>}</div></div>
       </div>
-      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2024 Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link></div></div></div>
+      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-5 py-4 text-xs text-secondary-foreground/70 lg:px-8"><a href={business.foodSafetyConnectUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">Food Safety Connect · FSSAI information</a><a href={business.foodSafetyConnectAndroidUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">Android app</a><a href={business.foodSafetyConnectIosUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">iPhone app</a></div></div>
+      {business.outlets.some(outlet => outlet.fssaiLicenseNumber) && <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-3 px-5 py-5 text-xs text-secondary-foreground/70 lg:px-8">{business.outlets.filter(outlet => outlet.fssaiLicenseNumber).map(outlet => <div key={outlet.id}><span className="font-semibold">{outlet.city} FSSAI Licence/Registration No.:</span> {outlet.fssaiLicenseNumber} {outlet.foodSafetyConnectQrUrl && <a className="ml-3 inline-flex flex-col items-start gap-1 align-middle underline underline-offset-2" href={outlet.foodSafetyConnectQrUrl} target="_blank" rel="noreferrer"><img src={outlet.foodSafetyConnectQrUrl} alt={`${outlet.city} FSSAI Food Safety Connect QR code`} width="88" height="88" loading="lazy" className="h-[88px] w-[88px] bg-white object-contain p-1" /><span>Food Safety Connect QR</span></a>}</div>)}</div></div>}
+      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© {new Date().getFullYear()} Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link><button type="button" onClick={() => window.dispatchEvent(new Event('open-cookie-preferences'))} className="text-left hover:text-accent">Cookie preferences</button></div></div></div>
     </footer>
   );
 }
@@ -225,7 +188,7 @@ function MobileActionBar() {
   return <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-foreground/15 bg-background/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_hsl(var(--foreground)/.12)] backdrop-blur-md md:hidden" aria-label="Quick actions">
     <Link href="/menu" onClick={() => trackEvent('menu_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-menu"><Utensils size={17} />Menu</Link>
     <a href={`tel:${brand.phoneLink}`} onClick={() => trackEvent('phone_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 bg-primary text-[10px] font-bold uppercase tracking-wide text-primary-foreground" data-testid="link-mobile-call"><Phone size={17} />Call</a>
-    <Link href="/prayagraj" onClick={() => trackEvent('directions_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
+    <Link href="/locations/prayagraj" onClick={() => trackEvent('directions_click')} className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-directions"><MapPin size={17} />Directions</Link>
     <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wide text-foreground" data-testid="link-mobile-whatsapp"><MessageCircle size={17} />WhatsApp</a>
   </nav>;
 }
@@ -258,7 +221,7 @@ function FranchiseLeadForm() {
       const response = await fetch(apiUrl('/api/inquiries'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, message, kind: 'franchise', source: 'homepage-franchise-form', consent: true }),
+        body: JSON.stringify({ ...values, message, kind: 'franchise', source: 'homepage-franchise-form', consent: values.consent === 'on' }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message ?? 'We could not save your enquiry. Please try again or contact us directly.');
@@ -283,7 +246,7 @@ function FranchiseLeadForm() {
     <p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Start a conversation</p>
     <h2 className="mt-3 font-display text-3xl leading-tight tracking-[-.04em]">Explore a franchise partnership.</h2>
     <p className="mt-3 text-sm leading-6 text-muted-foreground">Share a few details. We’ll take it from there.</p>
-    <form onSubmit={submit} className="mt-6 space-y-4">
+    <form onSubmit={submit} className="mt-6 space-y-4"><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <label className="block text-xs font-bold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="Full name" /></label>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block text-xs font-bold">Phone number<input name="phone" required type="tel" minLength={7} maxLength={20} autoComplete="tel" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="+91 ..." /></label>
@@ -296,7 +259,7 @@ function FranchiseLeadForm() {
           <option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
         </select>
       </label>
-      <label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
+      <p className="text-[11px] leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address, preferred city and indicative budget to review and respond to this franchise enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this franchise enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
       <button type="submit" disabled={sending} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60" data-testid="button-home-franchise-submit">{sending ? 'Sending enquiry...' : 'Request franchise details'} <ArrowRight size={16} /></button>
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
       <p className="text-center text-[10px] leading-4 text-muted-foreground">Submitting this form is an enquiry, not a franchise offer or approval.</p>
@@ -358,7 +321,7 @@ function Home() {
           <p className="mt-7 max-w-lg text-sm leading-7 text-muted-foreground md:text-base">Sardaar Ji Dhaba brings together the warmth of a Punjabi dhaba, a recognisable North Indian menu and a guest-first approach. We’re inviting thoughtful entrepreneurs to start a conversation about bringing that experience to their city.</p>
           <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-home-story-franchise">I’m interested in a franchise <ArrowRight size={16} /></Link>
         </div>
-        <PhotoArt src="/images/restaurant/dining-room.jpg" alt="Sardaar Ji Dhaba dining room and guest experience" label="the Sardaar Ji table" className="min-h-[360px] md:min-h-[500px]" priority />
+        <PhotoArt src="/images/og/home-1200x630.jpg" alt="Sardaar Ji Dhaba dining room and guest experience" label="the Sardaar Ji table" className="min-h-[360px] md:min-h-[500px]" priority />
       </section>
 
       <section className="bg-muted/70">
@@ -467,7 +430,7 @@ function RestaurantConsulting() {
           <p className="mt-7 max-w-2xl font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl">Better systems. Healthier margins. Stronger restaurants.</p>
           <p className="mt-6 max-w-xl text-base leading-7 text-secondary-foreground/75">Practical, operator-minded support for small and medium restaurants. Start remotely; bring us on-site when your business needs hands-on attention.</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#consulting-enquiry" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-consulting-hero-cta">Book a discovery call <ArrowRight size={16} /></a>
+            <a href="#consulting-enquiry" onClick={() => trackEvent('consulting_form_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-consulting-hero-cta">Request a discovery call <ArrowRight size={16} /></a>
             <a href={brand.whatsapp} onClick={() => trackEvent('whatsapp_click')} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-secondary-foreground/30 px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-consulting-whatsapp"><MessageCircle size={16} /> WhatsApp us</a>
           </div>
           <p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-secondary-foreground/55">Remote-first · On-site when required · India</p>
@@ -534,7 +497,7 @@ function RestaurantConsulting() {
           <h3 className="mt-7 font-display text-3xl">Thanks. Your enquiry is in.</h3>
           <p className="mt-4 max-w-lg text-sm leading-7 text-muted-foreground">We have received your details. The team will review your requirements and get in touch using the contact information you provided.</p>
           <button type="button" onClick={() => setSent(false)} className="mt-7 w-fit font-bold text-primary underline">Send another enquiry</button>
-        </div> : <form onSubmit={submit} className="space-y-5">
+        </div> : <form onSubmit={submit} className="space-y-5"><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
           <div className="grid gap-5 sm:grid-cols-2">
             <label className="block text-sm font-semibold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="Full name" /></label>
             <label className="block text-sm font-semibold">Phone number<input name="phone" required type="tel" maxLength={20} autoComplete="tel" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="+91 ..." /></label>
@@ -549,7 +512,7 @@ function RestaurantConsulting() {
             </label>
           </div>
           <label className="block text-sm font-semibold">What is the main challenge?<textarea name="message" required minLength={4} maxLength={2000} rows={4} className="mt-2 w-full resize-y border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" placeholder="Tell us briefly about your restaurant and what you want to improve." /></label>
-          <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba / RestroGrowth may contact me about this consulting enquiry.</span></label>
+          <p className="text-xs leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address, restaurant name, city, selected service and message to review and respond to this consulting enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba / RestroGrowth may use my details to respond to this consulting enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
           <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-consulting">{sending ? 'Sending...' : 'Send consulting enquiry'} <ArrowRight size={16} /></button>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         </form>}
@@ -559,7 +522,7 @@ function RestaurantConsulting() {
 }
 
 function About() {
-  return <Shell><Meta title="Our story" /><PageIntro eyebrow="The long way round" title="A dhaba is more than a place to eat." copy="It is a pause in the journey. A familiar smell from the open kitchen. A table where the food keeps coming and nobody checks the time." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-20 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:pb-32"><PhotoArt src="/images/restaurant/dining-room.jpg" alt="Warm Sardaar Ji Dhaba dining room" label="our beginning" className="min-h-[440px] lg:min-h-[580px]" /><div className="lg:pt-12"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">A note from the family</p><div className="mt-7 space-y-6 font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl"><p>In {business.established}, we opened our first table with one simple belief: roadside food should never feel like a compromise.</p><p>We wanted the warmth of a Punjabi home, the theatre of a live tandoor and the kind of portions that make you loosen your belt.</p></div><p className="mt-8 max-w-lg text-sm leading-7 text-muted-foreground">Since then, Sardaar Ji Dhaba has grown from a single busy stop into a trusted place for family meals, Punjabi comfort food and memorable evenings in Noida and Prayagraj.</p><div className="mt-10 border-l-2 border-accent pl-5 font-mono-brand text-[10px] uppercase tracking-[.17em] text-secondary">Built on repeat guests, slow-cooked gravies and a simple promise:<br /><span className="text-muted-foreground">serve honest food, serve it generously, and make every table feel welcome.</span></div></div></section><section className="bg-secondary text-secondary-foreground"><div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">What has not changed</p><div className="mt-12 grid gap-10 md:grid-cols-3">{values.map(value => <div key={value.number} className="border-t border-secondary-foreground/25 pt-5"><span className="font-mono-brand text-xs text-accent">{value.number}</span><h2 className="mt-10 font-display text-3xl">{value.title}</h2><p className="mt-4 text-sm leading-7 text-secondary-foreground/70">{value.copy}</p></div>)}</div></div></section></Shell>;
+  return <Shell><Meta title="Our story" /><PageIntro eyebrow="The long way round" title="A dhaba is more than a place to eat." copy="It is a pause in the journey. A familiar smell from the open kitchen. A table where the food keeps coming and nobody checks the time." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-20 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:pb-32"><PhotoArt src="/images/og/home-1200x630.jpg" alt="Warm Sardaar Ji Dhaba dining room" label="our beginning" className="min-h-[440px] lg:min-h-[580px]" /><div className="lg:pt-12"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">A note from the family</p><div className="mt-7 space-y-6 font-display text-3xl leading-tight tracking-[-.04em] md:text-4xl"><p>In {business.established}, we opened our first table with one simple belief: roadside food should never feel like a compromise.</p><p>We wanted the warmth of a Punjabi home, the theatre of a live tandoor and the kind of portions that make you loosen your belt.</p></div><p className="mt-8 max-w-lg text-sm leading-7 text-muted-foreground">Since then, Sardaar Ji Dhaba has grown from a single busy stop into a trusted place for family meals, Punjabi comfort food and memorable evenings in Noida and Prayagraj.</p><div className="mt-10 border-l-2 border-accent pl-5 font-mono-brand text-[10px] uppercase tracking-[.17em] text-secondary">Built on repeat guests, slow-cooked gravies and a simple promise:<br /><span className="text-muted-foreground">serve honest food, serve it generously, and make every table feel welcome.</span></div></div></section><section className="bg-secondary text-secondary-foreground"><div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">What has not changed</p><div className="mt-12 grid gap-10 md:grid-cols-3">{values.map(value => <div key={value.number} className="border-t border-secondary-foreground/25 pt-5"><span className="font-mono-brand text-xs text-accent">{value.number}</span><h2 className="mt-10 font-display text-3xl">{value.title}</h2><p className="mt-4 text-sm leading-7 text-secondary-foreground/70">{value.copy}</p></div>)}</div></div></section></Shell>;
 }
 
 function SuccessStory() {
@@ -570,7 +533,7 @@ function SuccessStory() {
     { name: 'Naman Mishra', href: 'https://www.linkedin.com/in/naman-mishra-55756a183/' },
   ];
 
-  return <Shell><Meta title="Success story" /><PageIntro eyebrow="One table became two stops" title="A little roadside belief, carried forward." copy="From the first busy evening in Noida to a second home in Prayagraj — this is a growing story, still written one plate at a time." /><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="grid gap-5 md:grid-cols-4">{[String(business.established), '01', '02', '∞'].map((number, i) => <div key={number} className={`min-h-[190px] border-t-2 p-5 ${i === 3 ? 'border-accent bg-accent' : 'border-secondary bg-muted/60'}`}><span className="font-display text-6xl tracking-[-.08em]">{number}</span><p className="mt-8 font-mono-brand text-[10px] uppercase tracking-[.17em] text-muted-foreground">{['The first flame', 'Noida', 'Prayagraj', 'Next chapter'][i]}</p></div>)}</div><div className="mt-16 grid gap-12 lg:grid-cols-[1.05fr_.95fr]"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Built on repeat customers</p><h2 className="mt-5 max-w-lg font-display text-5xl leading-[.95] tracking-[-.06em]">The best kind of growth is someone bringing their parents back.</h2><p className="mt-7 max-w-lg leading-7 text-muted-foreground">What started in Noida with one busy dining room has grown into a second home in Prayagraj, where the same Punjabi values still guide the kitchen: generous portions, smoky tandoor flavours, and the kind of hospitality that keeps people coming back with their families.</p></div><PhotoArt src="/images/people/guest-table.jpg" alt="Guests enjoying Punjabi food at Sardaar Ji Dhaba" label="our people" className="min-h-[360px]" /></div></section><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="mb-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Meet the team</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">The people behind the long tables.</h2></div><div className="grid gap-6 md:grid-cols-2">{teamMembers.map(({ name, href }) => <div key={name} className="flex items-center gap-5 rounded-2xl border border-foreground/10 bg-card p-5"><div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent font-display text-lg text-accent-foreground">{name.split(' ').map(word => word[0]).slice(0, 2).join('').toUpperCase()}</div><div className="min-w-0 flex-1"><p className="font-display text-2xl leading-none tracking-[-.03em]">{name}</p><p className="mt-2 text-sm text-muted-foreground">Sardaar Ji Dhaba team</p><a href={href} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-primary"><Linkedin size={16} /> LinkedIn</a></div></div>)}</div></section><section className="bg-muted/70"><div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24"><div className="grid gap-8 md:grid-cols-2"><div className="sketch-border bg-background p-8"><Star className="text-accent" size={22} fill="currentColor" /><p className="mt-6 font-display text-3xl leading-tight">“The taste, warmth and generosity that makes people return.”</p><p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.17em] text-muted-foreground">Guest quote placeholder</p></div><div className="flex flex-col justify-center"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Want to build the next table?</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em]">Bring the Sardaar Ji feeling to your city.</h2><Link href="/franchise" className="mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-success-franchise">Explore franchise partnership <ArrowRight size={16} /></Link></div></div></div></section></Shell>;
+  return <Shell><Meta title="Success story" /><PageIntro eyebrow="One table became two stops" title="A little roadside belief, carried forward." copy="From the first busy evening in Noida to a second home in Prayagraj — this is a growing story, still written one plate at a time." /><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="grid gap-5 md:grid-cols-4">{[String(business.established), '01', '02', '∞'].map((number, i) => <div key={number} className={`min-h-[190px] border-t-2 p-5 ${i === 3 ? 'border-accent bg-accent' : 'border-secondary bg-muted/60'}`}><span className="font-display text-6xl tracking-[-.08em]">{number}</span><p className="mt-8 font-mono-brand text-[10px] uppercase tracking-[.17em] text-muted-foreground">{['The first flame', 'Noida', 'Prayagraj', 'Next chapter'][i]}</p></div>)}</div><div className="mt-16 grid gap-12 lg:grid-cols-[1.05fr_.95fr]"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Built on repeat customers</p><h2 className="mt-5 max-w-lg font-display text-5xl leading-[.95] tracking-[-.06em]">The best kind of growth is someone bringing their parents back.</h2><p className="mt-7 max-w-lg leading-7 text-muted-foreground">What started in Noida with one busy dining room has grown into a second home in Prayagraj, where the same Punjabi values still guide the kitchen: generous portions, smoky tandoor flavours, and the kind of hospitality that keeps people coming back with their families.</p></div><PhotoArt src="/images/people/guest-table.jpg" alt="Guests enjoying Punjabi food at Sardaar Ji Dhaba" label="our people" className="min-h-[360px]" /></div></section><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="mb-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Meet the team</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">The people behind the long tables.</h2></div><div className="grid gap-6 md:grid-cols-2">{teamMembers.map(({ name, href }) => <div key={name} className="flex items-center gap-5 rounded-2xl border border-foreground/10 bg-card p-5"><div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent font-display text-lg text-accent-foreground">{name.split(' ').map(word => word[0]).slice(0, 2).join('').toUpperCase()}</div><div className="min-w-0 flex-1"><p className="font-display text-2xl leading-none tracking-[-.03em]">{name}</p><p className="mt-2 text-sm text-muted-foreground">Sardaar Ji Dhaba team</p><a href={href} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-primary"><Linkedin size={16} /> LinkedIn</a></div></div>)}</div></section><section className="bg-muted/70"><div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24"><div className="grid gap-8 md:grid-cols-2"><div className="sketch-border bg-background p-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">The next chapter</p><h3 className="mt-6 font-display text-3xl leading-tight">Built one service, one plate and one conversation at a time.</h3><p className="mt-5 text-sm leading-7 text-muted-foreground">We are continuing to grow carefully, with a focus on the food, hospitality and day-to-day work that make a restaurant worth returning to.</p></div><div className="flex flex-col justify-center"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Want to build the next table?</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em]">Bring the Sardaar Ji feeling to your city.</h2><Link href="/franchise" className="mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-success-franchise">Explore franchise partnership <ArrowRight size={16} /></Link></div></div></div></section></Shell>;
 }
 
 function MenuPage() {
@@ -578,7 +541,7 @@ function MenuPage() {
   const [query, setQuery] = useState('');
   const categories = useMemo(() => ['All', ...Array.from(new Set(menu.map(item => item.category)))], []);
   const filtered = useMemo(() => menu.filter(item => (active === 'All' || item.category === active) && `${item.name} ${item.description}`.toLowerCase().includes(query.toLowerCase())), [active, query]);
-  return <Shell><Meta title="Our Menu - North Indian & Punjabi Specialities | Sardaar Ji Dhaba" description="Explore the full menu at Sardaar Ji Dhaba. From Dal Makhani to Tandoori Roti, view our fresh Punjabi dishes." /><PageIntro eyebrow="The menu" title="Come hungry. Leave happier." copy="Punjabi classics, North Indian favourites and fresh dhaba-style comfort food across both Sardaar Ji Dhaba locations." /><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="flex flex-col gap-5 border-y border-foreground/10 py-5 lg:flex-row lg:items-center lg:justify-between"><div className="flex gap-2 overflow-x-auto pb-1">{categories.map(category => <button type="button" key={category} onClick={() => setActive(category)} className={`whitespace-nowrap rounded-full border px-4 py-2 text-xs font-bold transition-colors ${active === category ? 'border-primary bg-primary text-primary-foreground' : 'border-foreground/15 hover:border-primary hover:text-primary'}`} data-testid={`button-filter-${category.toLowerCase()}`}>{category}</button>)}</div><label className="flex items-center gap-3 border-b border-foreground/20 pb-2 text-sm lg:w-60"><Search size={16} className="text-muted-foreground" /><span className="sr-only">Search menu</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search the menu" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" data-testid="input-menu-search" /></label></div><div className="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-2">{filtered.map((item, index) => <MenuCard item={item} key={item.id} categoryStart={index === 0 || item.category !== filtered[index - 1].category} />)}</div>{filtered.length === 0 && <div className="py-20 text-center"><Utensils className="mx-auto text-primary" /><p className="mt-4 font-display text-2xl">That plate is not on today's list.</p><button type="button" onClick={() => { setQuery(''); setActive('All'); }} className="mt-4 text-sm font-bold text-primary underline" data-testid="button-reset-menu">Reset the menu</button></div>}<div className="mt-16 border border-dashed border-primary/50 bg-primary/5 p-5 text-sm leading-6 text-muted-foreground"><strong className="text-foreground">Menu note:</strong> Sardaar Ji Dhaba serves a broad Punjabi and North Indian menu across both locations, including tandoori starters, curries, breads, rice, desserts and beverages.</div></section></Shell>;
+  return <Shell><Meta title="Our Menu - North Indian & Punjabi Specialities | Sardaar Ji Dhaba" description="Explore the full menu at Sardaar Ji Dhaba. From Dal Makhani to Tandoori Roti, view our fresh Punjabi dishes." /><PageIntro eyebrow="The menu" title="Come hungry. Leave happier." copy="Punjabi classics, North Indian favourites and fresh dhaba-style comfort food across both Sardaar Ji Dhaba locations." /><section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8 lg:pb-28"><div className="flex flex-col gap-5 border-y border-foreground/10 py-5 lg:flex-row lg:items-center lg:justify-between"><div className="flex gap-2 overflow-x-auto pb-1">{categories.map(category => <button type="button" key={category} onClick={() => setActive(category)} className={`whitespace-nowrap rounded-full border px-4 py-2 text-xs font-bold transition-colors ${active === category ? 'border-primary bg-primary text-primary-foreground' : 'border-foreground/15 hover:border-primary hover:text-primary'}`} data-testid={`button-filter-${category.toLowerCase()}`}>{category}</button>)}</div><label className="flex items-center gap-3 border-b border-foreground/20 pb-2 text-sm lg:w-60"><Search size={16} className="text-muted-foreground" /><span className="sr-only">Search menu</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search the menu" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" data-testid="input-menu-search" /></label></div><p className="mt-6 text-sm leading-6 text-muted-foreground">Menu items, prices and availability may change by outlet. Please confirm current prices and availability with the team before ordering. If you have a food allergy or dietary requirement, contact the outlet before placing your order so the team can discuss ingredients and preparation.</p><div className="mt-8 grid gap-x-10 gap-y-8 md:grid-cols-2">{filtered.map((item, index) => <MenuCard item={item} key={item.id} categoryStart={index === 0 || item.category !== filtered[index - 1].category} />)}</div>{filtered.length === 0 && <div className="py-20 text-center"><Utensils className="mx-auto text-primary" /><p className="mt-4 font-display text-2xl">That plate is not on today's list.</p><button type="button" onClick={() => { setQuery(''); setActive('All'); }} className="mt-4 text-sm font-bold text-primary underline" data-testid="button-reset-menu">Reset the menu</button></div>}<div className="mt-16 border border-dashed border-primary/50 bg-primary/5 p-5 text-sm leading-6 text-muted-foreground"><strong className="text-foreground">Menu note:</strong> Sardaar Ji Dhaba serves a broad Punjabi and North Indian menu across both locations, including tandoori starters, curries, breads, rice, desserts and beverages.</div></section></Shell>;
 }
 
 
@@ -588,7 +551,7 @@ function MenuCard({ item, categoryStart }: { item: MenuItem; categoryStart: bool
 function Gallery() {
   const photos = [
     ...menuBoards,
-    { id: 'dining-room', title: 'Dining room', image: '/images/restaurant/dining-room.jpg', alt: 'Sardaar Ji Dhaba dining room' },
+    { id: 'dining-room', title: 'Dining room', image: '/images/og/home-1200x630.jpg', alt: 'Sardaar Ji Dhaba dining room' },
     { id: 'dhaba-exterior', title: 'Dhaba exterior', image: '/images/restaurant/dhaba-exterior.jpg', alt: 'Sardaar Ji Dhaba exterior' },
     { id: 'guest-table', title: 'Family table', image: '/images/people/guest-table.jpg', alt: 'Guests enjoying a meal at Sardaar Ji Dhaba' },
   ];
@@ -608,55 +571,15 @@ function LocationDetail() {
   const { city } = useParams<{ city: string }>();
   const place = locations.find(item => item.id === city);
   if (!place) return <NotFound />;
-
-  const mapEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(place.area)}&output=embed`;
-  const menuIds = place.id === 'noida'
-    ? ['tandoori-chicken', 'paneer-tikka', 'dal-makhani']
-    : ['kadhai-chicken', 'dal-makhani', 'paneer-tikka'];
-  const intro = `Find Sardaar Ji Dhaba in ${place.city} at ${place.area}. This local outlet page gives visitors one place to review the address, opening hours, map, phone contact and selected menu items before travelling. The published menu includes Punjabi and North Indian favourites, with tandoori starters, paneer dishes, dal, breads and rice; availability can change, so call to confirm a specific item before visiting. Daily hours are listed as ${business.hours.display}. Use the embedded Google Map to check the location and open directions in Google Maps. The contact number below connects to the restaurant team for questions about the current menu and visit details. Reservation, delivery, takeaway and group-seating availability have not been confirmed for this outlet; please ask directly rather than relying on assumptions. The full menu page provides more published dishes and categories for guests planning a meal. Map and address details are included to help residents and visitors navigate to this ${place.city} stop. Confirm current details by phone when timing or a particular dish matters.`;
-
-  return (
-    <Shell>
-      <Meta title={`Punjabi Restaurant in ${place.city} | Sardaar Ji Dhaba`} description={`Visit Sardaar Ji Dhaba in ${place.city} for Punjabi and North Indian food, outlet details and directions.`} image={`/images/og/${place.id}-1200x630.jpg`} />
-      <section className="bg-secondary text-secondary-foreground">
-        <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-          <Link href="/locations" className="inline-flex items-center gap-2 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent"><ChevronLeft size={14} /> All locations</Link>
-          <p className="mt-12 font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">Punjabi food · {place.city}</p>
-          <h1 className="mt-5 max-w-5xl font-display text-5xl leading-[.92] md:text-7xl">Punjabi Restaurant in {place.city}, Sardaar Ji Dhaba</h1>
-          <p className="mt-7 max-w-4xl text-base leading-7 text-secondary-foreground/80">{intro}</p>
-        </div>
-      </section>
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
-        <div>
-          <h2 className="font-display text-4xl">Plan your visit</h2>
-          <dl className="mt-7 space-y-5 border-t border-foreground/15 pt-6 text-sm">
-            <div><dt className="font-bold">Address</dt><dd className="mt-1 text-muted-foreground">{place.area}</dd></div>
-            <div><dt className="font-bold">Phone</dt><dd className="mt-1"><a href={`tel:${business.phone.e164}`} className="text-primary underline">{business.phone.display}</a></dd></div>
-            <div><dt className="font-bold">Hours</dt><dd className="mt-1 text-muted-foreground">Daily, {business.hours.display}</dd></div>
-          </dl>
-          <a href={place.mapUrl} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground"><MapPin size={16} /> Directions to {place.city}</a>
-          <h2 className="mt-12 font-display text-3xl">Popular Punjabi dishes</h2>
-          <ul className="mt-4 space-y-3">{menuIds.map(id => {
-            const item = menu.find(dish => dish.id === id);
-            return item ? <li key={id}><Link href="/menu" className="text-primary underline">{item.name}</Link></li> : null;
-          })}</ul>
-        </div>
-        <div className="min-h-[360px] overflow-hidden border border-foreground/15"><iframe title={`${place.city} map`} src={mapEmbedSrc} width="100%" height="100%" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="min-h-[360px] w-full border-0" /></div>
-      </section>
-    </Shell>
-  );
-}
-
-function NoidaLanding() {
-  return <Shell><Meta title="Sardaar Ji Dhaba Noida | Sector 76" description="Visit Sardaar Ji Dhaba at Gardenia Gateway near Kiosk A3 in Sector 76, Noida. Get directions, opening hours and ordering links." image="/images/og/noida-1200x630.jpg" /><NoidaPage /></Shell>;
-}
-
-function PrayagrajLanding() {
-  return <Shell><Meta title="Sardaar Ji Dhaba Prayagraj | Civil Lines" description="Visit Sardaar Ji Dhaba at 138C Mahatma Gandhi Marg, near El Chico in Civil Lines, Prayagraj. Get directions, opening hours and ordering links." image="/images/og/prayagraj-1200x630.jpg" /><PrayagrajPage /></Shell>;
-}
-
-function BreadcrumbJsonLd({ route }: { route: string }) {
-  return null;
+  const page = place.id === 'noida' ? <NoidaPage /> : <PrayagrajPage />;
+  return <Shell>
+    <Meta
+      title={`Punjabi Restaurant in ${place.city} | Sardaar Ji Dhaba`}
+      description={`Visit Sardaar Ji Dhaba in ${place.city} for Punjabi and North Indian food, outlet details and directions.`}
+      image={`/images/og/${place.id}-1200x630.jpg`}
+    />
+    {page}
+  </Shell>;
 }
 
 function Franchise() {
@@ -665,32 +588,19 @@ function Franchise() {
 
 async function sendInquiry(form: HTMLFormElement, kind: 'contact' | 'franchise') {
   const values = Object.fromEntries(new FormData(form).entries());
-  const payload = { ...values, kind, createdAt: new Date().toISOString() };
-
-  try {
-    const response = await fetch(apiUrl('/api/inquiries'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...values, kind, ...(kind === 'franchise' ? { source: 'franchise-application', consent: values.consent === 'on' } : {}) }),
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.message ?? 'The message could not be sent.');
-    return;
-  } catch (error) {
-    if (kind === 'franchise') throw error;
-    const enquiries = readDemoCollection<{ kind: string; name: string; email: string; phone?: string; city?: string; message: string; createdAt: string }>(DEMO_STORAGE_KEYS.enquiries);
-    const rawPayload = payload as Record<string, string | undefined>;
-    const submission = {
-      kind: String(rawPayload.kind ?? 'contact'),
-      name: String(rawPayload.name ?? ''),
-      email: String(rawPayload.email ?? ''),
-      phone: typeof rawPayload.phone === 'string' ? rawPayload.phone : undefined,
-      city: typeof rawPayload.city === 'string' ? rawPayload.city : undefined,
-      message: String(rawPayload.message ?? ''),
-      createdAt: payload.createdAt,
-    };
-    writeDemoCollection(DEMO_STORAGE_KEYS.enquiries, [...enquiries, submission]);
-  }
+  const consent = values.consent === 'on';
+  const response = await fetch(apiUrl('/api/inquiries'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...values,
+      kind,
+      consent,
+      source: kind === 'franchise' ? 'franchise-application' : 'contact-page',
+    }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.message ?? 'The message could not be sent. Please try again.');
 }
 
 function Application() {
@@ -730,7 +640,7 @@ function Application() {
               <Link href="/" className="mt-7 font-bold text-primary underline">Back to home</Link>
             </div>
           ) : (
-            <form className="space-y-6" onSubmit={submit}>
+            <form className="space-y-6" onSubmit={submit}><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
               <div className="grid gap-6 sm:grid-cols-2">
                 <label className="block text-sm font-semibold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" placeholder="Full name" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-name" /></label>
                 <label className="block text-sm font-semibold">Phone number<input name="phone" required type="tel" minLength={7} maxLength={20} autoComplete="tel" placeholder="+91 ..." className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-phone-number" /></label>
@@ -748,7 +658,7 @@ function Application() {
                 </label>
               </div>
               <label className="block text-sm font-semibold">Anything else we should know?<textarea name="message" required minLength={4} maxLength={2000} rows={4} placeholder="Tell us about your plans, preferred location or any questions." className="mt-2 w-full resize-y border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-message" /></label>
-              <label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
+              <p className="text-xs leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address, preferred city, indicative budget, optional experience details and message to review and respond to this franchise enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
               <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-application">{sending ? 'Sending...' : 'Submit franchise enquiry'} <ArrowRight size={16} /></button>
               {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
               <p className="text-xs text-muted-foreground">Your details will only be used to respond to this enquiry. See our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p>
@@ -760,10 +670,18 @@ function Application() {
   );
 }
 
+function getStoryImage(story: (typeof stories)[number]) {
+  const hasMatchingDishPhoto = story.image === `/images/blog/${story.id}.png`;
+  if (story.category === 'Recipe guide' && !hasMatchingDishPhoto) {
+    return { src: '/images/restaurant/dining-room.jpg', alt: 'Dining area at Sardaar Ji Dhaba' };
+  }
+  return { src: story.image, alt: story.alt };
+}
+
 function Blog() {
   const [visibleCount, setVisibleCount] = useState(6);
   const visibleStories = stories.slice(0, visibleCount);
-  return <Shell><Meta title="Sardaar Ji Dhaba Blog & City Guides" description="Read Sardaar Ji Dhaba blog posts and city guides on Prayagraj, restaurant picks, Punjabi comfort food, and local travel ideas." /><PageIntro eyebrow="Blog" title="Stories, guides and good food from Prayagraj." copy="From restaurant-style recipes to local city guides, discover what makes Sardaar Ji Dhaba a favourite stop in Noida and Prayagraj." /><section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8"><div className="grid gap-7 md:grid-cols-3">{visibleStories.map((story, i) => <Link href={`/blog/${story.id}`} key={story.id} className={`group ${i % 3 === 1 ? 'md:translate-y-12' : ''}`} data-testid={`card-blog-${story.id}`}><PhotoArt src={story.image} alt={story.alt} label={story.category} className="min-h-[270px]" /><p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">{story.publishedAt ? `${story.publishedAt} · ` : ''}{story.category} · {story.read}</p><h2 className="mt-3 font-display text-3xl leading-none tracking-[-.04em] group-hover:text-primary">{story.title}</h2><p className="mt-4 text-sm leading-6 text-muted-foreground">{story.excerpt}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-bold">{story.category === 'Recipe guide' ? 'Read recipe' : 'Read article'} <ArrowUpRight size={15} /></span></Link>)}</div>{visibleCount < stories.length && <button type="button" onClick={() => setVisibleCount(count => Math.min(count + 6, stories.length))} className="mx-auto mt-16 block rounded-full border border-primary px-6 py-3 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground" data-testid="button-load-more-blog">Load more posts</button>}</section></Shell>;
+  return <Shell><Meta title="Sardaar Ji Dhaba Blog & City Guides" description="Read Sardaar Ji Dhaba blog posts and city guides on Prayagraj, restaurant picks, Punjabi comfort food, and local travel ideas." /><PageIntro eyebrow="Blog" title="Stories, guides and good food from Prayagraj." copy="From restaurant-style recipes to local city guides, discover what makes Sardaar Ji Dhaba a favourite stop in Noida and Prayagraj." /><section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8"><div className="grid gap-7 md:grid-cols-3">{visibleStories.map((story, i) => <Link href={`/blog/${story.id}`} key={story.id} className={`group ${i % 3 === 1 ? 'md:translate-y-12' : ''}`} data-testid={`card-blog-${story.id}`}><PhotoArt src={getStoryImage(story).src} alt={getStoryImage(story).alt} label={story.category} className="min-h-[270px]" /><p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">{story.publishedAt ? `${story.publishedAt} · ` : ''}{story.category} · {story.read}</p><h2 className="mt-3 font-display text-3xl leading-none tracking-[-.04em] group-hover:text-primary">{story.title}</h2><p className="mt-4 text-sm leading-6 text-muted-foreground">{story.excerpt}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-bold">{story.category === 'Recipe guide' ? 'Read recipe' : 'Read article'} <ArrowUpRight size={15} /></span></Link>)}</div>{visibleCount < stories.length && <button type="button" onClick={() => setVisibleCount(count => Math.min(count + 6, stories.length))} className="mx-auto mt-16 block rounded-full border border-primary px-6 py-3 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground" data-testid="button-load-more-blog">Load more posts</button>}</section></Shell>;
 }
 
 function BlogArticle() {
@@ -782,8 +700,9 @@ function BlogArticle() {
     : (story.seoDescription ?? story.excerpt);
 
   const answerLead = story.body[0].split(/\s+/).slice(0, 55).join(' ');
+  const storyImage = getStoryImage(story);
 
-  return <Shell><Meta title={articleTitle} description={articleDescription} image={story.image} type="article" /><article><header className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center lg:px-8 lg:pt-24"><Link href="/blog" className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-blog">← Back to blog</Link><p className="mt-10 font-mono-brand text-[10px] uppercase tracking-[.2em] text-secondary">{story.category} · {story.read}</p><h1 className="mt-5 font-display text-5xl leading-[.92] tracking-[-.07em] md:text-7xl">{story.title}</h1><p className="mx-auto mt-7 max-w-3xl text-left text-base leading-7 text-foreground"><strong>In brief: </strong>{answerLead}</p><p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">{story.excerpt}</p></header><div className="mx-auto max-w-5xl px-5 lg:px-8"><PhotoArt src={story.image} alt={story.alt} label={story.category} className="min-h-[300px] md:min-h-[480px]" /></div><div className="mx-auto max-w-3xl px-5 py-16 lg:px-8"><div className="space-y-10">{story.ingredients && story.ingredients.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Ingredients</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.ingredients.map((ingredient) => <li key={ingredient} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-primary" aria-hidden="true" /><span>{ingredient}</span></li>)}</ul></section>}{story.method && story.method.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">How to make it</h2><ol className="mt-5 space-y-5 text-sm leading-7 text-muted-foreground">{story.method.map((step, index) => <li key={step} className="flex gap-4"><span className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{index + 1}</span><span>{step}</span></li>)}</ol></section>}{story.tips && story.tips.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Chef tips</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.tips.map((tip) => <li key={tip} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-accent" aria-hidden="true" /><span>{tip}</span></li>)}</ul></section>}<section className="prose prose-stone max-w-none prose-headings:font-display prose-headings:font-semibold prose-p:leading-8"><h2>{story.category === 'Recipe guide' ? 'Why this recipe works' : 'Why this guide matters'}</h2>{story.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<blockquote>{story.category === 'Recipe guide' ? 'The first bite should make you look up from the table.' : 'The best city guides help you see the place clearly, not just tick off the obvious stops.'}</blockquote><p className="font-mono-brand text-xs uppercase tracking-[.16em] text-muted-foreground">{story.category === 'Recipe guide' ? 'Kitchen note · Sardaar Ji Dhaba' : 'City note · Prayagraj'}</p></section></div></div></article></Shell>;
+  return <Shell><Meta title={articleTitle} description={articleDescription} image={storyImage.src} type="article" /><article><header className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center lg:px-8 lg:pt-24"><Link href="/blog" className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-blog">← Back to blog</Link><p className="mt-10 font-mono-brand text-[10px] uppercase tracking-[.2em] text-secondary">{story.category} · {story.read}</p><h1 className="mt-5 font-display text-5xl leading-[.92] tracking-[-.07em] md:text-7xl">{story.title}</h1><p className="mx-auto mt-7 max-w-3xl text-left text-base leading-7 text-foreground"><strong>In brief: </strong>{answerLead}</p><p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">{story.excerpt}</p></header><div className="mx-auto max-w-5xl px-5 lg:px-8"><PhotoArt src={storyImage.src} alt={storyImage.alt} label={story.category} className="min-h-[300px] md:min-h-[480px]" /></div><div className="mx-auto max-w-3xl px-5 py-16 lg:px-8"><div className="space-y-10">{story.ingredients && story.ingredients.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Ingredients</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.ingredients.map((ingredient) => <li key={ingredient} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-primary" aria-hidden="true" /><span>{ingredient}</span></li>)}</ul></section>}{story.method && story.method.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">How to make it</h2><ol className="mt-5 space-y-5 text-sm leading-7 text-muted-foreground">{story.method.map((step, index) => <li key={step} className="flex gap-4"><span className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{index + 1}</span><span>{step}</span></li>)}</ol></section>}{story.tips && story.tips.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Chef tips</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.tips.map((tip) => <li key={tip} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-accent" aria-hidden="true" /><span>{tip}</span></li>)}</ul></section>}<section className="prose prose-stone max-w-none prose-headings:font-display prose-headings:font-semibold prose-p:leading-8"><h2>{story.category === 'Recipe guide' ? 'Why this recipe works' : 'Why this guide matters'}</h2>{story.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<blockquote>{story.category === 'Recipe guide' ? 'The first bite should make you look up from the table.' : 'The best city guides help you see the place clearly, not just tick off the obvious stops.'}</blockquote><p className="font-mono-brand text-xs uppercase tracking-[.16em] text-muted-foreground">{story.category === 'Recipe guide' ? 'Kitchen note · Sardaar Ji Dhaba' : 'City note · Prayagraj'}</p></section></div></div></article></Shell>;
 }
 
 function ContactLegacy() {
@@ -803,7 +722,7 @@ function ContactLegacy() {
       setSending(false);
     }
   };
-  return <Shell><Meta title="Contact" /><PageIntro eyebrow="Come say hello" title="The kettle is always on." copy="For table questions, feedback, catering conversations or just a friendly hello, reach out directly." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 lg:grid-cols-[.8fr_1.2fr] lg:px-8"><div className="space-y-4"><a href={`tel:${brand.phoneLink}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-phone"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Call</span><span className="mt-2 block font-display text-2xl">{brand.phone}</span></span><ArrowUpRight className="text-primary" /></a><a href={`mailto:${brand.email}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-email"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Email</span><span className="mt-2 block font-display text-2xl break-all">{brand.email}</span></span><ArrowUpRight className="text-primary" /></a><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="group flex items-center justify-between border-y border-foreground/15 py-5" data-testid="link-contact-whatsapp"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">WhatsApp</span><span className="mt-2 block font-display text-2xl">Start a chat</span></span><ArrowUpRight className="text-primary" /></a></div><div className="bg-muted/60 p-6 md:p-10"><h2 className="font-display text-3xl">Leave a note</h2>{sent ? <div className="mt-12"><h3 className="font-display text-2xl">We have your note.</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Thanks for writing. We will get back to you soon.</p></div> : <form className="mt-8 space-y-6" onSubmit={submit}><div className="grid gap-6 sm:grid-cols-2"><input name="name" required aria-label="Your name" placeholder="Your name" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-name" /><input name="email" required type="email" aria-label="Email address" placeholder="Email address" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-email" /></div><textarea name="message" required rows={5} aria-label="Your message" placeholder="What can we help with?" className="w-full resize-none border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-message" /><button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-contact">{sending ? 'Sending...' : 'Send note'} <ArrowRight size={16} /></button>{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</form>}</div></section></Shell>;
+  return <Shell><Meta title="Contact" /><PageIntro eyebrow="Come say hello" title="The kettle is always on." copy="For table questions, feedback, catering conversations or just a friendly hello, reach out directly." /><section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 lg:grid-cols-[.8fr_1.2fr] lg:px-8"><div className="space-y-4"><a href={`tel:${brand.phoneLink}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-phone"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Call</span><span className="mt-2 block font-display text-2xl">{brand.phone}</span></span><ArrowUpRight className="text-primary" /></a><a href={`mailto:${brand.email}`} className="group flex items-center justify-between border-t border-foreground/15 py-5" data-testid="link-contact-email"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">Email</span><span className="mt-2 block font-display text-2xl break-all">{brand.email}</span></span><ArrowUpRight className="text-primary" /></a><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="group flex items-center justify-between border-y border-foreground/15 py-5" data-testid="link-contact-whatsapp"><span><span className="block font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">WhatsApp</span><span className="mt-2 block font-display text-2xl">Start a chat</span></span><ArrowUpRight className="text-primary" /></a></div><div className="bg-muted/60 p-6 md:p-10"><h2 className="font-display text-3xl">Leave a note</h2>{sent ? <div className="mt-12"><h3 className="font-display text-2xl">We have your note.</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">Thanks for writing. We will get back to you soon.</p></div> : <form className="mt-8 space-y-6" onSubmit={submit}><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" /><div className="grid gap-6 sm:grid-cols-2"><input name="name" required aria-label="Your name" placeholder="Your name" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-name" /><input name="email" required type="email" aria-label="Email address" placeholder="Email address" className="border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-email" /></div><textarea name="message" required minLength={4} maxLength={2000} rows={5} aria-label="Your message" placeholder="What can we help with?" className="w-full resize-none border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" data-testid="input-contact-message" /><p className="text-xs leading-5 text-muted-foreground">Data notice: We collect your name, email address and message to review and respond to your request. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this message. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label><button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-contact">{sending ? 'Sending...' : 'Send note'} <ArrowRight size={16} /></button>{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</form>}</div></section></Shell>;
 }
 
 function Contact() {
@@ -831,12 +750,12 @@ function Legal({ terms = false }: { terms?: boolean }) {
   const title = terms ? 'Terms & Conditions | Sardaar Ji Dhaba' : 'Privacy Policy | Sardaar Ji Dhaba';
   const description = terms ? 'Read the Terms & Conditions for Sardaar Ji Dhaba.' : 'Read the Privacy Policy for Sardaar Ji Dhaba.';
 
-  return <Shell><Meta title={title} description={description} /><PageIntro eyebrow="The fine print" title={terms ? 'Terms & conditions' : 'Privacy policy'} copy={terms ? 'These terms govern your use of the Sardaar Ji Dhaba website, including menu browsing, location information, franchise enquiries and contact forms.' : 'This privacy policy explains how Sardaar Ji Dhaba handles personal information provided through our website, contact forms, WhatsApp enquiries and related service requests.'} /><section className="mx-auto max-w-3xl px-5 pb-28 lg:px-8"><div className="space-y-10 border-t border-foreground/15 pt-8 text-sm leading-7 text-muted-foreground">
+  return <Shell><Meta title={title} description={description} /><PageIntro eyebrow="The fine print" title={terms ? 'Terms & conditions' : 'Privacy policy'} copy={terms ? 'These terms govern your use of the Sardaar Ji Dhaba website, including menu browsing, location information, franchise enquiries and contact forms.' : 'This privacy policy explains how Sardaar Ji Dhaba handles personal information provided through our website, contact forms, WhatsApp enquiries and related service requests.'} /><p className="mx-auto -mt-8 max-w-3xl px-5 pb-8 text-xs text-muted-foreground lg:px-8">Last updated: 31 October 2026</p><section className="mx-auto max-w-3xl px-5 pb-28 lg:px-8"><div className="space-y-10 border-t border-foreground/15 pt-8 text-sm leading-7 text-muted-foreground">
     {terms ? (
       <>
         <div>
           <h2 className="font-display text-3xl text-foreground">Website use</h2>
-          <p className="mt-3">By accessing or using this website, you agree to use it only for lawful, non-commercial purposes. You may browse the menu, locations, blog content, contact details and franchise information for personal reference and general restaurant discovery.</p>
+          <p className="mt-3">By accessing or using this website, you agree to use it only for lawful purposes. You may browse the menu, locations, blog content, contact details and franchise information for personal reference and general restaurant discovery.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Content and accuracy</h2>
@@ -847,8 +766,16 @@ function Legal({ terms = false }: { terms?: boolean }) {
           <p className="mt-3">Any request submitted through our website, including contact forms, franchise enquiries, or WhatsApp communication, is subject to confirmation by Sardaar Ji Dhaba. We may contact you to verify details, clarify requirements or respond to your enquiry. The website is not a binding reservation or order platform unless explicitly stated otherwise.</p>
         </div>
         <div>
+          <h2 className="font-display text-2xl text-foreground">Menu, prices and food information</h2>
+          <p className="mt-3">Menu descriptions, prices, photographs and availability are provided for general information and may vary by outlet or change without notice. Please confirm the current price and availability with the outlet before ordering. If you have a food allergy or dietary requirement, contact the outlet before ordering and ask the team to confirm ingredients and preparation.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Franchise and consulting information</h2>
+          <p className="mt-3">Franchise and RestroGrowth information on this website is for general information and initial enquiry purposes only. A form submission is not an offer, acceptance, approval, reservation of territory, or guarantee of sales, profit or return on investment. Any potential engagement or franchise arrangement is subject to due diligence, applicable approvals and a separate written agreement signed by the parties.</p>
+        </div>
+        <div>
           <h2 className="font-display text-2xl text-foreground">Third-party links and services</h2>
-          <p className="mt-3">This website may contain links to third-party services such as Google Maps, WhatsApp, Instagram and other external platforms. Sardaar Ji Dhaba is not responsible for the content, privacy practices, availability or accuracy of those external services.</p>
+          <p className="mt-3">This website uses Google Fonts to display its typefaces and provides links to third-party services such as Google Maps, WhatsApp, Instagram, delivery platforms and the FSSAI Food Safety Connect app-store listings. Google Maps opens only when you choose the directions link. These services may process technical information such as your IP address and browser details under their own privacy terms. Sardaar Ji Dhaba does not control the content, privacy practices, availability or accuracy of those external services.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Intellectual property</h2>
@@ -860,18 +787,26 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Applicable law</h2>
-          <p className="mt-3">These terms are governed by the laws of India, and any dispute arising from the use of this website shall be subject to the exclusive jurisdiction of the courts in Uttar Pradesh, India.</p>
+          <p className="mt-3">These terms are governed by the laws of India, and any dispute arising from the use of this website shall be subject to the jurisdiction of the competent courts under applicable Indian law.</p>
         </div>
         <div>
-          <h2 className="font-display text-2xl text-foreground">Contact</h2>
+          <h2 className="font-display text-2xl text-foreground">Privacy and grievance contact</h2>
           <p className="mt-3">If you have questions about these terms, please contact us at <a href={`mailto:${brand.email}`} className="font-bold text-primary underline">{brand.email}</a> or call <a href={`tel:${brand.phoneLink}`} className="font-bold text-primary underline">{brand.phone}</a>.</p>
         </div>
       </>
     ) : (
       <>
         <div>
-          <h2 className="font-display text-3xl text-foreground">Information we collect</h2>
-          <p className="mt-3">We may collect personal information that you voluntarily provide through website forms, direct messages, franchise enquiries, reservations, WhatsApp communication or other contact methods. This may include your name, email address, phone number, city, message content and any other information you choose to share.</p>
+          <h2 className="font-display text-3xl text-foreground">Who is responsible for your information</h2>
+          <p className="mt-3">Sardaar Ji Dhaba is responsible for personal information submitted through this website. For privacy questions, requests or complaints, contact us at <a href={`mailto:${brand.email}`} className="font-bold text-primary underline">{brand.email}</a> or call <a href={`tel:${brand.phoneLink}`} className="font-bold text-primary underline">{brand.phone}</a>.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Information we collect and why</h2>
+          <p className="mt-3">When you submit a contact, franchise or restaurant-consulting enquiry, we collect the details shown in that form, such as your name, email address, phone number, city, restaurant details, indicative budget and message. We use those details to respond to the specific enquiry, assess the request and keep a record of the conversation. Please do not submit payment details, identity documents or other sensitive information through these forms.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Other ways you may contact us</h2>
+          <p className="mt-3">If you contact us by phone, email or WhatsApp, we may process the information you choose to share so that we can respond. WhatsApp conversations are also subject to WhatsApp/Meta’s own privacy terms.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">How we use your information</h2>
@@ -879,19 +814,23 @@ function Legal({ terms = false }: { terms?: boolean }) {
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Information sharing</h2>
-          <p className="mt-3">Sardaar Ji Dhaba does not sell personal information. We may share information with trusted service providers that help us operate the website or deliver communications, but only when necessary and under appropriate confidentiality obligations.</p>
+          <p className="mt-3">Sardaar Ji Dhaba does not sell personal information. We may share information with service providers that help us operate the website or deliver communications, only when necessary. If you choose to contact us through WhatsApp, that conversation is handled by WhatsApp/Meta under its own privacy terms; Sardaar Ji Dhaba does not control the platform’s independent processing. The website also requests font files from Google Fonts to render its typography. Google may receive technical request information such as your IP address and browser details when those files are requested. Google Maps is not embedded automatically; it opens only when you select the directions link. The FSSAI Food Safety Connect app links open the official app listings on Google Play or Apple's App Store.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Cookies and analytics</h2>
-          <p className="mt-3">Our website may use cookies, analytics tools and similar technologies to understand how visitors use the site, improve performance, support security and measure marketing effectiveness. You can disable cookies in your browser settings, though some website features may not function properly as a result.</p>
+          <p className="mt-3">Strictly necessary local storage is used to remember your cookie preference. Google Analytics 4, Google Tag Manager and this website’s first-party interaction-event tracking are not activated before you accept optional analytics. If you accept, Google services may process online identifiers, device and browser information, and website interaction data to measure site use. If you reject or later withdraw consent, analytics storage and first-party interaction-event tracking are disabled; tags already downloaded during a previously accepted session may remain loaded until you leave or reload the page. You can change your choice at any time using the Cookie preferences link in the footer. Your browser may also provide controls to clear stored preferences.</p>
+        </div>
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Optional analytics</h2>
+          <p className="mt-3">Google Analytics 4, Google Tag Manager and first-party interaction events are activated only after you accept optional analytics. The website's first-party event requests send event names and page paths; they do not include the values entered into contact, franchise or consulting forms. Google services may separately collect technical and usage information under their own terms. If you reject or withdraw optional analytics, the website stops sending first-party interaction events and updates Google consent settings to denied.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Data retention and security</h2>
-          <p className="mt-3">We retain personal information only for as long as needed to fulfil the purpose for which it was collected, comply with legal obligations, maintain records, or protect against misuse. We take reasonable administrative, technical and organizational measures to help keep information secure.</p>
+          <p className="mt-3">We retain personal information only for as long as needed to fulfil the purpose for which it was collected, comply with legal obligations, maintain records, or protect against misuse. We take reasonable administrative, technical and organisational measures to help protect information against unauthorised access, loss, misuse or disclosure. If a personal data breach occurs, we will take appropriate steps and provide notifications where required by applicable law.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Your choices</h2>
-          <p className="mt-3">You may contact us at any time to ask what information we hold about you, request a correction, or ask that we stop using your information for a particular purpose, subject to applicable legal requirements.</p>
+          <p className="mt-3">Subject to applicable law, you may ask us for information about personal data processed through this website, request correction or erasure, withdraw consent for processing that relies on consent, and raise a grievance. Withdrawal does not affect processing already carried out lawfully before withdrawal. To make a request, contact us using the details below and identify the enquiry so we can locate it. We may need to verify your request before acting on it.</p>
         </div>
         <div>
           <h2 className="font-display text-2xl text-foreground">Contact</h2>
@@ -913,24 +852,15 @@ function Admin() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [summary, setSummary] = useState<AdminSummary | null>(null);
   const [error, setError] = useState('');
-  const api = getApiBase();
   const loadSummary = async () => {
-    try {
-      const response = await fetch(apiUrl('/api/admin/summary'), { credentials: 'include' });
-      if (!response.ok) throw new Error('Admin session required.');
-      setSummary(await response.json());
-      setAuthenticated(true);
+    const response = await fetch(apiUrl('/api/admin/summary'), { credentials: 'include' });
+    if (!response.ok) {
+      setAuthenticated(false);
+      setSummary(null);
       return;
-    } catch {
-      const session = window.localStorage.getItem(DEMO_STORAGE_KEYS.adminSession);
-      if (session !== 'active') {
-        setAuthenticated(false);
-        setSummary(null);
-        return;
-      }
-      setSummary(getDemoSummary());
-      setAuthenticated(true);
     }
+    setSummary(await response.json());
+    setAuthenticated(true);
   };
   useEffect(() => { loadSummary().catch(() => undefined); }, []);
   const login = async (event: FormEvent<HTMLFormElement>) => {
@@ -943,22 +873,104 @@ function Admin() {
       await loadSummary();
       return;
     } catch {
-      if (credentials.username === DEMO_ADMIN_USERNAME && credentials.password === DEMO_ADMIN_PASSWORD) {
-        window.localStorage.setItem(DEMO_STORAGE_KEYS.adminSession, 'active');
-        setSummary(getDemoSummary());
-        setAuthenticated(true);
-        return;
-      }
-      setError('Could not sign in.');
+      setError('Could not sign in. Please check the server connection and your credentials.');
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } window.localStorage.removeItem(DEMO_STORAGE_KEYS.adminSession); setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+}
+
+function loadOptionalAnalytics() {
+  const analyticsWindow = window as Window & {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+  };
+  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
+  analyticsWindow.gtag = analyticsWindow.gtag || function () {
+    analyticsWindow.dataLayer?.push(arguments);
+  };
+  analyticsWindow.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
+  analyticsWindow.gtag('consent', 'update', {
+    analytics_storage: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
+  if (!document.getElementById('sardaar-google-analytics')) {
+    analyticsWindow.gtag('js', new Date());
+    analyticsWindow.gtag('config', 'G-XFGBQ9E94J');
+    const analyticsScript = document.createElement('script');
+    analyticsScript.id = 'sardaar-google-analytics';
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XFGBQ9E94J';
+    document.head.appendChild(analyticsScript);
+  }
+  if (!document.getElementById('sardaar-google-tag-manager')) {
+    analyticsWindow.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    const tagManagerScript = document.createElement('script');
+    tagManagerScript.id = 'sardaar-google-tag-manager';
+    tagManagerScript.async = true;
+    tagManagerScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-T32V895H';
+    document.head.appendChild(tagManagerScript);
+  }
+}
+
+function CookieConsent() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const storedChoice = window.localStorage.getItem('sardaar_cookie_consent');
+    if (storedChoice === 'accepted') loadOptionalAnalytics();
+    setVisible(storedChoice !== 'accepted' && storedChoice !== 'rejected');
+    const openPreferences = () => setVisible(true);
+    window.addEventListener('open-cookie-preferences', openPreferences);
+    return () => window.removeEventListener('open-cookie-preferences', openPreferences);
+  }, []);
+
+  const choose = (accepted: boolean) => {
+    window.localStorage.setItem('sardaar_cookie_consent', accepted ? 'accepted' : 'rejected');
+    const analyticsWindow = window as Window & {
+      dataLayer?: unknown[];
+      gtag?: (...args: unknown[]) => void;
+    };
+    if (accepted) {
+      loadOptionalAnalytics();
+    } else {
+      analyticsWindow.gtag?.('consent', 'update', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
+    }
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+  return (
+    <aside className="fixed inset-x-3 bottom-20 z-[60] mx-auto max-w-3xl border border-foreground/15 bg-background p-5 text-foreground shadow-2xl md:bottom-5 md:p-6" aria-label="Cookie preferences" aria-live="polite">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="max-w-xl">
+          <h2 className="font-display text-xl">Your privacy choices</h2>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">We use essential storage to remember your choice. Optional Google Analytics, Tag Manager and first-party interaction tracking run only if you accept. Read our <a href="/privacy-policy" className="font-semibold text-primary underline">privacy policy</a>.</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <button type="button" onClick={() => choose(false)} className="rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold">Reject optional</button>
+          <button type="button" onClick={() => choose(true)} className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground">Accept optional</button>
+        </div>
+      </div>
+    </aside>
+  );
 }
 
 function Router() {
   const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/noida" component={NoidaLanding} /><Route path="/prayagraj" component={PrayagrajLanding} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/restaurant-consulting" component={RestaurantConsulting} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
+  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={Home} /><Route path="/admin" component={Admin} /><Route path="/about" component={About} /><Route path="/success-story" component={SuccessStory} /><Route path="/menu" component={MenuPage} /><Route path="/gallery" component={Gallery} /><Route path="/locations" component={Locations} /><Route path="/locations/:city" component={LocationDetail} /><Route path="/restaurant-consulting" component={RestaurantConsulting} /><Route path="/franchise" component={Franchise} /><Route path="/franchise/apply" component={Application} /><Route path="/blog" component={Blog} /><Route path="/blog/:slug" component={BlogArticle} /><Route path="/contact" component={Contact} /><Route path="/privacy-policy"><Legal /></Route><Route path="/terms-and-conditions"><Legal terms /></Route><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
 function App({ staticPath }: { staticPath?: string } = {}) {
@@ -968,7 +980,7 @@ function App({ staticPath }: { staticPath?: string } = {}) {
       { searchHook: () => '' },
     )
     : undefined;
-  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter hook={locationHook} base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;
+  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter hook={locationHook} base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><CookieConsent /><Toaster /></TooltipProvider></QueryClientProvider>;
 }
 
 export default App;

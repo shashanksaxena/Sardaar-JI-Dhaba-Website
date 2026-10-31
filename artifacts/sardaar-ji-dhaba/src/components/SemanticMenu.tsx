@@ -24,7 +24,7 @@ const categoryLabels: Record<string, string> = {
 };
 
 function dietaryStatus(item: MenuItem): 'vegetarian' | 'non-vegetarian' | 'unconfirmed' {
-    return dietByItemId[item.id] ?? (nonVegetarianPattern.test(`${item.name} ${item.description}`) ? 'non-vegetarian' : 'vegetarian');
+    return dietByItemId[item.id] ?? (nonVegetarianPattern.test(`${item.name} ${item.description}`) ? 'non-vegetarian' : 'unconfirmed');
 }
 
 function categoryId(category: string) {
@@ -33,10 +33,10 @@ function categoryId(category: string) {
 
 function MenuItemRow({ item }: { item: MenuItem }) {
     const diet = dietaryStatus(item);
-    const dietLabel = diet === 'vegetarian' ? 'Vegetarian' : 'Non-vegetarian';
-    const dietClass = diet === 'vegetarian' ? 'menu-item--vegetarian' : 'menu-item--non-vegetarian';
-    const dietBadgeClass = diet === 'vegetarian' ? 'border-emerald-700 text-emerald-800' : 'border-rose-700 text-rose-800';
-    const schemaDiet = diet === 'vegetarian' ? 'https://schema.org/VegetarianDiet' : 'https://schema.org/NonVegetarianDiet';
+    const dietLabel = diet === 'vegetarian' ? 'Vegetarian' : diet === 'non-vegetarian' ? 'Non-vegetarian' : 'Ask about ingredients';
+    const dietClass = diet === 'vegetarian' ? 'menu-item--vegetarian' : diet === 'non-vegetarian' ? 'menu-item--non-vegetarian' : 'menu-item--diet-unconfirmed';
+    const dietBadgeClass = diet === 'vegetarian' ? 'text-emerald-800' : diet === 'non-vegetarian' ? 'text-amber-900' : 'text-muted-foreground';
+    const schemaDiet = diet === 'vegetarian' ? 'https://schema.org/VegetarianDiet' : diet === 'non-vegetarian' ? 'https://schema.org/NonVegetarianDiet' : undefined;
     const schemaPrice = item.price?.match(/\d+(?:\.\d{1,2})?/)?.[0];
 
     return (
@@ -46,12 +46,17 @@ function MenuItemRow({ item }: { item: MenuItem }) {
             itemType="https://schema.org/MenuItem"
         >
             <div>
-                <span className="block font-display text-xl" itemProp="name">{item.name}</span>
-                <span className="mt-1 block text-sm leading-6 text-muted-foreground" itemProp="description">{item.description}</span>
-                <span className={`mt-2 inline-flex rounded-sm border px-2 py-0.5 text-xs font-semibold ${dietBadgeClass}`}>
-                    {dietLabel}
+                <span className="flex items-center gap-2 font-display text-xl" itemProp="name">
+                    {schemaDiet && <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center border-2 ${diet === 'vegetarian' ? 'border-emerald-700' : 'border-amber-900'}`}>
+                        {diet === 'vegetarian'
+                            ? <span className="h-2 w-2 rounded-full bg-emerald-700" />
+                            : <span className="h-0 w-0 border-x-[5px] border-b-[9px] border-x-transparent border-b-amber-900" />}
+                    </span>}
+                    {item.name}
                 </span>
-                <meta itemProp="suitableForDiet" content={schemaDiet} />
+                {item.description && !/pending confirmation/i.test(item.description) && <span className="mt-1 block text-sm leading-6 text-muted-foreground" itemProp="description">{item.description}</span>}
+                <span className={`mt-2 inline-flex text-xs font-semibold ${dietBadgeClass}`}>{dietLabel}</span>
+                {schemaDiet && <meta itemProp="suitableForDiet" content={schemaDiet} />}
             </div>
             <span className="text-sm font-semibold text-primary" itemProp="offers" itemScope itemType="https://schema.org/Offer">
                 {item.price ? (
@@ -61,7 +66,7 @@ function MenuItemRow({ item }: { item: MenuItem }) {
                         <meta itemProp="priceCurrency" content="INR" />
                     </>
                 ) : (
-                    <span>Price not provided</span>
+                    <span>Ask for current price</span>
                 )}
             </span>
         </li>
