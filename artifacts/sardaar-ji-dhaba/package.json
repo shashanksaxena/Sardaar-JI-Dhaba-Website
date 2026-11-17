@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --config vite.config.ts --host 0.0.0.0",
+    "dev": "node ./scripts/convert-images.mjs && vite --config vite.config.ts --host 0.0.0.0",
     "build": "node ./scripts/convert-images.mjs && vite build --config vite.config.ts && node ./scripts/prerender.mjs",
     "seo:check": "pnpm run build && node ./scripts/seo-check.mjs",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",

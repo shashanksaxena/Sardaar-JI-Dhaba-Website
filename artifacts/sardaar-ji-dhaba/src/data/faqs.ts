@@ -88,8 +88,22 @@ const consultingFaqs: FaqItem[] = [
     },
 ];
 
+const franchiseFaqs: FaqItem[] = [
+    { question: 'What is the minimum investment required?', answer: 'Our Express Dhaba format starts at an indicative investment of ₹10 lakh, excluding property purchase, rental deposit, advance rent and applicable taxes.' },
+    { question: 'What is the franchise fee?', answer: 'The one-time franchise fee is ₹3 lakh across all three formats.' },
+    { question: 'What royalty do you charge?', answer: 'We charge 5% of monthly net sales as defined in the franchise agreement.' },
+    { question: 'Do I need restaurant experience?', answer: 'Previous restaurant experience is beneficial but not mandatory. Franchise partners must be willing to actively manage the business or appoint qualified management.' },
+    { question: 'Does the investment include property?', answer: 'No. Property purchase, rent, security deposit and advance rent are additional.' },
+    { question: 'Will Sardaar Ji Dhaba provide training?', answer: 'Yes. Initial training covering menu preparation, recipes, operational procedures and service standards is provided according to the selected package and franchise agreement.' },
+    { question: 'Can I choose my own city?', answer: 'You may propose your preferred city. Final approval depends on market potential, location suitability and territory availability.' },
+    { question: 'How long does it take to open a franchise?', answer: 'The timeline depends on location approval, property readiness, construction, equipment installation and licensing. A final opening schedule is agreed after site assessment.' },
+    { question: 'Is there a guaranteed return on investment?', answer: 'No. Restaurant performance depends on location, operating costs, sales, management and market conditions. We do not guarantee revenue, profit or ROI.' },
+    { question: 'Can I own multiple outlets?', answer: 'Multi-unit franchise opportunities may be considered subject to separate approval and agreements.' },
+];
+
 export function getFaqItems(route: string): FaqItem[] {
     if (route === '/') return homeFaqs;
+    if (route === '/franchise') return franchiseFaqs;
     if (route === '/restaurant-consulting') return consultingFaqs;
     const location = locations.find(item => route === `/locations/${item.id}` || route === `/${item.id}`);
     return location ? cityFaqs(location) : [];

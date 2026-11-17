@@ -25,14 +25,14 @@ export function LocalLandingPage({ city, canonicalPath, heading, address, postal
     const localBusinessSchema = {
         '@context': 'https://schema.org',
         '@type': 'Restaurant',
-        '@id': `${business.siteUrl}${canonicalPath}#restaurant`,
+        '@id': `${business.siteUrl}${canonicalPath.replace(/\/+$/, '')}/#restaurant`,
         name: business.name,
-        url: `${business.siteUrl}${canonicalPath}`,
+        url: `${business.siteUrl}${canonicalPath.replace(/\/+$/, '')}/`,
         telephone: business.phone.e164,
         image: `${business.siteUrl}${image}`,
         servesCuisine: business.cuisine,
         priceRange: business.priceRange,
-        hasMenu: `${business.siteUrl}/menu`,
+        hasMenu: `${business.siteUrl}/menu/`,
         sameAs,
         address: {
             '@type': 'PostalAddress',

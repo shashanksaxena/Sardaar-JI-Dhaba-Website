@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Dhaba website",
+			"type": "shell",
+			"command": "pnpm",
+			"args": [
+				"--filter",
+				"@workspace/sardaar-ji-dhaba",
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

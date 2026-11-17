@@ -41,7 +41,7 @@ function replaceRoot(html, renderedMarkup) {
 }
 
 function routeHead(route, meta, indexable = true) {
-    const canonical = `${siteUrl}${route === '/' ? '/' : route}`;
+    const canonical = `${siteUrl}${route === '/' ? '/' : `${route.replace(/\/+$/, '')}/`}`;
     const title = escapeHtml(clip(meta.title, 60));
     const description = escapeHtml(clip(meta.description, 155));
     const image = escapeHtml(new URL(meta.image, siteUrl).href);
@@ -136,7 +136,8 @@ try {
 
     const sitemapEntries = publicRoutes.map(({ route, meta }) => {
         const priority = meta.priority ?? 0.5;
-        return `  <url><loc>${siteUrl}${route === '/' ? '/' : route}</loc><priority>${priority.toFixed(1)}</priority></url>`;
+        const canonicalPath = route === '/' ? '/' : `${route.replace(/\/+$/, '')}/`;
+        return `  <url><loc>${siteUrl}${canonicalPath}</loc><priority>${priority.toFixed(1)}</priority></url>`;
     });
     await writeFile(path.join(outputRoot, 'sitemap.xml'), [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -176,7 +177,7 @@ try {
     ].join('\n'));
 
     const redirectLines = Object.entries(redirects.legacyBlogRedirects)
-        .filter(([source, destination]) => source.startsWith('/') && destination.startsWith('/') && destination !== source)
+        .filter(([source, destination]) => source.startsWith('/') && (destination.startsWith('/') || destination.startsWith('https://')) && destination !== source)
         .map(([source, destination]) => `${source} ${destination} 301`);
     if (redirectLines.length > 0) {
         await writeFile(path.join(outputRoot, '_redirects'), `${redirectLines.join('\n')}\n`);

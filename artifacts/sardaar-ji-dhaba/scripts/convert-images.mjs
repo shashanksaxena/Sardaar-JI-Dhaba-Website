@@ -42,6 +42,10 @@ for (const [filename, source] of Object.entries(openGraphImages)) {
         .resize(1200, 630, { fit: 'cover', position: sharp.strategy.attention })
         .jpeg({ quality: 86, mozjpeg: true })
         .toFile(path.join(openGraphRoot, filename));
+    await sharp(path.join(imageRoot, source))
+        .resize(1200, 630, { fit: 'cover', position: sharp.strategy.attention })
+        .webp({ quality: 82, effort: 5 })
+        .toFile(path.join(openGraphRoot, filename.replace(/\.jpg$/, '.webp')));
 }
 
 console.log('Generated WebP variants and 1200x630 Open Graph images from approved restaurant photography.');

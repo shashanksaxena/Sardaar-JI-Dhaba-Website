@@ -10,6 +10,11 @@ const sameAs = [
     business.social.zomatoUrl,
 ].filter((profile): profile is string => Boolean(profile));
 
+function canonicalUrl(route: string) {
+    const path = route === '/' ? route : `/${route.replace(/^\/+|\/+$/g, '')}/`;
+    return `${business.siteUrl}${path}`;
+}
+
 function buildRestaurantSchema() {
     return {
         '@context': 'https://schema.org',
@@ -21,18 +26,18 @@ function buildRestaurantSchema() {
         image: `${business.siteUrl}${business.logo}`,
         servesCuisine: business.cuisine,
         priceRange: business.priceRange,
-        hasMenu: `${business.siteUrl}/menu`,
+        hasMenu: canonicalUrl('/menu'),
         sameAs,
         department: business.outlets.map(outlet => ({
             '@type': 'Restaurant',
-            '@id': `${business.siteUrl}/locations/${outlet.id}#restaurant`,
+            '@id': `${canonicalUrl(`/locations/${outlet.id}`)}#restaurant`,
             name: business.name,
-            url: `${business.siteUrl}/locations/${outlet.id}`,
+            url: canonicalUrl(`/locations/${outlet.id}`),
             telephone: business.phone.e164,
             image: `${business.siteUrl}${outlet.image}`,
             servesCuisine: business.cuisine,
             priceRange: business.priceRange,
-            hasMenu: `${business.siteUrl}/menu`,
+            hasMenu: canonicalUrl('/menu'),
             sameAs: [business.social.instagramUrl, ...(outlet.id === 'prayagraj' && business.social.zomatoUrl ? [business.social.zomatoUrl] : [])],
             address: {
                 '@type': 'PostalAddress',
@@ -69,6 +74,7 @@ function buildFaqSchema(route: string) {
 }
 
 function buildRouteSchemas(route: string) {
+    route = route === '/' ? route : route.replace(/\/+$/, '');
     const schemas: Record<string, unknown>[] = [];
     const faqSchema = buildFaqSchema(route);
     const story = route.startsWith('/blog/') ? stories.find(item => route === `/blog/${item.id}`) : undefined;
@@ -102,7 +108,7 @@ function buildRouteSchemas(route: string) {
             '@type': 'BreadcrumbList',
             itemListElement: [
                 { '@type': 'ListItem', position: 1, name: business.name, item: business.siteUrl },
-                { '@type': 'ListItem', position: 2, name: getSeoMetadata(route)?.title ?? route, item: `${business.siteUrl}${route}` },
+                { '@type': 'ListItem', position: 2, name: getSeoMetadata(route)?.title ?? route, item: canonicalUrl(route) },
             ],
         });
     }
@@ -111,11 +117,11 @@ function buildRouteSchemas(route: string) {
         schemas.push({
             '@context': 'https://schema.org',
             '@type': 'Service',
-            '@id': `${business.siteUrl}/restaurant-consulting#service`,
+            '@id': `${canonicalUrl('/restaurant-consulting')}#service`,
             name: 'RestroGrowth Restaurant Consulting',
             serviceType: 'Restaurant consulting',
             description: getSeoMetadata(route)?.description,
-            url: `${business.siteUrl}/restaurant-consulting`,
+            url: canonicalUrl('/restaurant-consulting'),
             provider: {
                 '@type': 'Organization',
                 name: 'Sardaar Ji Dhaba',
@@ -133,7 +139,7 @@ function buildRouteSchemas(route: string) {
             '@context': 'https://schema.org',
             '@type': 'Menu',
             name: `${business.name} Menu`,
-            url: `${business.siteUrl}/menu`,
+            url: canonicalUrl('/menu'),
             hasMenuSection: Array.from(new Set(menu.map(item => item.category))).map(category => ({
                 '@type': 'MenuSection',
                 name: category,
@@ -157,13 +163,13 @@ function buildRouteSchemas(route: string) {
             publisher: { '@type': 'Organization', name: business.name, url: business.siteUrl },
             ...(story.publishedAt ? { datePublished: story.publishedAt } : {}),
             ...(story.modifiedAt ? { dateModified: story.modifiedAt } : {}),
-            mainEntityOfPage: `${business.siteUrl}${route}`,
+            mainEntityOfPage: canonicalUrl(route),
         });
         if (story.ingredients?.length && story.method?.length && story.image === `/images/blog/${story.id}.png`) {
             schemas.push({
                 '@context': 'https://schema.org',
                 '@type': 'Recipe',
-                '@id': `${business.siteUrl}${route}#recipe`,
+                '@id': `${canonicalUrl(route)}#recipe`,
                 name: story.title,
                 description: story.excerpt,
                 image: `${business.siteUrl}${story.image}`,
@@ -177,7 +183,7 @@ function buildRouteSchemas(route: string) {
                     text: step,
                 })),
                 keywords: story.keywords,
-                mainEntityOfPage: `${business.siteUrl}${route}`,
+                mainEntityOfPage: canonicalUrl(route),
             });
         }
     }

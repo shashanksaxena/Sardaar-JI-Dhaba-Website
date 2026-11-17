@@ -16,6 +16,10 @@ type Inquiry = {
     consent?: boolean;
     investmentRange?: string;
     experience?: string;
+    state?: string;
+    franchiseFormat?: string;
+    ownsCommercialProperty?: string;
+    openingTimeline?: string;
     website?: string;
 };
 
@@ -32,6 +36,10 @@ function isInquiry(value: unknown): value is Inquiry {
     if (!validBase) return false;
     if (inquiry.phone !== undefined && (typeof inquiry.phone !== "string" || inquiry.phone.length > 20)) return false;
     if (inquiry.city !== undefined && (typeof inquiry.city !== "string" || inquiry.city.length > 100)) return false;
+    if (inquiry.state !== undefined && (typeof inquiry.state !== "string" || inquiry.state.trim().length < 2 || inquiry.state.length > 100)) return false;
+    if (inquiry.franchiseFormat !== undefined && (typeof inquiry.franchiseFormat !== "string" || inquiry.franchiseFormat.length > 80)) return false;
+    if (inquiry.ownsCommercialProperty !== undefined && (typeof inquiry.ownsCommercialProperty !== "string" || inquiry.ownsCommercialProperty.length > 60)) return false;
+    if (inquiry.openingTimeline !== undefined && (typeof inquiry.openingTimeline !== "string" || inquiry.openingTimeline.length > 60)) return false;
     if (inquiry.kind === "consulting") {
         return typeof inquiry.phone === "string" && inquiry.phone.trim().length >= 7 &&
             typeof inquiry.restaurantName === "string" && inquiry.restaurantName.trim().length > 1 && inquiry.restaurantName.length <= 120 &&
@@ -40,9 +48,18 @@ function isInquiry(value: unknown): value is Inquiry {
             inquiry.consent === true;
     }
     if (inquiry.kind === "franchise") {
-        return typeof inquiry.phone === "string" && inquiry.phone.trim().length >= 7 &&
+        const validFranchiseDetails = inquiry.source !== "franchise-application" || (
+            typeof inquiry.state === "string" && inquiry.state.trim().length >= 2 &&
+            ["Express Dhaba", "Classic Dhaba", "Premium Dhaba"].includes(String(inquiry.franchiseFormat)) &&
+            ["Yes", "No", "In the process of identifying"].includes(String(inquiry.ownsCommercialProperty)) &&
+            ["Within 3 months", "3–6 months", "6–12 months", "More than 12 months", "Not decided"].includes(String(inquiry.openingTimeline))
+        );
+        return validFranchiseDetails &&
+            typeof inquiry.phone === "string" && inquiry.phone.trim().length >= 7 &&
             typeof inquiry.city === "string" && inquiry.city.trim().length > 1 &&
             typeof inquiry.investmentRange === "string" && inquiry.investmentRange.trim().length > 1 && inquiry.investmentRange.length <= 100 &&
+            (inquiry.state === undefined || inquiry.state.trim().length > 1) &&
+            (inquiry.franchiseFormat === undefined || inquiry.franchiseFormat.trim().length > 0) &&
             (inquiry.experience === undefined || (typeof inquiry.experience === "string" && inquiry.experience.length <= 120)) &&
             inquiry.consent === true;
     }

@@ -1,20 +1,35 @@
-import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ComponentProps, type FormEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowRight, ArrowUpRight, ChevronLeft, Clock3, Instagram, Linkedin, MapPin, Menu as MenuIcon, MessageCircle, Phone, Search, Utensils, X } from 'lucide-react';
-import { Link, Route, Switch, useLocation, useParams, Router as WouterRouter } from 'wouter';
+import { ArrowRight, ArrowUpRight, BadgeCheck, Building2, ChefHat, ChevronLeft, Clock3, ClipboardCheck, Instagram, Linkedin, MapPin, Megaphone, Menu as MenuIcon, MessageCircle, Phone, Search, Store, Utensils, X } from 'lucide-react';
+import { Link as WouterLink, Route, Switch, useLocation, useParams, Router as WouterRouter } from 'wouter';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { brand, locations, menu, menuBoards, stories, values, type MenuItem } from '@/data/content';
 import { getSeoMetadata } from '@/data/seo';
 import { getFaqItems, type FaqItem } from '@/data/faqs';
 import { business } from '@/config/business';
+import { brandResponsibilities, franchiseFee, franchiseFormats, franchisePartnerResponsibilities, franchiseProcess, franchiseRoyalty, franchiseSupport, formatRupees } from '@/data/franchise';
 import { SeoSchema } from '@/components/SeoSchema';
 import { SemanticMenu } from '@/components/SemanticMenu';
 import NoidaPage from '@/pages/noida';
 import PrayagrajPage from '@/pages/prayagraj';
 
 const queryClient = new QueryClient();
+
+function canonicalPath(path: string) {
+  const suffixIndex = path.search(/[?#]/);
+  const pathname = suffixIndex < 0 ? path : path.slice(0, suffixIndex);
+  const suffix = suffixIndex < 0 ? '' : path.slice(suffixIndex);
+  if (!pathname.startsWith('/') || pathname === '/' || pathname.endsWith('/')) return path;
+  return `${pathname}/${suffix}`;
+}
+
+function Link(props: ComponentProps<typeof WouterLink>) {
+  if (typeof props.href !== 'string') return <WouterLink {...props} />;
+  return <WouterLink {...props} href={canonicalPath(props.href)} />;
+}
 
 function getApiBase() {
   const configured = (import.meta.env.VITE_API_URL ?? '').trim();
@@ -60,7 +75,8 @@ function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North 
   const [location] = useLocation();
   const seo = getSeoMetadata(location);
   useEffect(() => {
-    const canonical = `${brand.siteUrl}${location === '/' ? '/' : location}`;
+    const route = location === '/' ? '/' : location.replace(/\/+$/, '');
+    const canonical = `${brand.siteUrl}${route === '/' ? '/' : `${route}/`}`;
     const pageTitle = seo?.title ?? title;
     const pageDescription = seo?.description ?? description;
     const pageImage = seo?.image ?? image;
@@ -92,20 +108,13 @@ function Meta({ title, description = 'Sardaar Ji Dhaba serves Punjabi and North 
 function Header() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
-  const allNav = [
+  const nav = [
     ['/about', 'Our story'],
-    ['/menu', 'Menu'],
-    ['/locations/noida', 'Noida'],
-    ['/locations/prayagraj', 'Prayagraj'],
     ['/locations', 'Find us'],
     ['/success-story', 'Success story'],
     ['/blog', 'Blog'],
     ['/restaurant-consulting', 'Restaurant consulting'],
-    ['/franchise', 'Franchise opportunity'],
   ];
-  const nav = location === '/'
-    ? allNav.filter(([href]) => ['/about', '/success-story', '/locations'].includes(href))
-    : allNav;
   const isActive = (href: string) => location === href || (href === '/locations' && location.startsWith('/locations/'));
   return (
     <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/90 backdrop-blur-md">
@@ -155,11 +164,10 @@ function Footer() {
           <p className="max-w-xs text-sm leading-6 text-secondary-foreground/70">A generous roadside table, serving the flavours we grew up with in Noida and Prayagraj.</p>
           <div className="mt-6 flex gap-3"><a href={brand.whatsapp} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="WhatsApp" data-testid="link-whatsapp-footer"><MessageCircle size={15} /></a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="grid h-9 w-9 place-items-center rounded-full border border-secondary-foreground/20 hover:bg-secondary-foreground/10" aria-label="Instagram" data-testid="link-instagram-footer"><Instagram size={15} /></a></div>
         </div>
-        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link><Link href="/restaurant-consulting" className="hover:text-accent" data-testid="link-footer-consulting">Restaurant consulting · RestroGrowth</Link></div></div>
+        <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Explore</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/about" className="hover:text-accent" data-testid="link-footer-about">Our story</Link><Link href="/menu" className="hover:text-accent" data-testid="link-footer-menu">The menu</Link><Link href="/gallery" className="hover:text-accent" data-testid="link-footer-gallery">Gallery</Link><Link href="/blog" className="hover:text-accent" data-testid="link-footer-blog">Blog</Link><Link href="/success-story" className="hover:text-accent" data-testid="link-footer-success">Success story</Link><Link href="/restaurant-consulting" className="hover:text-accent" data-testid="link-footer-consulting">Restaurant consulting · RestroGrowth</Link><a href="https://petupos.com" target="_blank" rel="noreferrer" className="hover:text-accent" data-testid="link-footer-petupos">PetuPOS</a><a href="https://freetelepropter.in" target="_blank" rel="noreferrer" className="hover:text-accent" data-testid="link-footer-teleprompter">Free Teleprompter</a></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Come by</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><Link href="/locations/noida" className="hover:text-accent" data-testid="link-footer-noida">Noida stop</Link><Link href="/locations/prayagraj" className="hover:text-accent" data-testid="link-footer-prayagraj">Prayagraj stop</Link><Link href="/contact" className="hover:text-accent" data-testid="link-footer-contact">Contact us</Link><Link href="/franchise" className="hover:text-accent" data-testid="link-footer-franchise">Franchise</Link></div></div>
         <div><p className="mb-4 font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Say hello</p><div className="flex flex-col gap-3 text-sm text-secondary-foreground/75"><a href={`tel:${brand.phoneLink}`} className="hover:text-accent" data-testid="link-footer-phone">{brand.phone}</a><a href={`mailto:${brand.email}`} className="break-all hover:text-accent" data-testid="link-footer-email">{brand.email}</a><a href={brand.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-accent">{brand.instagram}</a>{brand.googleBusinessUrl && <a href={brand.googleBusinessUrl} target="_blank" rel="noreferrer" className="hover:text-accent">Google reviews</a>}</div></div>
       </div>
-      <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-5 py-4 text-xs text-secondary-foreground/70 lg:px-8"><a href={business.foodSafetyConnectUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">Food Safety Connect · FSSAI information</a><a href={business.foodSafetyConnectAndroidUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">Android app</a><a href={business.foodSafetyConnectIosUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">iPhone app</a></div></div>
       {business.outlets.some(outlet => outlet.fssaiLicenseNumber) && <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-3 px-5 py-5 text-xs text-secondary-foreground/70 lg:px-8">{business.outlets.filter(outlet => outlet.fssaiLicenseNumber).map(outlet => <div key={outlet.id}><span className="font-semibold">{outlet.city} FSSAI Licence/Registration No.:</span> {outlet.fssaiLicenseNumber} {outlet.foodSafetyConnectQrUrl && <a className="ml-3 inline-flex flex-col items-start gap-1 align-middle underline underline-offset-2" href={outlet.foodSafetyConnectQrUrl} target="_blank" rel="noreferrer"><img src={outlet.foodSafetyConnectQrUrl} alt={`${outlet.city} FSSAI Food Safety Connect QR code`} width="88" height="88" loading="lazy" className="h-[88px] w-[88px] bg-white object-contain p-1" /><span>Food Safety Connect QR</span></a>}</div>)}</div></div>}
       <div className="border-t border-secondary-foreground/15"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-xs text-secondary-foreground/55 sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© {new Date().getFullYear()} Sardaar Ji Dhaba. Made for hungry people.</span><div className="flex gap-5"><Link href="/privacy-policy" className="hover:text-accent" data-testid="link-privacy-footer">Privacy</Link><Link href="/terms-and-conditions" className="hover:text-accent" data-testid="link-terms-footer">Terms</Link><button type="button" onClick={() => window.dispatchEvent(new Event('open-cookie-preferences'))} className="text-left hover:text-accent">Cookie preferences</button></div></div></div>
     </footer>
@@ -174,7 +182,7 @@ function Shell({ children }: { children: ReactNode }) {
 }
 
 function FaqSection({ items }: { items: FaqItem[] }) {
-  return <section className="mx-auto max-w-4xl px-5 pb-20 pt-8 lg:px-8 lg:pb-28"><h2 className="font-display text-4xl tracking-[-.04em]">Frequently asked questions</h2><dl className="mt-8 divide-y divide-foreground/15 border-y border-foreground/15">{items.map(item => <div key={item.question} className="py-5"><dt className="font-semibold">{item.question}</dt><dd className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{item.answer}</dd></div>)}</dl></section>;
+  return <section className="mx-auto max-w-4xl px-5 pb-20 pt-8 lg:px-8 lg:pb-28"><h2 className="font-display text-4xl tracking-[-.04em]">Frequently asked questions</h2><Accordion type="single" collapsible className="mt-8 border-y border-foreground/15">{items.map((item, index) => <AccordionItem key={item.question} value={`faq-${index}`} className="border-foreground/15"><AccordionTrigger className="py-5 text-left text-base font-semibold no-underline hover:no-underline" data-testid={`faq-trigger-${index}`}>{item.question}</AccordionTrigger><AccordionContent className="max-w-3xl text-sm leading-6 text-muted-foreground">{item.answer}</AccordionContent></AccordionItem>)}</Accordion></section>;
 }
 
 function MobileActionBar() {
@@ -583,7 +591,96 @@ function LocationDetail() {
 }
 
 function Franchise() {
-  return <Shell><Meta title="Franchise partnership" /><section className="bg-secondary text-secondary-foreground"><div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1fr_.8fr] lg:px-8 lg:py-28"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">For people who know the value of a full table</p><h1 className="mt-6 font-display text-6xl leading-[.88] tracking-[-.07em] md:text-8xl">Bring a<br /><span className="text-accent">dhaba</span><br />home.</h1><p className="mt-8 max-w-md text-lg leading-7 text-secondary-foreground/75">We are exploring thoughtful partnerships with people who want to serve honest Punjabi food in their city.</p><Link href="/franchise/apply" className="mt-9 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-franchise-apply">Start a conversation <ArrowRight size={16} /></Link></div><PhotoArt src="/images/restaurant/celebration-room.jpg" alt="Dining room prepared for a Sardaar Ji Dhaba gathering" label="future table" className="min-h-[430px] bg-secondary/60" /></div></section><section className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28"><div className="grid gap-12 lg:grid-cols-[.7fr_1.3fr]"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">The right fit</p><h2 className="mt-5 font-display text-5xl leading-none tracking-[-.06em]">Not a template.<br />A shared table.</h2></div><div className="grid gap-7 sm:grid-cols-2">{['A love for food with a point of view', 'Care for guests that goes beyond service', 'A city, space or idea worth exploring', 'Patience to build something lasting'].map((item, index) => <div key={item} className="border-t border-foreground/15 pt-4"><span className="font-mono-brand text-xs text-primary">0{index + 1}</span><p className="mt-8 font-display text-2xl">{item}</p></div>)}</div></div></section><section className="bg-accent"><div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-16 lg:flex-row lg:items-center lg:justify-between lg:px-8"><h2 className="max-w-xl font-display text-4xl leading-tight tracking-[-.05em]">Franchise details, investment and territory information will be shared after an initial conversation.</h2><Link href="/franchise/apply" className="inline-flex w-fit items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-franchise-form">Tell us about your idea <ArrowRight size={16} /></Link></div></section></Shell>;
+  const supportIcons = [BadgeCheck, Building2, ChefHat, ClipboardCheck, Megaphone, Store];
+  return <Shell>
+    <Meta title="Sardaar Ji Dhaba Franchise | Investment & Franchise Opportunities" description="Explore Sardaar Ji Dhaba franchise opportunities in India. Compare Express, Classic and Premium restaurant formats, investment estimates and franchise support." image="/images/og/franchise-1200x630.jpg" />
+    <section className="bg-secondary text-secondary-foreground">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-24">
+        <div>
+          <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">A Punjabi restaurant partnership</p>
+          <h1 className="mt-6 font-display text-5xl leading-[.94] tracking-[-.07em] md:text-7xl">Own a Sardaar Ji Dhaba Franchise</h1>
+          <p className="mt-7 max-w-2xl text-lg leading-7 text-secondary-foreground/80">Bring the authentic taste of Punjab to your city. Build your restaurant business with an established food identity, standardised recipes and dedicated operational support.</p>
+          <ul className="mt-7 grid gap-3 text-sm sm:grid-cols-2">
+            {['Three flexible restaurant formats', 'Indicative options starting from ₹10 lakh', 'Standardised recipes and menu', 'Training and operational guidance', 'Brand and launch support'].map(item => <li key={item} className="flex items-start gap-2"><BadgeCheck size={17} className="mt-0.5 shrink-0 text-accent" />{item}</li>)}
+          </ul>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a href="#franchise-plans" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground" data-testid="link-explore-franchise-plans">Explore Franchise Plans <ArrowRight size={16} /></a>
+            <Link href="/franchise/apply" className="inline-flex items-center gap-2 rounded-full border border-secondary-foreground/35 px-6 py-3.5 text-sm font-bold hover:bg-secondary-foreground/10" data-testid="link-franchise-apply">Apply for Franchise <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+        <PhotoArt src="/images/restaurant/celebration-room.jpg" alt="Sardaar Ji Dhaba dining room prepared for family guests" label="a place to gather" className="min-h-[350px] md:min-h-[480px]" priority />
+      </div>
+    </section>
+
+    <section id="franchise-plans" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+      <div className="max-w-3xl"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Find your format</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-6xl">Three ways to bring the table to your city.</h2><p className="mt-5 text-sm leading-7 text-muted-foreground">Compare indicative investment ranges, restaurant size and operating formats. Final plans are subject to site evaluation, written approval and a signed franchise agreement.</p></div>
+      <div className="mt-10 grid items-start gap-6 lg:grid-cols-3">
+        {franchiseFormats.map((format, index) => <article key={format.id} className={`relative overflow-hidden border bg-card shadow-[var(--shadow-card)] ${index === 1 ? 'border-primary lg:-translate-y-2' : 'border-foreground/10'}`}>
+          {index === 1 && <div className="bg-primary px-5 py-2 text-center font-mono-brand text-[10px] font-bold uppercase tracking-[.2em] text-primary-foreground">Recommended format</div>}
+          <PhotoArt src={format.image} alt={format.imageAlt} label={format.name} className="min-h-[190px]" />
+          <div className="p-6">
+            <h3 className="font-display text-3xl">{format.name}</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{format.summary}</p>
+            <p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-muted-foreground">Indicative investment</p>
+            <p className="mt-1 font-display text-4xl text-primary">{format.investment}</p>
+            <dl className="mt-5 grid grid-cols-2 gap-3 border-y border-foreground/10 py-4 text-sm">
+              <div><dt className="text-xs text-muted-foreground">Suggested area</dt><dd className="mt-1 font-semibold">{format.area}</dd></div>
+              <div><dt className="text-xs text-muted-foreground">Seating</dt><dd className="mt-1 font-semibold">{format.seating}</dd></div>
+              <div><dt className="text-xs text-muted-foreground">One-time fee</dt><dd className="mt-1 font-semibold">{formatRupees(franchiseFee)}</dd></div>
+              <div><dt className="text-xs text-muted-foreground">Royalty</dt><dd className="mt-1 font-semibold">{franchiseRoyalty}</dd></div>
+            </dl>
+            <h4 className="mt-5 text-sm font-bold">Format features</h4>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">{format.features.map(feature => <li key={feature} className="flex gap-2"><span className="text-primary">•</span>{feature}</li>)}</ul>
+            <h4 className="mt-5 text-sm font-bold">Suitable for</h4>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">{format.suitableFor.map(item => <li key={item} className="flex gap-2"><span className="text-primary">•</span>{item}</li>)}</ul>
+            <Accordion type="single" collapsible className="mt-5 border-y border-foreground/10">
+              <AccordionItem value={`${format.id}-budget`} className="border-0">
+                <AccordionTrigger className="py-4 text-left text-sm font-bold no-underline hover:no-underline" data-testid={`button-investment-breakdown-${format.id}`}>View Detailed Investment</AccordionTrigger>
+                <AccordionContent>
+                  <p className="mb-3 text-xs leading-5 text-muted-foreground">Illustrative budget: {formatRupees(format.budget)}. A representative estimate only; validate against actual site-specific quotations.</p>
+                  <table className="w-full text-left text-xs"><tbody>{format.breakdown.map(row => <tr key={row.expense} className="border-t border-foreground/10"><th scope="row" className="py-2 pr-2 font-medium">{row.expense}</th><td className="py-2 text-right tabular-nums">{formatRupees(row.amount)}</td></tr>)}<tr className="border-t-2 border-foreground/20 font-bold"><th scope="row" className="py-2">Total illustrative budget</th><td className="py-2 text-right tabular-nums">{formatRupees(format.budget)}</td></tr></tbody></table>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            <Link href={`/franchise/apply?format=${encodeURIComponent(format.name)}#application-form`} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid={`link-enquire-plan-${format.id}`}>Enquire for This Plan <ArrowRight size={16} /></Link>
+          </div>
+        </article>)}
+      </div>
+      <p className="mt-6 border-l-2 border-accent bg-muted/50 p-4 text-xs leading-6 text-muted-foreground">Investment figures are indicative estimates. Final costs depend on the selected location, property condition, approved layout and actual vendor quotations. Representative project budgets are illustrative, not guaranteed quotations; validate them through site-specific quotations. Property purchase, rental deposit, advance rent and applicable taxes are additional.</p>
+    </section>
+
+    <section className="bg-muted/50 px-5 py-16 lg:px-8 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="max-w-3xl"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Commercial terms</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">Simple and Transparent Franchise Model</h2></div>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[['One-time franchise fee', formatRupees(franchiseFee)], ['Monthly royalty', franchiseRoyalty], ['Agreement period', '5 years, subject to final franchise agreement'], ['Franchise model', 'FOFO · Franchise Owned, Franchise Operated']].map(([label, value]) => <div key={label} className="border border-foreground/10 bg-card p-5"><p className="font-mono-brand text-[10px] uppercase tracking-[.16em] text-muted-foreground">{label}</p><p className="mt-3 font-display text-2xl">{value}</p></div>)}
+        </div>
+        <p className="mt-5 max-w-4xl text-sm leading-7 text-muted-foreground">Under FOFO, the franchise partner invests in, owns and manages restaurant operations while Sardaar Ji Dhaba provides brand licensing, standardised recipes, operational guidance, training and brand support. Net sales means sales excluding GST, refunds and cancelled transactions, as defined in the franchise agreement.</p>
+        <div className="mt-6 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">{['Property is arranged by the franchise partner; purchase, rent and deposits are additional.', 'Staff salaries, utilities and day-to-day operating expenses are the franchise partner’s responsibility.', 'Local marketing is managed by the franchise partner.', 'Renewal conditions will be specified in the agreement.', 'No separate central marketing contribution initially.', 'No separate technology/POS fee initially, subject to the agreed package.'].map(item => <p key={item} className="border-l-2 border-accent pl-3 leading-6">{item}</p>)}</div>
+        <p className="mt-6 text-xs leading-6 text-muted-foreground">All commercial terms are proposed and subject to final site evaluation, written approval and execution of the franchise agreement. No revenue, profit or return on investment is guaranteed.</p>
+      </div>
+    </section>
+
+    <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+      <div className="max-w-3xl"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Built around practical guidance</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">Franchise support</h2><p className="mt-4 text-sm leading-7 text-muted-foreground">Support is agreed for the selected package and documented in the franchise agreement.</p></div>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{franchiseSupport.map((support, index) => { const Icon = supportIcons[index]; return <article key={support.title} className="border border-foreground/10 bg-card p-6"><Icon size={24} className="text-primary" /><h3 className="mt-4 font-display text-2xl">{support.title}</h3><ul className="mt-4 space-y-2 text-sm leading-6 text-muted-foreground">{support.items.map(item => <li key={item}>· {item}</li>)}</ul></article>; })}</div>
+    </section>
+
+    <section className="bg-secondary px-5 py-16 text-secondary-foreground lg:px-8 lg:py-24">
+      <div className="mx-auto max-w-7xl"><div className="max-w-3xl"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">From enquiry to opening</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">A clear six-step process</h2></div><ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">{franchiseProcess.map((step, index) => <li key={step} className="border-t border-accent/50 pt-4"><span className="font-mono-brand text-xs text-accent">0{index + 1}</span><p className="mt-4 font-semibold leading-6">{step}</p></li>)}</ol></div>
+    </section>
+
+    <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+      <div className="max-w-3xl"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Working together</p><h2 className="mt-4 font-display text-4xl tracking-[-.05em] md:text-5xl">Clear responsibilities on both sides</h2></div>
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        {[['Franchise partner', franchisePartnerResponsibilities], ['Sardaar Ji Dhaba', brandResponsibilities]].map(([heading, items]) => <article key={heading as string} className="border border-foreground/10 bg-card p-6"><h3 className="font-display text-2xl">{heading as string}</h3><ul className="mt-4 space-y-3 text-sm leading-6 text-muted-foreground">{(items as string[]).map(item => <li key={item} className="flex gap-2"><BadgeCheck size={16} className="mt-1 shrink-0 text-primary" />{item}</li>)}</ul></article>)}
+      </div>
+    </section>
+
+    <section id="franchise-enquiry" className="scroll-mt-24 bg-accent px-5 py-14 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between"><div><h2 className="font-display text-3xl md:text-4xl">Ready to explore a franchise?</h2><p className="mt-2 text-sm">Share your plans to begin a conversation. An enquiry is not an offer or approval.</p></div><Link href="/franchise/apply" className="inline-flex w-fit items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-franchise-form">Apply for Franchise <ArrowRight size={16} /></Link></div>
+    </section>
+  </Shell>;
 }
 
 async function sendInquiry(form: HTMLFormElement, kind: 'contact' | 'franchise') {
@@ -607,6 +704,18 @@ function Application() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState('');
+
+  useEffect(() => {
+    const format = new URLSearchParams(window.location.search).get('format');
+    if (format && franchiseFormats.some(item => item.name === format)) {
+      setSelectedFormat(format);
+    }
+    if (window.location.hash === '#application-form') {
+      document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
@@ -640,15 +749,21 @@ function Application() {
               <Link href="/" className="mt-7 font-bold text-primary underline">Back to home</Link>
             </div>
           ) : (
-            <form className="space-y-6" onSubmit={submit}><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+            <form id="application-form" className="space-y-6" onSubmit={submit}><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
               <div className="grid gap-6 sm:grid-cols-2">
                 <label className="block text-sm font-semibold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" placeholder="Full name" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-name" /></label>
                 <label className="block text-sm font-semibold">Phone number<input name="phone" required type="tel" minLength={7} maxLength={20} autoComplete="tel" placeholder="+91 ..." className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-phone-number" /></label>
                 <label className="block text-sm font-semibold">Email address<input name="email" required type="email" maxLength={160} autoComplete="email" placeholder="you@example.com" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-email" /></label>
                 <label className="block text-sm font-semibold">Preferred city<input name="city" required minLength={2} maxLength={100} autoComplete="address-level2" placeholder="City you have in mind" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-city" /></label>
+                <label className="block text-sm font-semibold">State<input name="state" required minLength={2} maxLength={100} autoComplete="address-level1" placeholder="State" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-state" /></label>
+                <label className="block text-sm font-semibold">Preferred franchise format
+                  <select name="franchiseFormat" required value={selectedFormat} onChange={event => setSelectedFormat(event.target.value)} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-format">
+                    <option value="" disabled>Select a format</option>{franchiseFormats.map(format => <option key={format.id} value={format.name}>{format.name} · {format.investment}</option>)}
+                  </select>
+                </label>
                 <label className="block text-sm font-semibold">Approximate investment budget
-                  <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative budget only — not an official franchise fee or project cost.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-budget">
-                    <option value="" disabled>Select a range</option><option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
+                  <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative available investment, excluding property and taxes.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-budget">
+                    <option value="" disabled>Select a range</option><option>₹10–12 lakh</option><option>₹18–22 lakh</option><option>₹30–40 lakh</option><option>Other / need guidance</option>
                   </select>
                 </label>
                 <label className="block text-sm font-semibold">Restaurant / hospitality experience
@@ -656,9 +771,19 @@ function Application() {
                     <option value="">Choose if applicable</option><option>Currently operate a restaurant</option><option>Worked in hospitality</option><option>First-time entrepreneur</option><option>Other business experience</option>
                   </select>
                 </label>
+                <label className="block text-sm font-semibold">Do you own commercial property?
+                  <select name="ownsCommercialProperty" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-property">
+                    <option value="" disabled>Select an option</option><option>Yes</option><option>No</option><option>In the process of identifying</option>
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold">Expected opening timeline
+                  <select name="openingTimeline" required defaultValue="" className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="select-application-timeline">
+                    <option value="" disabled>Select a timeline</option><option>Within 3 months</option><option>3–6 months</option><option>6–12 months</option><option>More than 12 months</option><option>Not decided</option>
+                  </select>
+                </label>
               </div>
               <label className="block text-sm font-semibold">Anything else we should know?<textarea name="message" required minLength={4} maxLength={2000} rows={4} placeholder="Tell us about your plans, preferred location or any questions." className="mt-2 w-full resize-y border-b border-foreground/25 bg-transparent px-0 py-3 outline-none focus:border-primary" data-testid="input-application-message" /></label>
-              <p className="text-xs leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address, preferred city, indicative budget, optional experience details and message to review and respond to this franchise enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
+              <p className="text-xs leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address, preferred city and state, preferred format, indicative budget, experience, property status, opening timeline and message to review and respond to this franchise enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-3 text-xs leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may contact me about this franchise enquiry.</span></label>
               <button type="submit" disabled={sending} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:cursor-wait disabled:opacity-60" data-testid="button-submit-application">{sending ? 'Sending...' : 'Submit franchise enquiry'} <ArrowRight size={16} /></button>
               {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
               <p className="text-xs text-muted-foreground">Your details will only be used to respond to this enquiry. See our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p>
@@ -679,9 +804,39 @@ function getStoryImage(story: (typeof stories)[number]) {
 }
 
 function Blog() {
-  const [visibleCount, setVisibleCount] = useState(6);
-  const visibleStories = stories.slice(0, visibleCount);
-  return <Shell><Meta title="Sardaar Ji Dhaba Blog & City Guides" description="Read Sardaar Ji Dhaba blog posts and city guides on Prayagraj, restaurant picks, Punjabi comfort food, and local travel ideas." /><PageIntro eyebrow="Blog" title="Stories, guides and good food from Prayagraj." copy="From restaurant-style recipes to local city guides, discover what makes Sardaar Ji Dhaba a favourite stop in Noida and Prayagraj." /><section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8"><div className="grid gap-7 md:grid-cols-3">{visibleStories.map((story, i) => <Link href={`/blog/${story.id}`} key={story.id} className={`group ${i % 3 === 1 ? 'md:translate-y-12' : ''}`} data-testid={`card-blog-${story.id}`}><PhotoArt src={getStoryImage(story).src} alt={getStoryImage(story).alt} label={story.category} className="min-h-[270px]" /><p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">{story.publishedAt ? `${story.publishedAt} · ` : ''}{story.category} · {story.read}</p><h2 className="mt-3 font-display text-3xl leading-none tracking-[-.04em] group-hover:text-primary">{story.title}</h2><p className="mt-4 text-sm leading-6 text-muted-foreground">{story.excerpt}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-bold">{story.category === 'Recipe guide' ? 'Read recipe' : 'Read article'} <ArrowUpRight size={15} /></span></Link>)}</div>{visibleCount < stories.length && <button type="button" onClick={() => setVisibleCount(count => Math.min(count + 6, stories.length))} className="mx-auto mt-16 block rounded-full border border-primary px-6 py-3 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground" data-testid="button-load-more-blog">Load more posts</button>}</section></Shell>;
+  return <Shell><Meta title="Punjabi Recipes, City Guides & Franchise Insights | Sardaar Ji Dhaba" description="Explore Punjabi recipes, Prayagraj city guides and practical food-franchise planning for 2027, including indicative Sardaar Ji Dhaba formats and costs." /><PageIntro eyebrow="Blog · Food, places and business" title="Stories, guides and good food from Prayagraj." copy="Explore restaurant-style recipes, local dining guides and practical franchise insights—including a 2027 guide to comparing food-franchise formats, indicative costs and commercial terms." /><section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8"><div className="grid gap-7 md:grid-cols-3">{stories.map((story, i) => <Link href={`/blog/${story.id}`} key={story.id} className={`group ${i % 3 === 1 ? 'md:translate-y-12' : ''}`} data-testid={`card-blog-${story.id}`}><PhotoArt src={getStoryImage(story).src} alt={getStoryImage(story).alt} label={story.category} className="min-h-[270px]" /><p className="mt-6 font-mono-brand text-[10px] uppercase tracking-[.18em] text-primary">{story.publishedAt ? `${story.publishedAt} · ` : ''}{story.category} · {story.read}</p><h2 className="mt-3 font-display text-3xl leading-none tracking-[-.04em] group-hover:text-primary">{story.title}</h2><p className="mt-4 text-sm leading-6 text-muted-foreground">{story.excerpt}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-bold">{story.category === 'Recipe guide' ? 'Read recipe' : 'Read article'} <ArrowUpRight size={15} /></span></Link>)}</div></section></Shell>;
+}
+
+function renderBlogBody(body: string[]): ReactNode[] {
+  const rendered: ReactNode[] = [];
+  let listItems: string[] = [];
+  let key = 0;
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    rendered.push(<ul key={`blog-list-${key++}`} className="list-disc space-y-2 pl-6">{listItems.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul>);
+    listItems = [];
+  };
+
+  for (const block of body) {
+    for (const rawLine of block.split('\n')) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      if (line.startsWith('- ')) {
+        listItems.push(line.slice(2));
+        continue;
+      }
+      flushList();
+      if (line.startsWith('### ')) {
+        rendered.push(<h3 key={`blog-heading-${key++}`} className="font-display text-2xl">{line.slice(4)}</h3>);
+      } else if (line.startsWith('## ')) {
+        rendered.push(<h2 key={`blog-heading-${key++}`} className="font-display text-3xl">{line.slice(3)}</h2>);
+      } else {
+        rendered.push(<p key={`blog-paragraph-${key++}`}>{line}</p>);
+      }
+    }
+  }
+  flushList();
+  return rendered;
 }
 
 function BlogArticle() {
@@ -702,7 +857,7 @@ function BlogArticle() {
   const answerLead = story.body[0].split(/\s+/).slice(0, 55).join(' ');
   const storyImage = getStoryImage(story);
 
-  return <Shell><Meta title={articleTitle} description={articleDescription} image={storyImage.src} type="article" /><article><header className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center lg:px-8 lg:pt-24"><Link href="/blog" className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-blog">← Back to blog</Link><p className="mt-10 font-mono-brand text-[10px] uppercase tracking-[.2em] text-secondary">{story.category} · {story.read}</p><h1 className="mt-5 font-display text-5xl leading-[.92] tracking-[-.07em] md:text-7xl">{story.title}</h1><p className="mx-auto mt-7 max-w-3xl text-left text-base leading-7 text-foreground"><strong>In brief: </strong>{answerLead}</p><p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">{story.excerpt}</p></header><div className="mx-auto max-w-5xl px-5 lg:px-8"><PhotoArt src={storyImage.src} alt={storyImage.alt} label={story.category} className="min-h-[300px] md:min-h-[480px]" /></div><div className="mx-auto max-w-3xl px-5 py-16 lg:px-8"><div className="space-y-10">{story.ingredients && story.ingredients.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Ingredients</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.ingredients.map((ingredient) => <li key={ingredient} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-primary" aria-hidden="true" /><span>{ingredient}</span></li>)}</ul></section>}{story.method && story.method.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">How to make it</h2><ol className="mt-5 space-y-5 text-sm leading-7 text-muted-foreground">{story.method.map((step, index) => <li key={step} className="flex gap-4"><span className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{index + 1}</span><span>{step}</span></li>)}</ol></section>}{story.tips && story.tips.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Chef tips</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.tips.map((tip) => <li key={tip} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-accent" aria-hidden="true" /><span>{tip}</span></li>)}</ul></section>}<section className="prose prose-stone max-w-none prose-headings:font-display prose-headings:font-semibold prose-p:leading-8"><h2>{story.category === 'Recipe guide' ? 'Why this recipe works' : 'Why this guide matters'}</h2>{story.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<blockquote>{story.category === 'Recipe guide' ? 'The first bite should make you look up from the table.' : 'The best city guides help you see the place clearly, not just tick off the obvious stops.'}</blockquote><p className="font-mono-brand text-xs uppercase tracking-[.16em] text-muted-foreground">{story.category === 'Recipe guide' ? 'Kitchen note · Sardaar Ji Dhaba' : 'City note · Prayagraj'}</p></section></div></div></article></Shell>;
+  return <Shell><Meta title={articleTitle} description={articleDescription} image={storyImage.src} type="article" /><article><header className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center lg:px-8 lg:pt-24"><Link href="/blog" className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary" data-testid="link-back-blog">← Back to blog</Link><p className="mt-10 font-mono-brand text-[10px] uppercase tracking-[.2em] text-secondary">{story.category} · {story.read}</p><h1 className="mt-5 font-display text-5xl leading-[.92] tracking-[-.07em] md:text-7xl">{story.title}</h1><p className="mx-auto mt-7 max-w-3xl text-left text-base leading-7 text-foreground"><strong>In brief: </strong>{answerLead}</p><p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">{story.excerpt}</p></header><div className="mx-auto max-w-5xl px-5 lg:px-8"><PhotoArt src={storyImage.src} alt={storyImage.alt} label={story.category} className="min-h-[300px] md:min-h-[480px]" /></div><div className="mx-auto max-w-3xl px-5 py-16 lg:px-8"><div className="space-y-10">{story.ingredients && story.ingredients.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Ingredients</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.ingredients.map((ingredient) => <li key={ingredient} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-primary" aria-hidden="true" /><span>{ingredient}</span></li>)}</ul></section>}{story.method && story.method.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">How to make it</h2><ol className="mt-5 space-y-5 text-sm leading-7 text-muted-foreground">{story.method.map((step, index) => <li key={step} className="flex gap-4"><span className="mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{index + 1}</span><span>{step}</span></li>)}</ol></section>}{story.tips && story.tips.length > 0 && <section className="rounded-2xl border border-foreground/10 bg-card p-6 md:p-8"><h2 className="font-display text-3xl tracking-[-.04em]">Chef tips</h2><ul className="mt-5 space-y-3 text-sm leading-7 text-muted-foreground">{story.tips.map((tip) => <li key={tip} className="flex gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-accent" aria-hidden="true" /><span>{tip}</span></li>)}</ul></section>}<section className="prose prose-stone max-w-none prose-headings:font-display prose-headings:font-semibold prose-p:leading-8">{renderBlogBody(story.body)}<blockquote>{story.category === 'Recipe guide' ? 'The first bite should make you look up from the table.' : 'The best city guides help you see the place clearly, not just tick off the obvious stops.'}</blockquote><p className="font-mono-brand text-xs uppercase tracking-[.16em] text-muted-foreground">{story.category === 'Recipe guide' ? 'Kitchen note · Sardaar Ji Dhaba' : 'Sardaar Ji Dhaba · Food and franchise guide'}</p>{story.id === 'food-franchise-to-explore-in-2027' && <div className="not-prose mt-10 flex flex-wrap gap-3"><Link href="/franchise" className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground" data-testid="link-2027-guide-franchise-plans">Compare franchise formats <ArrowRight size={16} /></Link><Link href="/franchise/apply" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-5 py-3 text-sm font-bold" data-testid="link-2027-guide-franchise-enquiry">Start a franchise enquiry <ArrowRight size={16} /></Link></div>}</section></div></div></article></Shell>;
 }
 
 function ContactLegacy() {
@@ -845,7 +1000,7 @@ function NotFound() {
   return <Shell><Meta title="Page not found" /><section className="mx-auto flex min-h-[65vh] max-w-7xl flex-col justify-center px-5 py-20 lg:px-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Wrong turn</p><h1 className="mt-6 max-w-3xl font-display text-[clamp(5rem,14vw,12rem)] leading-[.75] tracking-[-.1em]">404<span className="text-primary">.</span></h1><p className="mt-10 max-w-sm text-lg leading-7 text-muted-foreground">This road does not go to the dhaba. Let us get you back to something tasty.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-404-home">Take me home <ArrowRight size={16} /></Link><Link href="/menu" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-bold" data-testid="link-404-menu">See the menu <Utensils size={16} /></Link></div></section></Shell>;
 }
 
-type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; investmentRange?: string; experience?: string; source?: string; message: string; createdAt: string }[] };
+type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; state?: string; investmentRange?: string; franchiseFormat?: string; experience?: string; ownsCommercialProperty?: string; openingTimeline?: string; source?: string; message: string; createdAt: string }[] };
 
 function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -872,12 +1027,12 @@ function Admin() {
       if (!response.ok) throw new Error((await response.json().catch(() => ({}))).message ?? 'Could not sign in.');
       await loadSummary();
       return;
-    } catch {
-      setError('Could not sign in. Please check the server connection and your credentials.');
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : 'Could not sign in. Please check the server connection and your credentials.');
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}{lead.state ? `, ${lead.state}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.franchiseFormat ? `Format: ${lead.franchiseFormat} · ` : ''}{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.ownsCommercialProperty ? `Commercial property: ${lead.ownsCommercialProperty} · ` : ''}{lead.openingTimeline ? `Opening: ${lead.openingTimeline}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
 function loadOptionalAnalytics() {
@@ -957,7 +1112,7 @@ function CookieConsent() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
           <h2 className="font-display text-xl">Your privacy choices</h2>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">We use essential storage to remember your choice. Optional Google Analytics, Tag Manager and first-party interaction tracking run only if you accept. Read our <a href="/privacy-policy" className="font-semibold text-primary underline">privacy policy</a>.</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">We use essential storage to remember your choice. Optional Google Analytics, Tag Manager and first-party interaction tracking run only if you accept. Read our <a href="/privacy-policy/" className="font-semibold text-primary underline">privacy policy</a>.</p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
           <button type="button" onClick={() => choose(false)} className="rounded-full border border-foreground/20 px-4 py-2 text-xs font-bold">Reject optional</button>

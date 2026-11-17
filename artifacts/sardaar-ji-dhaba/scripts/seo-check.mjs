@@ -33,7 +33,7 @@ for (const url of urls) {
     const schemas = schemasFrom(html);
     const head = html.split('</head>')[0] ?? '';
     const headSchemas = schemasFrom(head);
-    const cityIntro = route.startsWith('/locations/') ? html.match(/<h1\b[\s\S]*?<\/section>/)?.[0] ?? '' : '';
+    const cityIntro = ['/locations/noida/', '/locations/prayagraj/'].includes(route) ? html.match(/<h1\b[\s\S]*?<\/section>/)?.[0] ?? '' : '';
     const cityIntroWords = cityIntro.replace(/<[^>]*>/g, ' ').replace(/&(?:amp|quot|#x27|lt|gt);/g, ' ').trim().split(/\s+/).filter(Boolean).length;
     const checks = {
         title: title.length > 0 && title.length <= 60 && !titles.has(title),
@@ -47,6 +47,11 @@ for (const url of urls) {
 
     assert(!html.includes('Description pending confirmation') && !html.includes('Guest quote placeholder'), `${route}: unfinished placeholder content is published`);
     assert(!/<a\b[^>]+href="\/(?:noida|prayagraj)"/i.test(html), `${route}: internal links must use canonical location URLs`);
+    const internalLinks = [...html.matchAll(/<a\b[^>]+href="(\/[^"]*)"/gi)].map(match => match[1]);
+    for (const href of internalLinks) {
+        const pathname = new URL(href, url).pathname;
+        assert(pathname === '/' || pathname.endsWith('/'), `${route}: internal link must use its trailing-slash canonical path: ${href}`);
+    }
     const ogImage = html.match(/<meta property="og:image" content="([^"]*)">/)?.[1] ?? '';
     assert(ogImage.length > 0, `${route}: Open Graph image is missing`);
     const ogImageUrl = new URL(ogImage, url);
@@ -115,12 +120,13 @@ for (const url of urls) {
 
     titles.add(title);
     descriptions.add(description);
-    if (route.startsWith('/locations/')) assert(cityIntroWords >= 80, `${route}: city introduction has only ${cityIntroWords} words`);
+    if (['/locations/noida/', '/locations/prayagraj/'].includes(route)) assert(cityIntroWords >= 80, `${route}: city introduction has only ${cityIntroWords} words`);
     results.push({ route, ...checks });
 }
 
 assert(urls.length > 0, 'Sitemap contains no URLs');
 assert(new Set(urls).size === urls.length, 'Sitemap contains duplicate URLs');
+assert(urls.every(url => new URL(url).pathname === '/' || new URL(url).pathname.endsWith('/')), 'Every non-root sitemap URL must use the trailing-slash canonical path');
 assert(!urls.some(url => ['/noida', '/prayagraj'].includes(new URL(url).pathname)), 'Legacy city aliases must not be listed in the sitemap');
 const adminHtml = await readFile(path.join(outputRoot, 'admin/index.html'), 'utf8');
 assert(/<meta name="robots" content="noindex, nofollow">/.test(adminHtml), 'Admin route must be noindex');
@@ -133,8 +139,18 @@ for (const header of ['X-Content-Type-Options: nosniff', 'Referrer-Policy: stric
     assert(headers.includes(header), `Security response header missing: ${header}`);
 }
 const redirects = await readFile(path.join(outputRoot, '_redirects'), 'utf8');
-assert(redirects.includes('/noida /locations/noida 301'), 'Noida alias redirect missing');
-assert(redirects.includes('/prayagraj /locations/prayagraj 301'), 'Prayagraj alias redirect missing');
+assert(redirects.includes('/noida /locations/noida/ 301'), 'Noida alias must redirect directly to its canonical URL');
+assert(redirects.includes('/prayagraj /locations/prayagraj/ 301'), 'Prayagraj alias must redirect directly to its canonical URL');
+assert(redirects.includes('/best-restaurant-for-marriage-anniversary-party-and-get-together-in-allahabad-sardaar-ji-prayagraj/ /locations/prayagraj/ 301'), 'Legacy Prayagraj event URL must redirect to the relevant outlet page');
+for (const [source, destination] of [
+    ['/blog/paneer-tikka', '/blog/restaurant-style-paneer-tikka/'],
+    ['/blog/butter-chicken', '/blog/restaurant-style-butter-chicken/'],
+    ['/blog/dal-makhani', '/blog/restaurant-style-dal-makhani/'],
+]) {
+    assert(redirects.includes(`${source} ${destination} 301`), `${source}: legacy recipe URL must redirect to its current article`);
+}
+assert(redirects.includes('/blog/restaurant-billing-software-for-restaurants https://petupos.com/ 301'), 'Legacy restaurant billing software article must redirect to the relevant PetuPOS site');
+assert(redirects.includes('/blog/best-restaurant-pos-software-india-2026 https://petupos.com/ 301'), 'Legacy restaurant POS article must redirect to the relevant PetuPOS site');
 
 const columns = ['route', 'title', 'description', 'canonical', 'h1', 'jsonld', 'sitemap', 'noKeywords'];
 const widths = Object.fromEntries(columns.map(column => [column, Math.max(column.length, ...results.map(result => String(result[column]).length))]));

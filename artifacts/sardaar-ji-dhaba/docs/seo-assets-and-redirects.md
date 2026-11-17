@@ -20,9 +20,11 @@ The legal pages use the home image. The existing article images are currently us
 
 ## Legacy Blog Redirects
 
-Fill the destination values in `src/data/redirects.ts` with the verified matching canonical paths. The build emits only completed mappings into `public/_redirects`.
+The build emits the verified legacy article and city aliases in `public/_redirects`. Redirect destinations use the final trailing-slash page URL so visitors and crawlers do not take an extra redirect to Cloudflare Pages' clean URL. The retired restaurant billing/POS software articles point to PetuPOS because it is the directly relevant product site.
 
-The build emits completed legacy article and city-alias mappings as permanent path redirects. Confirm any historical blog subdomain hostname and additional old URLs in Search Console before adding further mappings.
+Do not guess destinations for additional Search Console 404s or redirect errors. Export the affected URL samples from Search Console, confirm a relevant replacement for each URL, and only then add a permanent redirect. URLs with no equivalent replacement should remain not found rather than redirecting to unrelated content.
+
+The generated sitemap, canonical tags, Open Graph URLs, structured page URLs, and internal page links use trailing slashes for non-root pages. Rebuild and run `pnpm run seo:check` after changing routes or redirects.
 
 ## Canonical Host
 

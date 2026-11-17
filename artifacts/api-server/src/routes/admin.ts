@@ -21,11 +21,15 @@ function validPassword(password: string, stored: string) {
 async function requireAdmin(req: Request, res: Response, next: () => void): Promise<void> {
     const token = req.cookies?.[sessionCookie];
     if (!token) { res.status(401).json({ message: "Admin authentication required." }); return; }
-    const db = await getMongoDatabase();
-    const session = await db.collection<AdminSession>("admin_sessions").findOne({ tokenHash: hashToken(token), expiresAt: { $gt: new Date() } });
-    if (!session) { res.status(401).json({ message: "Admin session expired." }); return; }
-    next();
-    return;
+    try {
+        const db = await getMongoDatabase();
+        const session = await db.collection<AdminSession>("admin_sessions").findOne({ tokenHash: hashToken(token), expiresAt: { $gt: new Date() } });
+        if (!session) { res.status(401).json({ message: "Admin session expired." }); return; }
+        next();
+    } catch (error) {
+        req.log.error({ error }, "Could not verify admin session");
+        res.status(503).json({ message: "Admin data is temporarily unavailable. Check the database connection." });
+    }
 }
 
 router.post("/admin/login", async (req, res): Promise<void> => {
@@ -36,12 +40,16 @@ router.post("/admin/login", async (req, res): Promise<void> => {
         res.status(401).json({ message: "Invalid admin credentials." });
         return;
     }
-    const token = randomBytes(32).toString("base64url");
-    const db = await getMongoDatabase();
-    await db.collection<AdminSession>("admin_sessions").insertOne({ tokenHash: hashToken(token), username, createdAt: new Date(), expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000) });
-    res.cookie(sessionCookie, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 8 * 60 * 60 * 1000, path: "/api" });
-    res.json({ status: "authenticated" });
-    return;
+    try {
+        const token = randomBytes(32).toString("base64url");
+        const db = await getMongoDatabase();
+        await db.collection<AdminSession>("admin_sessions").insertOne({ tokenHash: hashToken(token), username, createdAt: new Date(), expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000) });
+        res.cookie(sessionCookie, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 8 * 60 * 60 * 1000, path: "/api" });
+        res.json({ status: "authenticated" });
+    } catch (error) {
+        req.log.error({ error }, "Could not create admin session");
+        res.status(503).json({ message: "Admin sign-in is temporarily unavailable. Check the database connection." });
+    }
 });
 
 router.post("/admin/logout", async (req, res) => {
@@ -52,14 +60,19 @@ router.post("/admin/logout", async (req, res) => {
 });
 
 router.get("/admin/summary", requireAdmin, async (_req, res) => {
-    const db = await getMongoDatabase();
-    const [inquiries, events, recentInquiries] = await Promise.all([
-        db.collection("inquiries").countDocuments(),
-        db.collection("analytics_events").countDocuments(),
-        db.collection("inquiries").find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).limit(50).toArray(),
-    ]);
-    const eventCounts = await db.collection("analytics_events").aggregate([{ $group: { _id: "$name", count: { $sum: 1 } } }, { $sort: { count: -1 } }]).toArray();
-    res.json({ inquiries, events, eventCounts, recentInquiries });
+    try {
+        const db = await getMongoDatabase();
+        const [inquiries, events, recentInquiries] = await Promise.all([
+            db.collection("inquiries").countDocuments(),
+            db.collection("analytics_events").countDocuments(),
+            db.collection("inquiries").find({}, { projection: { _id: 0 } }).sort({ createdAt: -1 }).limit(50).toArray(),
+        ]);
+        const eventCounts = await db.collection("analytics_events").aggregate([{ $group: { _id: "$name", count: { $sum: 1 } } }, { $sort: { count: -1 } }]).toArray();
+        res.json({ inquiries, events, eventCounts, recentInquiries });
+    } catch (error) {
+        _req.log.error({ error }, "Could not load admin summary");
+        res.status(503).json({ message: "Admin data is temporarily unavailable. Check the database connection." });
+    }
 });
 
 export default router;

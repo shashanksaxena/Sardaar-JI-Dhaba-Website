@@ -66,8 +66,8 @@ export const seoRoutes: Record<string, SeoMetadata> = {
         priority: 0.8,
     },
     '/franchise': {
-        title: 'Restaurant Franchise Enquiries | Sardaar Ji Dhaba',
-        description: 'Explore a potential Sardaar Ji Dhaba partnership and share your restaurant franchise enquiry with the team.',
+        title: 'Sardaar Ji Dhaba Franchise | Investment & Franchise Opportunities',
+        description: 'Explore Sardaar Ji Dhaba franchise opportunities in India. Compare Express, Classic and Premium restaurant formats, investment estimates and franchise support.',
         image: '/images/og/franchise-1200x630.jpg',
     },
     '/franchise/apply': {
@@ -105,6 +105,7 @@ export const seoRoutes: Record<string, SeoMetadata> = {
 };
 
 export function getSeoMetadata(route: string): SeoMetadata | undefined {
+    route = route === '/' ? route : route.replace(/\/+$/, '');
     const staticMetadata = seoRoutes[route];
     if (staticMetadata) return staticMetadata;
 
