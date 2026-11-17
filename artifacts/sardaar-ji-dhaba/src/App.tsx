@@ -40,7 +40,29 @@ function getApiBase() {
     return '';
   }
 
-  return configured ? configured.replace(/\/$/, '') : '';
+  if (!configured) {
+    throw new Error('The API server is not configured. Set VITE_API_URL to the deployed API server origin.');
+  }
+
+  let apiOrigin: URL;
+  try {
+    apiOrigin = new URL(configured);
+  } catch {
+    throw new Error('VITE_API_URL must be the API server origin, such as https://api.example.com.');
+  }
+
+  if (
+    !['https:', 'http:'].includes(apiOrigin.protocol) ||
+    apiOrigin.username ||
+    apiOrigin.password ||
+    apiOrigin.pathname !== '/' ||
+    apiOrigin.search ||
+    apiOrigin.hash
+  ) {
+    throw new Error('VITE_API_URL must contain only the API server origin, without a path, query, or credentials.');
+  }
+
+  return apiOrigin.origin;
 }
 
 function apiUrl(path: string) {

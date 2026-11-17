@@ -8,6 +8,7 @@ import analyticsRouter from "./routes/analytics";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
+const frontendOrigin = process.env.FRONTEND_ORIGIN?.trim();
 
 app.use(
   pinoHttp({
@@ -28,7 +29,10 @@ app.use(
     },
   }),
 );
-app.use(cors());
+app.use(cors({
+  origin: frontendOrigin || false,
+  credentials: true,
+}));
 app.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
