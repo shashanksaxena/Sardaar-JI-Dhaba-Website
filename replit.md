@@ -7,6 +7,7 @@ A premium, warm website for Sardaar JI Dhaba with menu discovery, location pages
 - `pnpm --filter @workspace/api-server run dev` — run the local API for Vite development (port 5001)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
+- `pnpm run deploy:pages` — deploy the built site and root-level Pages Functions to Cloudflare Pages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - Required env: `DATABASE_URL` — Postgres connection string
@@ -33,7 +34,7 @@ A premium, warm website for Sardaar JI Dhaba with menu discovery, location pages
 - Enquiry forms POST to `/api/inquiries` and are stored directly in MongoDB for the admin dashboard.
 - Admin and lead storage uses MongoDB via `MONGODB_URI` and `MONGODB_DATABASE`; configure `ADMIN_USERNAME` and a scrypt-derived `ADMIN_PASSWORD_HASH` from `artifacts/api-server/.env.example`.
 - `/admin` and all enquiry forms use same-origin Cloudflare Pages Functions under `functions/api/`; no always-on API service or frontend `VITE_API_URL` is needed. Keep the local Express API for Vite development.
-- Configure the Cloudflare Pages project with build command `pnpm run build` and output directory `artifacts/sardaar-ji-dhaba/dist/public`. Set `MONGODB_URI`, `MONGODB_DATABASE`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as Pages Function secrets/environment variables in both Production and Preview as appropriate. Do not configure these as frontend build variables.
+- Configure the Cloudflare Pages project with build command `pnpm run build` and output directory `artifacts/sardaar-ji-dhaba/dist/public`. If the Cloudflare deployment setup requires a deploy command, use `pnpm run deploy:pages` (or `pnpm exec wrangler pages deploy artifacts/sardaar-ji-dhaba/dist/public --project-name sardaar-ji-dhaba-website`), never `wrangler deploy`; the latter is for Workers and fails for this Pages project. Set `MONGODB_URI`, `MONGODB_DATABASE`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as Pages Function secrets/environment variables in both Production and Preview as appropriate. Do not configure these as frontend build variables.
 - Remove the old `VITE_API_URL` variable from Cloudflare Pages; frontend requests now use same-origin `/api/...` Function routes.
 - Direct Atlas connections from Workers require the Atlas network access rule `0.0.0.0/0` because Cloudflare TCP egress IPs are not a fixed published range. This broadens network reachability; use a newly rotated database password, a least-privilege Atlas database user, and TLS. Rate-limit `/api/admin/login` with a Cloudflare security rule. Rotate any credentials previously shared in chat.
 - For local Pages Functions testing, copy `.dev.vars.example` to `.dev.vars`, fill it with local-only secrets, run `pnpm run build`, then run `pnpm exec wrangler pages dev artifacts/sardaar-ji-dhaba/dist/public`. `.dev.vars` is gitignored.
