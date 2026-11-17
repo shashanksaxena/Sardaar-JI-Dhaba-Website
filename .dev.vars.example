@@ -1,0 +1,4 @@
+MONGODB_URI=mongodb+srv://<user>:<rotated-password>@<cluster>/<database>
+MONGODB_DATABASE=sardaar_ji_dhaba
+ADMIN_USERNAME=<admin-username>
+ADMIN_PASSWORD_HASH=<salt>:<scrypt-hash>

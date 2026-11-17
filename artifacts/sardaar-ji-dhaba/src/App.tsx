@@ -32,37 +32,7 @@ function Link(props: ComponentProps<typeof WouterLink>) {
 }
 
 function getApiBase() {
-  const configured = (import.meta.env.VITE_API_URL ?? '').trim();
-  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
-  const isLocalDev = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
-
-  if (import.meta.env.DEV || isLocalDev) {
-    return '';
-  }
-
-  if (!configured) {
-    throw new Error('The API server is not configured. Set VITE_API_URL to the deployed API server origin.');
-  }
-
-  let apiOrigin: URL;
-  try {
-    apiOrigin = new URL(configured);
-  } catch {
-    throw new Error('VITE_API_URL must be the API server origin, such as https://api.example.com.');
-  }
-
-  if (
-    !['https:', 'http:'].includes(apiOrigin.protocol) ||
-    apiOrigin.username ||
-    apiOrigin.password ||
-    apiOrigin.pathname !== '/' ||
-    apiOrigin.search ||
-    apiOrigin.hash
-  ) {
-    throw new Error('VITE_API_URL must contain only the API server origin, without a path, query, or credentials.');
-  }
-
-  return apiOrigin.origin;
+  return '';
 }
 
 function apiUrl(path: string) {
@@ -1050,7 +1020,13 @@ function Admin() {
       await loadSummary();
       return;
     } catch (loginError) {
-      setError(loginError instanceof Error ? loginError.message : 'Could not sign in. Please check the server connection and your credentials.');
+      setError(
+        loginError instanceof TypeError
+          ? `Cannot reach the admin API at ${getApiBase() || window.location.origin}. Check that the API is deployed and its hostname resolves.`
+          : loginError instanceof Error
+            ? loginError.message
+            : 'Could not sign in. Please check the server connection and your credentials.',
+      );
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
