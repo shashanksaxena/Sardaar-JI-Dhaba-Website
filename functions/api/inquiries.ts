@@ -37,6 +37,8 @@ function isInquiry(inquiry: Record<string, unknown>) {
       (inquiry.state === undefined || (typeof inquiry.state === 'string' && inquiry.state.trim().length > 1)) &&
       (inquiry.franchiseFormat === undefined || (typeof inquiry.franchiseFormat === 'string' && inquiry.franchiseFormat.trim().length > 0)) &&
       (inquiry.experience === undefined || (typeof inquiry.experience === 'string' && inquiry.experience.length <= 120)) &&
+      (inquiry.employmentStatus === undefined || (typeof inquiry.employmentStatus === 'string' && inquiry.employmentStatus.trim().length > 1 && inquiry.employmentStatus.length <= 100)) &&
+      (inquiry.availableTime === undefined || (typeof inquiry.availableTime === 'string' && inquiry.availableTime.trim().length > 1 && inquiry.availableTime.length <= 100)) &&
       inquiry.consent === true;
   }
   return inquiry.consent === true;

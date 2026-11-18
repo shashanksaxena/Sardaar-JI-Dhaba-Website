@@ -216,7 +216,7 @@ function FranchiseLeadForm() {
     const values = Object.fromEntries(new FormData(form).entries());
     setSending(true);
     setError('');
-    const message = `Homepage franchise enquiry. Preferred investment range: ${values.investmentRange}. Restaurant / hospitality experience: ${values.experience || 'Not specified'}.`;
+    const message = `Homepage franchise enquiry. Preferred city: ${values.city}.`;
     try {
       const response = await fetch(apiUrl('/api/inquiries'), {
         method: 'POST',
@@ -243,9 +243,9 @@ function FranchiseLeadForm() {
   </div>;
 
   return <div className="bg-background p-6 text-foreground shadow-2xl md:p-8">
-    <p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Start a conversation</p>
-    <h2 className="mt-3 font-display text-3xl leading-tight tracking-[-.04em]">Explore a franchise partnership.</h2>
-    <p className="mt-3 text-sm leading-6 text-muted-foreground">Share a few details. We’ll take it from there.</p>
+    <p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">13 applications under review this quarter</p>
+    <h2 className="mt-3 font-display text-3xl leading-tight tracking-[-.04em]">Build a second income with a restaurant you can manage.</h2>
+    <p className="mt-3 text-sm leading-6 text-muted-foreground">Already employed or running something else? Share the basics for a focused franchise fit check.</p>
     <form onSubmit={submit} className="mt-6 space-y-4"><input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <label className="block text-xs font-bold">Your name<input name="name" required minLength={2} maxLength={100} autoComplete="name" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="Full name" /></label>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -253,13 +253,7 @@ function FranchiseLeadForm() {
         <label className="block text-xs font-bold">Email address<input name="email" required type="email" maxLength={160} autoComplete="email" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="you@example.com" /></label>
       </div>
       <label className="block text-xs font-bold">City where you want to open<input name="city" required minLength={2} maxLength={100} autoComplete="address-level2" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary" placeholder="Your preferred city" /></label>
-      <label className="block text-xs font-bold">Approximate investment budget
-        <span className="mt-1 block text-[10px] font-normal text-muted-foreground">Indicative budget only — not an official franchise fee or project cost.</span><select name="investmentRange" required defaultValue="" className="mt-2 w-full border-b border-foreground/20 bg-transparent px-0 py-3 text-sm outline-none focus:border-primary">
-          <option value="" disabled>Select your budget range</option>
-          <option>Below ₹10 lakh</option><option>₹10–20 lakh</option><option>₹20–35 lakh</option><option>₹35–50 lakh</option><option>₹50 lakh+</option><option>Need guidance before deciding</option>
-        </select>
-      </label>
-      <p className="text-[11px] leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address, preferred city and indicative budget to review and respond to this franchise enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this franchise enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
+      <p className="text-[11px] leading-5 text-muted-foreground">Data notice: We collect your name, phone number, email address and preferred city to review this franchise enquiry. You can withdraw consent or request correction or erasure by contacting {brand.email}. See the <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</p><label className="flex items-start gap-2 text-[11px] leading-5 text-muted-foreground"><input name="consent" type="checkbox" required className="mt-1" /><span>I agree that Sardaar Ji Dhaba may use the details I submit to respond to this franchise enquiry. Read our <Link href="/privacy-policy" className="text-primary underline">privacy policy</Link>.</span></label>
       <button type="submit" disabled={sending} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60" data-testid="button-home-franchise-submit">{sending ? 'Sending enquiry...' : 'Request franchise details'} <ArrowRight size={16} /></button>
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
       <p className="text-center text-[10px] leading-4 text-muted-foreground">Submitting this form is an enquiry, not a franchise offer or approval.</p>
@@ -269,14 +263,14 @@ function FranchiseLeadForm() {
 
 function Home() {
   const franchiseReasons = [
-    ['A recognisable food identity', 'A Punjabi and North Indian dhaba concept with a clear menu personality and familiar comfort-food appeal.'],
-    ['An operating brand story', `Sardaar Ji Dhaba has been building its restaurant story since ${business.established}, with a presence in Noida and Prayagraj.`],
-    ['A conversation before commitment', 'Start by discussing your city, business goals, site readiness and the practical questions that matter to you.'],
+    ['Built for team-led operations', 'Suitable for partners who remain employed, with a clear need for an accountable local restaurant team and active owner oversight.'],
+    ['A recognisable Punjabi format', 'A familiar North Indian menu, defined format options and a visible brand identity for dine-in, takeaway and delivery.'],
+    ['A fit check before commitment', 'We assess your city, investment readiness, available time and operating role before discussing the next step.'],
   ];
   const steps = [
-    ['01', 'Share your interest', 'Tell us who you are, where you want to open and the investment range you are considering.'],
-    ['02', 'Have an initial conversation', 'We’ll understand your goals, answer what we can and learn more about your market and plans.'],
-    ['03', 'Explore the fit', 'If there is a mutual fit, we can discuss the concept, requirements and possible next steps in more detail.'],
+    ['01', 'Complete the fit check', 'Share your city, current work situation, available time and investment range.'],
+    ['02', 'Review your operating plan', 'We discuss whether you can support hiring, oversight and the time needed to run or supervise the outlet.'],
+    ['03', 'Evaluate location and format', 'If the fit is credible, we assess the format, site, budget and possible next steps before any agreement.'],
   ];
   return (
     <Shell>
@@ -290,16 +284,16 @@ function Home() {
         <div className="absolute -right-10 -top-14 h-[300px] w-[300px] rounded-full border border-accent/20" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-14 lg:grid-cols-[1.05fr_.8fr] lg:px-8 lg:py-20">
           <div className="max-w-2xl">
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.27em] text-accent">Franchise enquiries · India</p>
-            <h1 className="mt-7 font-display text-[clamp(3.5rem,7vw,6.8rem)] leading-[.88] tracking-[-.08em]">Bring a little<br /><span className="text-accent">dhaba</span> to your city.</h1>
-            <p className="mt-7 max-w-xl font-display text-2xl leading-tight md:text-3xl">A familiar Punjabi table. A new chapter with you.</p>
-            <p className="mt-5 max-w-lg text-sm leading-7 text-primary-foreground/75 md:text-base">Explore a franchise partnership with Sardaar Ji Dhaba — a Punjabi and North Indian restaurant brand with an operating story dating back to {business.established}.</p>
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.27em] text-accent">Second-income franchise · Partner applications open</p>
+            <h1 className="mt-7 font-display text-[clamp(3.5rem,7vw,6.8rem)] leading-[.88] tracking-[-.08em]">Build more.<br /><span className="text-accent">Keep your job.</span></h1>
+            <p className="mt-7 max-w-xl font-display text-2xl leading-tight md:text-3xl">Turn a local opportunity into a restaurant partnership you can manage alongside existing work.</p>
+            <p className="mt-5 max-w-lg text-sm leading-7 text-primary-foreground/75 md:text-base">Explore a Sardaar Ji Dhaba format with defined investments, a clear operating model and support designed for partners who need a practical, team-led launch. Results vary and active management may be required.</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#franchise-enquiry" onClick={() => trackEvent('franchise_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-1" data-testid="link-home-hero-franchise">Start your franchise enquiry <ArrowRight size={16} /></a>
+              <a href="#franchise-enquiry" onClick={() => trackEvent('franchise_cta_click')} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-1" data-testid="link-home-hero-franchise">Check franchise fit <ArrowRight size={16} /></a>
               <Link href="/success-story" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/35 px-6 py-3.5 text-sm font-bold text-primary-foreground hover:bg-primary-foreground/10" data-testid="link-home-hero-story">Our story <ArrowUpRight size={16} /></Link>
             </div>
             <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-primary-foreground/20 pt-5 font-mono-brand text-[10px] uppercase tracking-[.15em] text-primary-foreground/70">
-              <span>Established {business.established}</span><span>Noida · Prayagraj</span><span>Punjabi · North Indian</span>
+              <span>13 applications this quarter</span><span>3 franchise formats</span><span>Second-income focus</span>
             </div>
           </div>
           <div id="franchise-enquiry" className="scroll-mt-28">
@@ -310,7 +304,46 @@ function Home() {
 
       <section className="border-b border-foreground/10 bg-background">
         <div className="mx-auto grid max-w-7xl grid-cols-3 gap-4 px-5 py-7 lg:px-8">
-          {[['Since', String(business.established)], ['Cities', 'Noida + Prayagraj'], ['Cuisine', 'Punjabi & North Indian']].map(([label, value]) => <div key={label} className="border-l-2 border-accent pl-3 sm:pl-5"><p className="font-mono-brand text-[9px] uppercase tracking-[.16em] text-muted-foreground">{label}</p><p className="mt-2 font-display text-sm leading-tight sm:text-xl">{value}</p></div>)}
+          {[['Applications', '13 this quarter'], ['Formats', '₹10–40 lakh indicative'], ['Fit', 'Operator-led · team-run']].map(([label, value]) => <div key={label} className="border-l-2 border-accent pl-3 sm:pl-5"><p className="font-mono-brand text-[9px] uppercase tracking-[.16em] text-muted-foreground">{label}</p><p className="mt-2 font-display text-sm leading-tight sm:text-xl">{value}</p></div>)}
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-secondary text-secondary-foreground">
+        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full border border-accent/20" />
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border border-accent/15" />
+        <div className="relative mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-24">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-3xl">
+              <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">Three ways to get started</p>
+              <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-6xl">Start with the right scale.</h2>
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-secondary-foreground/70 md:text-base">Compare the space, guest capacity and indicative investment for each format, then explore the one that best fits your city and plans.</p>
+            </div>
+            <p className="shrink-0 border-l-2 border-accent pl-4 font-mono-brand text-[10px] uppercase leading-5 tracking-[.15em] text-secondary-foreground/70">A clear starting point<br />for your franchise enquiry</p>
+          </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {franchiseFormats.map((format, index) => <article key={format.id} className="group flex h-full flex-col overflow-hidden rounded-sm border border-secondary-foreground/15 bg-background text-foreground transition-transform duration-300 hover:-translate-y-1">
+              <div className="relative h-44 overflow-hidden bg-muted">
+                <img src={format.image} alt={format.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <span className="absolute left-4 top-4 rounded-full bg-secondary px-3 py-1 font-mono-brand text-[9px] uppercase tracking-[.16em] text-accent">{index === 0 ? 'Compact · takeaway-led' : index === 1 ? 'Classic · dine-in + delivery' : 'Premium · family dining'}</span>
+              </div>
+              <div className="flex flex-1 flex-col p-6 md:p-7">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-display text-2xl leading-tight md:text-3xl">{format.name}</h3>
+                  <span className="font-mono-brand text-xs text-primary">0{index + 1}</span>
+                </div>
+                <p className="mt-3 font-display text-2xl text-primary">{format.investment}</p>
+                <p className="mt-1 text-[10px] text-muted-foreground">Indicative investment</p>
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">{format.summary}</p>
+                <div className="mt-5 grid grid-cols-2 gap-3 border-y border-foreground/10 py-4">
+                  <div><p className="font-mono-brand text-[9px] uppercase tracking-[.14em] text-muted-foreground">Space</p><p className="mt-1 text-xs font-semibold">{format.area}</p></div>
+                  <div><p className="font-mono-brand text-[9px] uppercase tracking-[.14em] text-muted-foreground">Seating</p><p className="mt-1 text-xs font-semibold">{format.seating}</p></div>
+                </div>
+                <ul className="mt-5 space-y-2 text-xs leading-5 text-muted-foreground">{format.features.slice(0, 2).map(feature => <li key={feature} className="flex gap-2"><BadgeCheck size={14} className="mt-0.5 shrink-0 text-primary" />{feature}</li>)}</ul>
+                <Link href={`/franchise/apply?format=${encodeURIComponent(format.name)}#application-form`} className="mt-auto inline-flex items-center justify-between border-t border-foreground/10 pt-5 mt-6 text-sm font-bold text-primary" data-testid={`link-home-format-${format.id}`}><span>Explore this format</span><ArrowRight size={17} className="transition-transform group-hover:translate-x-1" /></Link>
+              </div>
+            </article>)}
+          </div>
+          <p className="mt-6 max-w-4xl text-xs leading-5 text-secondary-foreground/55">Figures are indicative for initial comparison, not a quotation or guarantee. Final project costs depend on site, rent, property condition and local approvals. Operating costs and commercial results vary by location and management.</p>
         </div>
       </section>
 
@@ -359,10 +392,10 @@ function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-24">
           <div>
             <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent">Who should get in touch?</p>
-            <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">For people who care about building a good local business.</h2>
+            <h2 className="mt-5 font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">For employed professionals ready to build with the right team.</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
-            {['Entrepreneurs exploring the food business', 'Restaurant operators considering another concept', 'People with a city or location in mind', 'Hands-on partners who value consistency and hospitality'].map((item, index) => <div key={item} className="border-t border-secondary-foreground/25 pt-4"><span className="font-mono-brand text-xs text-accent">0{index + 1}</span><p className="mt-6 font-display text-xl leading-snug">{item}</p></div>)}
+            {['You are employed and want a managed second-business opportunity', 'You have 10+ hours weekly to oversee hiring, marketing and operations', 'You have a location or city in mind and the required capital available', 'You understand that restaurant success needs an active operating plan'].map((item, index) => <div key={item} className="border-t border-secondary-foreground/25 pt-4"><span className="font-mono-brand text-xs text-accent">0{index + 1}</span><p className="mt-6 font-display text-xl leading-snug">{item}</p></div>)}
           </div>
         </div>
       </section>
@@ -370,9 +403,9 @@ function Home() {
       <section className="bg-accent text-accent-foreground">
         <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-16 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-20">
           <div>
-            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent-foreground/65">Your city could be next</p>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">Let’s see if a Sardaar Ji Dhaba partnership is right for you.</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-accent-foreground/75">Start with a short enquiry. We’ll take the conversation from there.</p>
+            <p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-accent-foreground/65">13 applications under review this quarter</p>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight tracking-[-.05em] md:text-5xl">Could this be your second-income business?</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-accent-foreground/75">Submit a fit-focused enquiry. Applications are reviewed for work availability, investment readiness, location and operating commitment; review of an application is not approval.</p>
           </div>
           <Link href="/franchise/apply" onClick={() => trackEvent('franchise_cta_click')} className="inline-flex w-fit items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-bold text-secondary-foreground" data-testid="link-home-bottom-apply">Apply for franchise <ArrowRight size={16} /></Link>
         </div>
@@ -992,7 +1025,7 @@ function NotFound() {
   return <Shell><Meta title="Page not found" /><section className="mx-auto flex min-h-[65vh] max-w-7xl flex-col justify-center px-5 py-20 lg:px-8"><p className="font-mono-brand text-[10px] uppercase tracking-[.24em] text-primary">Wrong turn</p><h1 className="mt-6 max-w-3xl font-display text-[clamp(5rem,14vw,12rem)] leading-[.75] tracking-[-.1em]">404<span className="text-primary">.</span></h1><p className="mt-10 max-w-sm text-lg leading-7 text-muted-foreground">This road does not go to the dhaba. Let us get you back to something tasty.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground" data-testid="link-404-home">Take me home <ArrowRight size={16} /></Link><Link href="/menu" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3.5 text-sm font-bold" data-testid="link-404-menu">See the menu <Utensils size={16} /></Link></div></section></Shell>;
 }
 
-type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; state?: string; investmentRange?: string; franchiseFormat?: string; experience?: string; ownsCommercialProperty?: string; openingTimeline?: string; source?: string; message: string; createdAt: string }[] };
+type AdminSummary = { inquiries: number; events: number; eventCounts: { _id: string; count: number }[]; recentInquiries: { kind: string; name: string; email: string; phone?: string; city?: string; state?: string; investmentRange?: string; franchiseFormat?: string; experience?: string; employmentStatus?: string; availableTime?: string; ownsCommercialProperty?: string; openingTimeline?: string; source?: string; message: string; createdAt: string }[] };
 
 function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -1030,7 +1063,7 @@ function Admin() {
     }
   };
   if (!authenticated || !summary) return <main className="mx-auto flex min-h-screen max-w-md items-center px-5 py-16"><form onSubmit={login} className="w-full border border-foreground/15 bg-card p-7 shadow-[var(--shadow-card)]"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Sardaar Ji Dhaba</p><h1 className="mt-4 font-display text-4xl">Admin sign in</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">Lead and analytics access for the restaurant team.</p><label className="mt-8 block text-sm font-bold">Username<input value={credentials.username} onChange={event => setCredentials({ ...credentials, username: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="username" required /></label><label className="mt-5 block text-sm font-bold">Password<input type="password" value={credentials.password} onChange={event => setCredentials({ ...credentials, password: event.target.value })} className="mt-2 w-full border-b border-foreground/25 bg-transparent px-0 py-3 outline-none" autoComplete="current-password" required /></label>{error && <p className="mt-5 text-sm text-destructive" role="alert">{error}</p>}<button type="submit" className="mt-7 w-full rounded-full bg-primary px-5 py-3 font-bold text-primary-foreground">Sign in</button></form></main>;
-  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}{lead.state ? `, ${lead.state}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.franchiseFormat ? `Format: ${lead.franchiseFormat} · ` : ''}{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.ownsCommercialProperty ? `Commercial property: ${lead.ownsCommercialProperty} · ` : ''}{lead.openingTimeline ? `Opening: ${lead.openingTimeline}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
+  return <main className="min-h-screen bg-muted/50 px-5 py-10 lg:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-primary">Private dashboard</p><h1 className="mt-3 font-display text-5xl">Good morning, Sardaar Ji.</h1></div><button type="button" onClick={async () => { try { await fetch(apiUrl('/api/admin/logout'), { method: 'POST', credentials: 'include' }); } catch { /* fallback demo logout */ } setAuthenticated(false); setSummary(null); }} className="rounded-full border border-foreground/20 px-5 py-2.5 text-sm font-bold">Sign out</button></div><div className="mt-10 grid gap-4 sm:grid-cols-2"><div className="bg-secondary p-6 text-secondary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Leads</p><p className="mt-5 font-display text-6xl">{summary.inquiries}</p></div><div className="bg-primary p-6 text-primary-foreground"><p className="font-mono-brand text-[10px] uppercase tracking-[.2em] text-accent">Tracked events</p><p className="mt-5 font-display text-6xl">{summary.events}</p></div></div><section className="mt-10 grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Conversion activity</h2><div className="mt-6 space-y-4">{summary.eventCounts.map(event => <div key={event._id} className="flex items-center justify-between border-b border-foreground/10 pb-3 text-sm"><span>{event._id.replaceAll('_', ' ')}</span><strong>{event.count}</strong></div>)}</div></div><div className="border border-foreground/10 bg-card p-6"><h2 className="font-display text-3xl">Recent leads</h2><div className="mt-6 space-y-5">{summary.recentInquiries.length === 0 ? <p className="text-sm text-muted-foreground">No enquiries yet.</p> : summary.recentInquiries.map((lead, index) => <article key={`${lead.email}-${index}`} className="border-b border-foreground/10 pb-5"><div className="flex flex-wrap justify-between gap-2"><h3 className="font-bold">{lead.name}</h3><span className="font-mono-brand text-[10px] uppercase text-primary">{lead.kind}</span></div><p className="mt-1 text-sm text-muted-foreground">{lead.email}{lead.phone ? ` · ${lead.phone}` : ''}{lead.city ? ` · ${lead.city}` : ''}{lead.state ? `, ${lead.state}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.franchiseFormat ? `Format: ${lead.franchiseFormat} · ` : ''}{lead.investmentRange ? `Budget: ${lead.investmentRange}` : ''}{lead.experience ? ` · Experience: ${lead.experience}` : ''}{lead.employmentStatus ? ` · Work: ${lead.employmentStatus}` : ''}{lead.availableTime ? ` · Time: ${lead.availableTime}` : ''}</p><p className="mt-1 text-xs text-muted-foreground">{lead.ownsCommercialProperty ? `Commercial property: ${lead.ownsCommercialProperty} · ` : ''}{lead.openingTimeline ? `Opening: ${lead.openingTimeline}` : ''}</p><p className="mt-1 text-[10px] text-muted-foreground">{lead.source ? `Source: ${lead.source}` : ''}</p><p className="mt-3 text-sm leading-6">{lead.message}</p></article>)}</div></div></section></div></main>;
 }
 
 function loadOptionalAnalytics() {
